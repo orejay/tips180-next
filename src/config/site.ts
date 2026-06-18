@@ -15,6 +15,13 @@ export const siteConfig = {
   // Backend API the legacy app already consumes. Frontend-only rewrite — the
   // API contract is unchanged. Override via NEXT_PUBLIC_API_URL.
   apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "https://www.tips180.com/api",
+  // Payment provider public keys (safe to expose). Verification + the actual
+  // upgrade happen server-side against the backend, which holds the secret keys.
+  paystackKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY ?? "",
+  flutterwaveKey: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY ?? "",
+  // Google Ads conversion tag (ported from the legacy app). Optional GA4 too.
+  googleAdsId: process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? "AW-17670030360",
+  ga4Id: process.env.NEXT_PUBLIC_GA4_ID ?? "",
   ogImage: "/og.png",
   twitter: "@tips180",
   links: {

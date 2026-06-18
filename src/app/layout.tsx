@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Analytics } from "@/components/analytics/analytics";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const geistSans = Geist({
@@ -30,6 +33,8 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   applicationName: siteConfig.name,
   alternates: { canonical: "/" },
+  // OG/Twitter images come from the file-based `opengraph-image.tsx` convention,
+  // which Next injects automatically — no hardcoded asset needed.
   openGraph: {
     type: "website",
     locale: "en_NG",
@@ -37,14 +42,12 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [{ url: siteConfig.ogImage }],
   },
   twitter: {
     card: "summary_large_image",
     site: siteConfig.twitter,
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [siteConfig.ogImage],
   },
   robots: {
     index: true,
@@ -59,12 +62,24 @@ export default function RootLayout({
   return (
     <html
       lang={siteConfig.locale}
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Apply the stored/system theme before paint to avoid a flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="bg-background text-foreground min-h-full flex flex-col">
         <JsonLd data={websiteSchema()} />
         <JsonLd data={organizationSchema()} />
+        <SiteHeader />
         {children}
+        <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

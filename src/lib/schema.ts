@@ -59,6 +59,65 @@ export function faqSchema(faqs: { question: string; answer: string }[]) {
   };
 }
 
+/**
+ * Author/expert profile. A core YMYL E-E-A-T signal — links predictions to a
+ * real, identifiable person with verifiable social profiles (`sameAs`).
+ */
+export function personSchema(person: {
+  name: string;
+  url: string;
+  jobTitle?: string;
+  description?: string;
+  image?: string;
+  sameAs?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: person.name,
+    url: person.url,
+    ...(person.jobTitle && { jobTitle: person.jobTitle }),
+    ...(person.description && { description: person.description }),
+    ...(person.image && { image: person.image }),
+    worksFor: { "@type": "Organization", name: siteConfig.name, url: siteConfig.url },
+    ...(person.sameAs?.length && { sameAs: person.sameAs }),
+  };
+}
+
+/** Editorial article/analysis with a named author — improves AI citation. */
+export function articleSchema(article: {
+  headline: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified?: string;
+  authorName: string;
+  authorUrl?: string;
+  image?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.headline,
+    description: article.description,
+    url: article.url,
+    datePublished: article.datePublished,
+    dateModified: article.dateModified ?? article.datePublished,
+    ...(article.image && { image: article.image }),
+    author: {
+      "@type": "Person",
+      name: article.authorName,
+      ...(article.authorUrl && { url: article.authorUrl }),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: { "@type": "ImageObject", url: `${siteConfig.url}/logo.png` },
+    },
+  };
+}
+
 /** A single football match prediction. Drives rich event cards + AI citations. */
 export function sportsEventSchema(event: {
   homeTeam: string;

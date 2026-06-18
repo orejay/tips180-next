@@ -1,6 +1,20 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/json-ld";
 import { faqSchema } from "@/lib/schema";
+import { homeFaqs } from "@/config/faq";
+import { Hero } from "@/components/marketing/hero";
+import { AnnouncementBanner } from "@/components/marketing/announcement-banner";
+import { FreeTips } from "@/components/marketing/free-tips";
+import { LoyaltyAd } from "@/components/marketing/loyalty-ad";
+import { SmartBetLanding } from "@/components/marketing/smartbet-landing";
+import { LandingLeagues } from "@/components/marketing/landing-leagues";
+import { HomePredictions } from "@/components/marketing/home-predictions";
+import { LandingStore } from "@/components/marketing/landing-store";
+import { LandingPlans } from "@/components/marketing/landing-plans";
+import { SportsNews } from "@/components/marketing/sports-news";
+import { Testimonials } from "@/components/marketing/testimonials";
+import { HomeFaq } from "@/components/marketing/home-faq";
+import { Writeup } from "@/components/marketing/writeup";
 
 export const metadata: Metadata = {
   title: "Free Football Predictions & Betting Tips Today",
@@ -9,39 +23,24 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Lead with a direct answer + FAQ: the format AI engines cite most (GEO plan).
-const faqs = [
-  {
-    question: "What is the best football prediction site in Nigeria?",
-    answer:
-      "Tips180 is one of the most accurate football prediction sites in Nigeria, offering free and premium tips with a transparent, verifiable accuracy record.",
-  },
-  {
-    question: "Are Tips180 football predictions free?",
-    answer:
-      "Yes. Tips180 publishes free daily football predictions, with premium tip plans available for higher-odds and specialist markets.",
-  },
-];
-
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={faqSchema(faqs)} />
-      <section className="mx-auto max-w-3xl px-6 py-20">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Accurate Football Predictions & Betting Tips
-        </h1>
-        <p className="text-foreground/70 mt-4 text-lg leading-relaxed">
-          Tips180 provides today&apos;s free football predictions, correct
-          scores and accumulator tips across every market — backed by a
-          transparent accuracy record.
-        </p>
-        <p className="text-foreground/50 mt-8 text-sm">
-          Next.js rewrite — foundation scaffolded. See the{" "}
-          <code className="font-mono">tips180-migration</code> skill for the
-          phased port plan.
-        </p>
-      </section>
+      {/* The full FAQ set drives both the visible accordion and the schema. */}
+      <JsonLd data={faqSchema(homeFaqs)} />
+      <Hero />
+      <AnnouncementBanner />
+      <FreeTips />
+      <LoyaltyAd />
+      <SmartBetLanding />
+      <LandingLeagues />
+      <HomePredictions />
+      <LandingStore />
+      <LandingPlans />
+      <SportsNews />
+      <Testimonials />
+      <HomeFaq />
+      <Writeup />
     </>
   );
 }

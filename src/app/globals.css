@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/*
+ * Central theme. All colours are semantic design tokens defined as CSS variables
+ * here, then exposed to Tailwind via `@theme inline` so utilities like
+ * `bg-background`, `text-foreground`, `text-muted`, `border-border`, `bg-primary`
+ * and the brand gradient (`from-brand-start to-brand-end`) resolve to them.
+ *
+ * Light values live in `:root`; dark values in `.dark`. Because the utilities
+ * reference the variables (inline), flipping the theme is just a matter of
+ * toggling the `.dark` class on <html> — no component changes needed. The `dark`
+ * variant below also enables explicit `dark:` overrides for the rare exception.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --background: #f5f5f4; /* page background (stone-100) */
+  --surface: #ffffff; /* cards, header, footer panels */
+  --surface-muted: #fafaf9; /* subtle striping (stone-50) */
+
+  /* Text */
+  --foreground: #1c1917; /* primary text / headings (stone-900) */
+  --muted: #57534e; /* secondary text (stone-600) */
+  --subtle: #a8a29e; /* faint text / meta (stone-400) */
+
+  /* Lines */
+  --border: #e7e5e4; /* borders & dividers (stone-200) */
+
+  /* Primary (actions, links) */
+  --primary: #2563eb; /* blue-600 */
+  --primary-hover: #1d4ed8; /* blue-700 */
+  --primary-foreground: #ffffff;
+  --primary-soft: #eff6ff; /* tints / chips (blue-50) */
+
+  /* Brand gradient */
+  --brand-start: #14b8a6; /* teal-500 */
+  --brand-end: #2563eb; /* blue-600 */
+
+  /* Dashboard sidebar (an intentionally dark surface in both modes) */
+  --sidebar: #1b2232;
+  --sidebar-foreground: #d6d3d1; /* stone-300 */
+
+  /* Status */
+  --success: #16a34a;
+  --success-soft: #dcfce7;
+  --danger: #ef4444;
+}
+
+.dark {
+  --background: #0c0a09; /* stone-950 */
+  --surface: #1c1917; /* stone-900 */
+  --surface-muted: #292524; /* stone-800 */
+
+  --foreground: #e7e5e4; /* stone-200 */
+  --muted: #a8a29e; /* stone-400 */
+  --subtle: #78716c; /* stone-500 */
+
+  --border: #292524; /* stone-800 */
+
+  --primary: #3b82f6; /* blue-500 */
+  --primary-hover: #60a5fa; /* blue-400 */
+  --primary-foreground: #0b1120;
+  --primary-soft: #172554; /* blue-950 */
+
+  --brand-start: #2dd4bf; /* teal-400 */
+  --brand-end: #3b82f6; /* blue-500 */
+
+  --sidebar: #0f1420;
+  --sidebar-foreground: #d6d3d1;
+
+  --success: #22c55e;
+  --success-soft: #14361f;
+  --danger: #f87171;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-brand-start: var(--brand-start);
+  --color-brand-end: var(--brand-end);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Hero entrance + ambient blob motion (adapted from the 90mins hero). */
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-fade-in {
+  animation: hero-fade-in 0.6s ease-out both;
+}
+
+@keyframes hero-blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(18px, -14px) scale(1.06);
+  }
+}
+
+.hero-blob {
+  animation: hero-blob 12s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-in,
+  .hero-blob {
+    animation: none;
+  }
 }

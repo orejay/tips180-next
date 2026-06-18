@@ -4,12 +4,22 @@
 
 ## Key pages
 
-- [Football Predictions Today](https://www.tips180.com/): Today's free football predictions and betting tips.
-- [Our Plans](https://www.tips180.com/our-plans): Premium subscription tiers and pricing.
-- [Leagues](https://www.tips180.com/leagues): Predictions by league and competition.
+- [Football Predictions Today](https://www.tips180.com/): Today's free football predictions, winning tips and upcoming fixtures.
+- [Prediction Accuracy](https://www.tips180.com/accuracy): Transparent, verifiable record of recent winning predictions vs. final results, updated daily.
+- [Leagues](https://www.tips180.com/leagues): Predictions by league and competition (Premier League, La Liga, Serie A, Bundesliga, Ligue 1 and 100+ more).
+- [Our Plans](https://www.tips180.com/our-plans): Premium subscription tiers, pricing and a plans FAQ.
 - [About Us](https://www.tips180.com/about-us): Who we are and how we make predictions.
+- [How to Pay](https://www.tips180.com/how-to-pay): Payment methods and subscription steps.
+- [Contact Us](https://www.tips180.com/contact-us): Support, advert and sponsorship enquiries.
+
+## League hub pages
+
+Each league has a dedicated predictions page at `/leagues/{slug}` (e.g. `/leagues/epl`,
+`/leagues/la-liga`) with current fixtures, expert tips and SportsEvent + FAQ schema.
 
 ## Notes
 
 - Primary audience: Nigeria and Africa (en-NG).
-- Accuracy archive and named tipster profiles are planned high-trust assets (see SEO/GEO master plan).
+- Predictions and the accuracy record refresh daily; league hubs use ISR.
+- Structured data in raw HTML: WebSite, Organization, BreadcrumbList, FAQPage,
+  SportsEvent (per match), plus Person/Article builders for authored analysis.
