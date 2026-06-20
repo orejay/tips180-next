@@ -1,5 +1,6 @@
 import { getFreeExperts, formatDayMonth } from "@/lib/predictions";
 import { LastUpdated } from "@/components/seo/last-updated";
+import { BookingCode } from "@/components/marketing/booking-code";
 
 /**
  * "Free Football Predictions Today" — the highest-value SEO section. Server
@@ -17,6 +18,7 @@ export async function FreeTips() {
         </h2>
         <LastUpdated />
       </div>
+      <BookingCode category="freex" />
       <div className="overflow-x-auto rounded-lg border border-border">
         <table className="w-full text-left text-sm">
           <thead>

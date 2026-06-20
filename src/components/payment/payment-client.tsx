@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { plans, type Plan } from "@/config/plans";
 import { siteConfig } from "@/config/site";
+import { getPricingFor, pricingOptions } from "@/config/pricing";
 import { verifyAndUpgradeAction } from "@/app/(dashboard)/dashboard/payment/actions";
 import { ManualPayments } from "@/components/payment/manual-payments";
 
@@ -28,17 +28,31 @@ function loadScript(src: string): Promise<void> {
   });
 }
 
+/** Unique transaction reference (module scope — not a render-time computation). */
+function newTxRef(): string {
+  return `tips180-${Date.now()}`;
+}
+
 type Status = { kind: "idle" | "working" | "ok" | "error"; message?: string };
 
 export function PaymentClient({ email, name }: { email: string; name: string }) {
   const router = useRouter();
-  const [plan, setPlan] = useState<Plan>(plans[0]);
+  const [country, setCountry] = useState("NG");
+  const [planIdx, setPlanIdx] = useState(0);
   const [durationIdx, setDurationIdx] = useState(0);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
+  const { plans, currency } = getPricingFor(country);
+  const plan = plans[Math.min(planIdx, plans.length - 1)];
   const price = plan.prices[Math.min(durationIdx, plan.prices.length - 1)];
   const duration = plan.durations[Math.min(durationIdx, plan.durations.length - 1)];
   const cardEnabled = Boolean(siteConfig.paystackKey || siteConfig.flutterwaveKey);
+
+  function changeCountry(code: string) {
+    setCountry(code);
+    setPlanIdx(0);
+    setDurationIdx(0);
+  }
 
   async function finalize(provider: "paystack" | "flutter", reference: string) {
     setStatus({ kind: "working", message: "Confirming your payment…" });
@@ -62,8 +76,8 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
       const handler = window.PaystackPop.setup({
         key: siteConfig.paystackKey,
         email,
-        amount: price.value * 100, // kobo
-        currency: "NGN",
+        amount: price.value * 100, // smallest currency unit
+        currency,
         metadata: { custom_fields: [{ display_name: "Name", variable_name: "name", value: name }] },
         callback: (response: { reference: string }) => {
           void finalize("paystack", response.reference);
@@ -82,9 +96,9 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
       await loadScript("https://checkout.flutterwave.com/v3.js");
       window.FlutterwaveCheckout({
         public_key: siteConfig.flutterwaveKey,
-        tx_ref: `tips180-${Date.now()}`,
+        tx_ref: newTxRef(),
         amount: price.value,
-        currency: "NGN",
+        currency,
         customer: { email, name },
         customizations: { title: "Tips180", description: `${plan.name} — ${duration}` },
         callback: (data: { transaction_id?: number | string }) => {
@@ -99,17 +113,34 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
 
   return (
     <div className="space-y-8">
+      {/* Country / currency selector */}
+      <section>
+        <h2 className="mb-3 text-lg font-semibold text-foreground">1. Your country</h2>
+        <select
+          value={country}
+          onChange={(e) => changeCountry(e.target.value)}
+          className="w-64 rounded-md border border-border bg-surface px-3 py-2 text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+        >
+          {pricingOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <p className="mt-1 text-xs text-subtle">Prices in {currency}.</p>
+      </section>
+
       {/* Plan selector */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-foreground">1. Choose a plan</h2>
+        <h2 className="mb-3 text-lg font-semibold text-foreground">2. Choose a plan</h2>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {plans.map((p) => (
+          {plans.map((p, i) => (
             <button
               key={p.slug}
               type="button"
-              onClick={() => { setPlan(p); setDurationIdx(0); }}
+              onClick={() => { setPlanIdx(i); setDurationIdx(0); }}
               className={`rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                p.slug === plan.slug
+                i === planIdx
                   ? "border-blue-600 bg-blue-50 dark:bg-primary-soft text-primary"
                   : "border-border text-foreground hover:border-blue-400"
               }`}
@@ -122,7 +153,7 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
 
       {/* Duration selector */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-foreground">2. Choose a duration</h2>
+        <h2 className="mb-3 text-lg font-semibold text-foreground">3. Choose a duration</h2>
         <div className="flex flex-wrap gap-2">
           {plan.durations.map((d, i) => (
             <button
@@ -143,7 +174,7 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
 
       {/* Pay */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-foreground">3. Pay</h2>
+        <h2 className="mb-3 text-lg font-semibold text-foreground">4. Pay</h2>
         <div className="rounded-lg border border-border p-5">
           <p className="mb-4 text-foreground">
             <span className="font-semibold">{plan.name}</span> · {duration} ·{" "}

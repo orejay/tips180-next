@@ -1,58 +1,83 @@
 import type { Metadata } from "next";
-import { authFetch } from "@/lib/api-auth";
+import { redirect } from "next/navigation";
+import { authFetch, getCurrentUser } from "@/lib/api-auth";
+import { PredictGame } from "@/components/dashboard/predict-game";
+import {
+  getCurrentRound,
+  getPwFee,
+  getPwPrize,
+  hasEnteredRound,
+  hasPaidEntry,
+  pwSymbol,
+  PW_COUNTRIES,
+} from "@/lib/predict-win";
 
 export const metadata: Metadata = { title: "Predict & Win" };
 
-type PwRound = {
-  id: number;
-  date_created: string;
-  prediction: string;
-  set: string;
-  set_id: number;
-};
-
-const steps = [
-  "Each round, our experts publish a set of fixtures to predict.",
-  "Submit your predicted outcomes before the round closes.",
-  "Score points for every correct call — the top predictors win prizes.",
-];
+type PwEntry = { id: number; date_created: string; set: string; set_id: number };
 
 export default async function PredictWinPage() {
-  const rounds = (await authFetch<PwRound[]>("getendpoints/pw-rounds")) ?? [];
+  const user = await getCurrentUser();
+  if (!user) redirect("/auth/login?from=/dashboard/pw");
+
+  // Use the user's country if Predict & Win runs there, else default to Nigeria.
+  const country = PW_COUNTRIES.some((c) => c.label === user.country) ? user.country : "Nigeria";
+
+  const [round, entries] = await Promise.all([
+    getCurrentRound(),
+    authFetch<PwEntry[]>("getendpoints/pw-rounds"),
+  ]);
+
+  let game = null;
+  if (round) {
+    const [fee, prize, entered, paid] = await Promise.all([
+      getPwFee(country),
+      getPwPrize(country),
+      hasEnteredRound(round.setid),
+      hasPaidEntry(country, round.setid),
+    ]);
+    game = entered ? (
+      <p className="rounded-lg border border-border py-10 text-center text-muted">
+        You&apos;ve already entered round {round.round}. Good luck!
+      </p>
+    ) : (
+      <PredictGame
+        round={round}
+        email={user.email}
+        name={user.name}
+        country={country}
+        symbol={pwSymbol(country)}
+        fee={fee}
+        prize={prize}
+        paid={paid}
+      />
+    );
+  }
 
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-bold text-foreground">Predict &amp; Win</h1>
+      <h1 className="mb-6 text-2xl font-bold text-foreground">Predict &amp; Win</h1>
 
-      <ol className="mb-8 space-y-2">
-        {steps.map((s, i) => (
-          <li key={i} className="flex gap-3 text-muted">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-primary-soft text-xs font-bold text-primary">
-              {i + 1}
-            </span>
-            {s}
-          </li>
-        ))}
-      </ol>
+      {game ?? (
+        <p className="mb-8 rounded-lg border border-border py-10 text-center text-muted">
+          There&apos;s no active round right now. New rounds open regularly — check back soon.
+        </p>
+      )}
 
-      <h2 className="mb-3 text-lg font-semibold text-foreground">Your Entries</h2>
-      {rounds.length === 0 ? (
-        <p className="rounded-lg border border-border py-10 text-center text-muted">
-          You haven&apos;t entered any rounds yet. New rounds open regularly — check
-          back soon.
+      <h2 className="mt-10 mb-3 text-lg font-semibold text-foreground">Your Entries</h2>
+      {!entries || entries.length === 0 ? (
+        <p className="rounded-lg border border-border py-8 text-center text-muted">
+          You haven&apos;t entered any rounds yet.
         </p>
       ) : (
         <ul className="space-y-3">
-          {rounds.map((round) => (
-            <li
-              key={round.id}
-              className="flex items-center justify-between rounded-lg border border-border px-5 py-4"
-            >
+          {entries.map((entry) => (
+            <li key={entry.id} className="flex items-center justify-between rounded-lg border border-border px-5 py-4">
               <div>
-                <p className="font-medium text-foreground">{round.set}</p>
-                <p className="text-xs text-subtle">Entered {round.date_created}</p>
+                <p className="font-medium text-foreground">{entry.set}</p>
+                <p className="text-xs text-subtle">Entered {entry.date_created}</p>
               </div>
-              <span className="rounded-full bg-green-100 dark:bg-success-soft px-3 py-1 text-xs font-medium text-green-700">
+              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-success-soft dark:text-success">
                 Submitted
               </span>
             </li>

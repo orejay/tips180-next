@@ -15,8 +15,9 @@ Legacy files live in `c:\Users\Abdullahi\Downloads\ore\dashboard\src`.
 | `/disclaimer` | pages/Disclaimer.js | `(marketing)/disclaimer` | ✅ |
 | `/privacy-policy` | pages/PrivacyPolicy.js | `(marketing)/privacy-policy` | ✅ |
 | `/refund-policy` | pages/RefundPolicy.js | `(marketing)/refund-policy` | ✅ |
-| `/terms-and-condition`, `/pw-terms` | pages/TandC.js, PwTandC.js | `(marketing)/terms-and-condition` | ✅ (pw-terms not ported) |
-| `/our-plans` | pages/nav/OurPlans.js | `(marketing)/our-plans` | ◐ content done; geo-pricing + checkout → Phase 7 |
+| `/terms-and-condition` | pages/TandC.js | `(marketing)/terms-and-condition` | ✅ |
+| `/pw-terms` | pages/PwTandC.js | `(marketing)/pw-terms` | ✅ |
+| `/our-plans` | pages/nav/OurPlans.js | `(marketing)/our-plans` | ✅ geo-priced (country selector + per-country tables) |
 | `/leagues` | pages/nav/Leagues.js | `(marketing)/leagues` | ✅ |
 | `/leagues/:name` | pages/League.js | `(marketing)/leagues/[slug]` | ✅ public predictions + SportsEvent/FAQ schema |
 | `/predict-win` | pages/nav/PredictWin.js | `(marketing)/predict-win` | ✅ public landing + FAQ |
@@ -55,7 +56,7 @@ Legacy files live in `c:\Users\Abdullahi\Downloads\ore\dashboard\src`.
 | `/dashboard/puntersguide` | components/PuntersGuid.js | `(dashboard)/dashboard/puntersguide` | ✅ content |
 | `/dashboard/bankertips` | components/BankersTip.js | `(dashboard)/dashboard/bankertips` | ✅ public single card |
 | `/dashboard/hiring` | components/Hiring.js | `(dashboard)/dashboard/hiring` | ✅ jobs endpoint |
-| `/dashboard/pw`, `/pw-history` | pages/PandW.js, PredictAndWin.js | `(dashboard)/dashboard/pw` | ◐ read views; live entry submission pending |
+| `/dashboard/pw`, `/pw-history` | pages/PandW.js, PredictAndWin.js | `(dashboard)/dashboard/pw` | ✅ full game: 1/X/2 grid, Paystack entry fee, submit |
 
 ## (payment) — client flows, noindex
 

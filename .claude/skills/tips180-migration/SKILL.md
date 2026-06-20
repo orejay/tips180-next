@@ -12,6 +12,49 @@ invisible without JS. This rewrite renders server-side.
 
 This is a **frontend-only** rewrite. The backend (`tips180.com/api`) is unchanged.
 
+## ⚠️ TOP PRIORITY — full legacy parity FIRST
+
+**Port every existing legacy page and feature to full functional parity BEFORE building
+any new SEO/GEO enhancement assets, polish, or nice-to-haves.** SEO is the *purpose*, but
+a feature-complete port is the *prerequisite* — a beautifully-optimised site that dropped
+working features is a regression.
+
+Rules:
+- A phase is **not done** while any legacy sub-feature inside it is simplified, stubbed,
+  or dropped. Marking it ✅ early hides real gaps (this happened — see Parity gaps below).
+- When you must simplify/defer a legacy behaviour, log it in **Parity gaps** immediately,
+  not just in prose — it is now backlog, not "done".
+- Enhancement work (Phase 8 SEO assets, Phase 9 polish, theme/dark mode, redirects) waits
+  until Parity gaps is empty — unless the user explicitly redirects you.
+
+### Parity gaps — ✅ ALL CLEARED (2026-06-20)
+- ✅ **Predict & Win — live entry submission**: `lib/predict-win.ts` (round via public
+  `/predictions`, fee/prize via `/fees|/prizes/<country>`, paid via `/pw-payment`, entered
+  via `/pw-rounds`) + `components/dashboard/predict-game.tsx` (1/X/2 grid, picks → H/D/A
+  string in fixture order, inline Paystack entry-fee → `verifyPwEntryAction` [verify-
+  paystack-pw + paystack-pw], `submitPredictionAction` → `/submit-prediction {round,set_id,
+  prediction}`). Wired into `/dashboard/pw` (country from user profile ∈ 6 PW countries
+  else Nigeria). NOTE: country auto-geolocation NOT ported (legacy used a paid IP-geo API
+  with 8 keys) — uses profile country instead; fine.
+- ✅ **Geo-located pricing**: `config/pricing.ts` (all 7 non-NGN tables extracted via
+  script: usd/ghs/kes/ugx/xof/sll/zar + countryPricing map + `getPricingFor`).
+  `components/marketing/plans-pricing.tsx` (client country selector, defaults NG so NGN
+  SSRs for SEO) on our-plans; payment-client got a country selector + currency passed to
+  Paystack/Flutterwave. NOTE: legacy IP auto-detect not ported (manual selector instead).
+- ✅ **Booking codes**: `lib/bookings.ts` + `components/marketing/booking-code.tsx`
+  (bookie logos in `public/icons/bookies`, `/bookings/<cat>`) on free-tips (freex) +
+  home-predictions (upcoming).
+- ✅ **`/pw-terms`**: ported via cp + structural edits (like T&C).
+- ✅ **Legacy redirects**: `next.config.ts` redirects() — /contact→/contact-us,
+  /tipsstore→/tips-store, /payment/:slug→/dashboard/payment (308 permanent). Verified.
+- Re-audit: remaining known simplifications are non-functional (toasts→inline; PW geo
+  auto-detect → manual selector; booking shown on 2 surfaces not every table). Verify the
+  rest of `dashboard/src` if a deeper audit is wanted.
+
+**Still needs you / can't do in-code (NOT parity gaps):** real test login + Paystack/
+Flutterwave test keys to verify authed + payment flows end-to-end; named tipster real
+data; monthly win-rate % needs a backend stats endpoint.
+
 ## Repos
 
 - **New (this repo):** `c:\Users\Abdullahi\Downloads\ore\tips180-next`

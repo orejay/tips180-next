@@ -5,6 +5,7 @@ import {
   type CardMatch,
 } from "@/lib/predictions";
 import { PredictionTabs } from "@/components/marketing/prediction-tabs";
+import { BookingCode } from "@/components/marketing/booking-code";
 
 /** Brand-ish badge colours for the most-recognised leagues; others fall back. */
 const LEAGUE_COLORS: Record<string, string> = {
@@ -30,6 +31,7 @@ export async function HomePredictions() {
       <h2 className="mb-6 text-2xl font-bold text-foreground lg:text-3xl">
         Football Predictions &amp; Winning Tips
       </h2>
+      <BookingCode category="upcoming" />
       <PredictionTabs
         recent={<RecentWinsTable rows={recent} />}
         upcoming={<UpcomingTable rows={upcoming} />}
