@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { authFetch, getCurrentUser } from "@/lib/api-auth";
+import { detectCountry } from "@/lib/geo";
 import { PredictGame } from "@/components/dashboard/predict-game";
 import {
   getCurrentRound,
@@ -20,8 +21,15 @@ export default async function PredictWinPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/auth/login?from=/dashboard/pw");
 
-  // Use the user's country if Predict & Win runs there, else default to Nigeria.
-  const country = PW_COUNTRIES.some((c) => c.label === user.country) ? user.country : "Nigeria";
+  // Detect country by IP; fall back to the user's profile country, then Nigeria.
+  // Predict & Win only runs in these six markets.
+  const PW_ISO: Record<string, string> = {
+    NG: "Nigeria", GH: "Ghana", KE: "Kenya", TZ: "Tanzania", CM: "Cameroon", UG: "Uganda",
+  };
+  const iso = await detectCountry();
+  const country =
+    (iso && PW_ISO[iso.toUpperCase()]) ||
+    (PW_COUNTRIES.some((c) => c.label === user.country) ? user.country : "Nigeria");
 
   const [round, entries] = await Promise.all([
     getCurrentRound(),

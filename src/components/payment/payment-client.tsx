@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
-import { getPricingFor, pricingOptions } from "@/config/pricing";
+import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
 import { verifyAndUpgradeAction } from "@/app/(dashboard)/dashboard/payment/actions";
 import { ManualPayments } from "@/components/payment/manual-payments";
 
@@ -53,6 +53,14 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
     setPlanIdx(0);
     setDurationIdx(0);
   }
+
+  // Default the country from IP geolocation on mount.
+  useEffect(() => {
+    fetch("/api/geo")
+      .then((r) => r.json())
+      .then((d: { country?: string | null }) => changeCountry(toPricingCountry(d.country)))
+      .catch(() => {});
+  }, []);
 
   async function finalize(provider: "paystack" | "flutter", reference: string) {
     setStatus({ kind: "working", message: "Confirming your payment…" });

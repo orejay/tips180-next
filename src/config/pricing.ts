@@ -1311,3 +1311,15 @@ export function getPricingFor(code: string): { plans: Plan[]; currency: string; 
   const match = countryPricing.find((c) => c.code === code) ?? countryPricing[0];
   return { plans: pricingTables[match.table] ?? plans, currency: match.currency, label: match.label };
 }
+
+/**
+ * Map a detected ISO country code to a pricing-selector option. Countries with a
+ * dedicated table use it; Ethiopia/Rwanda share Kenya pricing (as in the legacy);
+ * everything else falls back to "OT" (USD).
+ */
+export function toPricingCountry(iso: string | null | undefined): string {
+  if (!iso) return "NG";
+  const code = iso.toUpperCase();
+  if (code === "ET" || code === "RW") return "KE";
+  return pricingOptions.some((o) => o.value === code) ? code : "OT";
+}

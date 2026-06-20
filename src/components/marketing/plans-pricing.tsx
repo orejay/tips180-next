@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getPricingFor, pricingOptions } from "@/config/pricing";
+import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
 import type { Plan } from "@/config/plans";
 
 /**
@@ -13,6 +13,15 @@ import type { Plan } from "@/config/plans";
 export function PlansPricing() {
   const [country, setCountry] = useState("NG");
   const { plans, currency } = getPricingFor(country);
+
+  // Auto-select the visitor's country from IP geolocation (default NG renders on
+  // the server for SEO; this refines it after mount).
+  useEffect(() => {
+    fetch("/api/geo")
+      .then((r) => r.json())
+      .then((d: { country?: string | null }) => setCountry(toPricingCountry(d.country)))
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
