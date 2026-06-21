@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TrendingUp, ShieldCheck, Zap } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { faqSchema } from "@/lib/schema";
 import { PlansPricing } from "@/components/marketing/plans-pricing";
@@ -28,30 +29,96 @@ const faqs = [
   },
 ];
 
+const HERO_FEATURES = [
+  { Icon: TrendingUp, text: "Daily expert predictions" },
+  { Icon: ShieldCheck, text: "All premium categories" },
+  { Icon: Zap, text: "Betting codes included" },
+];
+
 export default function OurPlansPage() {
   return (
-    <div className="bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-zinc-950 dark:to-black transition-colors duration-300">
       <JsonLd data={faqSchema(faqs)} />
-      <div className="bg-linear-to-r from-brand-start to-brand-end px-4 py-14 text-center text-white lg:py-20">
-        <h1 className="mx-auto text-xl font-bold lg:text-4xl">Our Plans</h1>
-        <p className="mt-2 text-xs lg:text-base">
-          There&apos;s a plan tailored for everyone!
-        </p>
+
+      {/* Hero */}
+      <div className="relative overflow-hidden px-4 pb-16 pt-24">
+        {/* Ambient blobs */}
+        <div className="hero-blob pointer-events-none absolute left-1/4 top-10 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl dark:bg-teal-900/20" />
+        <div
+          className="hero-blob pointer-events-none absolute right-1/4 top-20 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl dark:bg-blue-900/20"
+          style={{ animationDelay: "1.5s" }}
+        />
+        <div
+          className="hero-blob pointer-events-none absolute bottom-0 left-1/2 h-48 w-96 rounded-full bg-emerald-100/40 blur-3xl dark:bg-emerald-900/15"
+          style={{ animationDelay: "3s" }}
+        />
+
+        <div className="relative mx-auto max-w-3xl space-y-6 text-center">
+          {/* Badge */}
+          <div className="hero-fade-in inline-flex items-center gap-2 rounded-full bg-teal-100 px-4 py-2 text-xs font-bold uppercase tracking-widest text-teal-700 dark:bg-teal-900/40 dark:text-teal-300">
+            <Zap size={12} /> Premium Predictions
+          </div>
+
+          {/* Title */}
+          <h1 className="hero-fade-in text-5xl font-black leading-[1.05] tracking-tight text-foreground lg:text-6xl" style={{ animationDelay: "0.1s" }}>
+            Pick your{" "}
+            <span className="relative inline-block">
+              <span className="relative z-10 bg-gradient-to-r from-teal-500 to-blue-600 bg-clip-text text-transparent">
+                winning
+              </span>
+              <span className="absolute bottom-1 left-0 right-0 z-0 h-3 rounded bg-teal-100 dark:bg-teal-900/30" />
+            </span>{" "}
+            plan
+          </h1>
+
+          <p className="hero-fade-in text-lg leading-relaxed text-muted" style={{ animationDelay: "0.2s" }}>
+            Expert football predictions, exclusive betting codes and daily tips
+            tailored to every budget and staking style.
+          </p>
+
+          {/* Feature pills */}
+          <div className="hero-fade-in flex flex-wrap justify-center gap-3" style={{ animationDelay: "0.3s" }}>
+            {HERO_FEATURES.map(({ Icon, text }) => (
+              <div
+                key={text}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-muted shadow-sm dark:border-white/10 dark:bg-[#18181b]"
+              >
+                <span className="text-teal-500"><Icon size={15} /></span>
+                {text}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
+      {/* Plan cards */}
       <PlansPricing />
 
-      <section className="mx-auto w-full max-w-3xl px-4 pb-12">
+      {/* FAQ */}
+      <section className="mx-auto w-full max-w-3xl px-4 pb-16">
         <h2 className="mb-4 text-xl font-bold text-foreground">Plans — FAQ</h2>
         <dl className="space-y-4">
           {faqs.map((faq) => (
-            <div key={faq.question} className="rounded-lg bg-surface p-5 shadow-sm">
+            <div
+              key={faq.question}
+              className="rounded-xl border border-border bg-surface p-5 shadow-sm dark:border-white/8 dark:bg-[#18181b]"
+            >
               <dt className="font-semibold text-foreground">{faq.question}</dt>
               <dd className="mt-1 text-muted">{faq.answer}</dd>
             </div>
           ))}
         </dl>
       </section>
+
+      {/* Bottom trust strip */}
+      <div className="border-t border-border bg-surface px-4 py-8 dark:border-white/8 dark:bg-zinc-950">
+        <p className="text-center text-sm text-subtle">
+          Need help?{" "}
+          <a href="/contact-us" className="font-medium text-teal-600 hover:underline dark:text-teal-400">
+            Contact us
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

@@ -106,6 +106,40 @@ data; monthly win-rate % needs a backend stats endpoint.
   (`src/lib/utils.ts`). No inline emotion/MUI.
 - Run `npm run build` before declaring a phase done. Keep it green.
 
+### Design — plan cards & marketing visual style
+Follow the pattern established in `components/marketing/plans-pricing.tsx` (adapted
+from `ore/90mins-client/src/features/user-dashboard/components/plan-cards/index.tsx`):
+
+- **Per-card gradient header** with a unique accent colour per plan (defined in the
+  `ACCENTS` array). Each accent has: `gradient` (header bg), `ring` (featured card
+  border), `pill`/`pillOff` (active/inactive duration pills), `badge`, `cta` (button
+  gradient), and a Lucide `icon`. Never use one flat colour for all cards.
+- **Lucide icons** inside a frosted `bg-white/20` icon box in the gradient header.
+  Pick semantically fitting icons (Key, Crown, Brain, RefreshCw, Zap, Trophy, etc.).
+- **Decorative orbs** in the gradient header: two absolute-positioned `bg-white/10`
+  circles give the 3-D glossy feel on both light and dark.
+- **Card body is always white / dark `#18181b`** (zinc-900, NOT the stone `--surface`
+  token) so it contrasts cleanly with the vivid gradient header. Use `dark:bg-[#18181b]`
+  explicitly on the body element.
+- **Duration pills** (not a `<select>`): clickable `<button>` pills that toggle the
+  active duration. Active pill uses `accent.pill` classes (full accent colour + shadow);
+  inactive uses `accent.pillOff` (border + text, hover tinted).
+- **Large price** (`text-4xl font-black tracking-tight`) with a tiny `text-xs text-subtle`
+  "per X" label below.
+- **Featured card** (the recommended plan): add a floating "Most Popular" badge 3.5 rem
+  above the card, a `ring-2 ring-offset-2` accent ring, and `shadow-lg`. Set
+  `isFeatured = plan.slug === "premium"`.
+- **Hover state:** `hover:-translate-y-1 hover:shadow-xl transition-all duration-300`.
+- **Entrance animation:** `plan-card-in` class (keyframe defined in `globals.css`) with
+  a staggered `animationDelay` of `idx * 80ms`.
+- **Dark mode glossy feel:** gradient headers remain vivid; card body is zinc-900
+  (`#18181b`); borders on non-featured cards use `dark:border-white/8`; pill hover
+  states use `dark:hover:bg-white/10`; page background transitions `dark:from-zinc-950
+  dark:to-black`.
+- **Marketing pages** that showcase plan cards (like our-plans) should open with an
+  ambient blob + hero section (same pattern as the 90mins hero) before the card grid,
+  and close with a trust-strip. Use `hero-fade-in`/`hero-blob` keyframes (globals.css).
+
 ## Progress
 
 ### ✅ Phase 0 — Foundation (DONE)

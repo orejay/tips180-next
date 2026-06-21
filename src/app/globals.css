@@ -141,3 +141,25 @@ body {
     animation: none;
   }
 }
+
+/* Plan card entrance animation. */
+@keyframes plan-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plan-card-in {
+  animation: plan-card-in 0.4s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-card-in {
+    animation: none;
+  }
+}
