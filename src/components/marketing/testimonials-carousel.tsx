@@ -50,15 +50,22 @@ export function TestimonialsCarousel({ items }: { items: Feedback[] }) {
         {items.map((item, i) => (
           <figure
             key={i}
-            className="flex min-h-56 shrink-0 basis-full snap-start flex-col justify-between rounded-lg bg-surface p-5 shadow-md md:basis-1/2 lg:basis-1/3"
+            className="flex min-h-56 shrink-0 basis-full snap-start flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md md:basis-1/2 lg:basis-1/3 dark:border-white/8 dark:bg-[#18181b]"
           >
-            <blockquote className="text-center text-sm text-foreground lg:text-base">
-              <span className="block text-3xl leading-none font-bold text-sidebar-foreground">&ldquo;</span>
+            <blockquote className="text-sm leading-relaxed text-foreground lg:text-base">
+              <span className="mb-2 block bg-linear-to-r from-brand-start to-brand-end bg-clip-text text-5xl leading-none font-serif font-bold text-transparent">
+                &ldquo;
+              </span>
               {item.message}
             </blockquote>
-            <figcaption className="mt-4 text-center">
-              <p className="text-sm font-bold text-foreground">{item.name}</p>
-              <p className="text-xs text-muted">{item.country}</p>
+            <figcaption className="mt-5 flex items-center gap-3 border-t border-stone-100 pt-4 dark:border-white/8">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-teal-500 to-blue-600 text-xs font-bold text-white">
+                {item.name?.trim().charAt(0).toUpperCase() || "?"}
+              </span>
+              <span>
+                <span className="block text-sm font-bold text-foreground">{item.name}</span>
+                <span className="block text-xs text-muted">{item.country}</span>
+              </span>
             </figcaption>
           </figure>
         ))}

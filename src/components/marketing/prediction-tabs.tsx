@@ -19,15 +19,18 @@ export function PredictionTabs({
 
   const tabClass = (active: boolean) =>
     cn(
-      "cursor-pointer px-3 py-2 text-sm font-medium transition-colors md:text-base",
+      "cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
       active
-        ? "border-b-2 border-blue-600 text-primary"
-        : "text-subtle hover:text-muted",
+        ? "bg-white text-primary shadow-sm dark:bg-white/10"
+        : "text-muted hover:text-foreground",
     );
 
   return (
     <div>
-      <div role="tablist" className="mb-4 flex items-center gap-2 border-b border-border">
+      <div
+        role="tablist"
+        className="mb-5 inline-flex gap-1 rounded-xl bg-stone-100 p-1 dark:bg-white/5"
+      >
         <button type="button" role="tab" aria-selected={tab === 0} className={tabClass(tab === 0)} onClick={() => setTab(0)}>
           Recent Winning Tips
         </button>

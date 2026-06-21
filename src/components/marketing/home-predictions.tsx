@@ -28,13 +28,16 @@ export async function HomePredictions() {
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12">
-      <h2 className="mb-6 text-2xl font-bold text-foreground lg:text-3xl">
+      <h2 className="mb-2 text-2xl font-bold text-foreground lg:text-3xl">
         Football Predictions &amp; Winning Tips
       </h2>
+      <p className="mb-6 text-sm text-muted">
+        Our latest winning results and the next tips going live.
+      </p>
       <BookingCode category="upcoming" />
       <PredictionTabs
-        recent={<RecentWinsTable rows={recent} />}
-        upcoming={<UpcomingTable rows={upcoming} />}
+        recent={<PredictionTable rows={recent} variant="recent" />}
+        upcoming={<PredictionTable rows={upcoming} variant="upcoming" />}
       />
     </section>
   );
@@ -44,7 +47,7 @@ function LeagueBadge({ league }: { league: string }) {
   const bg = LEAGUE_COLORS[league?.toUpperCase()] ?? "#0f766e";
   return (
     <span
-      className="inline-block rounded px-2 py-1 text-xs font-medium text-white"
+      className="inline-block rounded px-2 py-0.5 text-[11px] font-semibold text-white"
       style={{ backgroundColor: bg }}
     >
       {league}
@@ -52,98 +55,80 @@ function LeagueBadge({ league }: { league: string }) {
   );
 }
 
-function Tip({ value }: { value: string | null }) {
-  return (
-    <span className="inline-block rounded bg-primary px-2 py-1 text-xs font-medium text-white">
-      {value || "—"}
-    </span>
-  );
-}
-
 function EmptyState() {
   return (
-    <p className="py-10 text-center text-lg font-medium text-muted">
+    <p className="rounded-2xl border border-stone-200 bg-white py-12 text-center text-base font-medium text-muted dark:border-white/8 dark:bg-[#18181b]">
       Please check back later!
     </p>
   );
 }
 
-function RecentWinsTable({ rows }: { rows: CardMatch[] }) {
+/**
+ * Shared modern table. `recent` shows the winning score with a WON badge;
+ * `upcoming` shows the match odds instead.
+ */
+function PredictionTable({
+  rows,
+  variant,
+}: {
+  rows: CardMatch[];
+  variant: "recent" | "upcoming";
+}) {
   if (rows.length === 0) return <EmptyState />;
-  return (
-    <div className="overflow-x-auto rounded-2xl border border-border">
-      <table className="w-full text-center text-sm">
-        <thead>
-          <tr className="text-muted">
-            <th className="px-3 py-3 font-medium">League</th>
-            <th className="px-3 py-3 font-medium">Date</th>
-            <th className="px-3 py-3 text-left font-medium">Match</th>
-            <th className="px-3 py-3 font-medium">Tip</th>
-            <th className="px-3 py-3 font-medium">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={row.id} className={i % 2 === 0 ? "bg-surface-muted" : "bg-surface"}>
-              <td className="px-3 py-3">
-                <LeagueBadge league={row.league} />
-              </td>
-              <td className="px-3 py-3 whitespace-nowrap text-muted">
-                {formatDayMonth(row.date)}
-              </td>
-              <td className="px-3 py-3 text-left font-medium text-foreground">
-                {row.name}
-              </td>
-              <td className="px-3 py-3">
-                <Tip value={row.fttip} />
-              </td>
-              <td className="px-3 py-3 font-medium text-foreground">
-                {row.ftscore || "—"}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
-function UpcomingTable({ rows }: { rows: CardMatch[] }) {
-  if (rows.length === 0) return <EmptyState />;
+  const isRecent = variant === "recent";
+  const lastHeading = isRecent ? "Result" : "Odds";
+
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border">
-      <table className="w-full text-center text-sm">
-        <thead>
-          <tr className="text-muted">
-            <th className="px-3 py-3 font-medium">Date</th>
-            <th className="px-3 py-3 font-medium">League</th>
-            <th className="px-3 py-3 text-left font-medium">Match</th>
-            <th className="px-3 py-3 font-medium">Tip</th>
-            <th className="px-3 py-3 font-medium">Odds</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={row.id} className={i % 2 === 0 ? "bg-surface-muted" : "bg-surface"}>
-              <td className="px-3 py-3 whitespace-nowrap text-muted">
-                {formatDayMonth(row.date)}
-              </td>
-              <td className="px-3 py-3">
-                <LeagueBadge league={row.league} />
-              </td>
-              <td className="px-3 py-3 text-left font-medium text-foreground">
-                {row.name}
-              </td>
-              <td className="px-3 py-3">
-                <Tip value={row.fttip} />
-              </td>
-              <td className="px-3 py-3 font-medium text-foreground">
-                {row.ft_odds || "—"}
-              </td>
+    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5">
+              <th className="px-4 py-3 font-semibold">League</th>
+              <th className="px-4 py-3 font-semibold">Match</th>
+              <th className="px-4 py-3 font-semibold">Tip</th>
+              <th className="px-4 py-3 text-right font-semibold">{lastHeading}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-stone-50 dark:divide-white/5">
+            {rows.map((row) => (
+              <tr
+                key={row.id}
+                className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
+              >
+                <td className="px-4 py-3 align-middle">
+                  <LeagueBadge league={row.league} />
+                </td>
+                <td className="px-4 py-3 align-middle">
+                  <p className="font-semibold leading-snug text-foreground">{row.name}</p>
+                  <p className="mt-0.5 text-xs text-subtle">
+                    {formatDayMonth(row.date)}
+                    {row.time ? ` · ${row.time}` : ""}
+                  </p>
+                </td>
+                <td className="px-4 py-3 align-middle">
+                  <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                    {row.fttip || row.upcoming_tip || "—"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
+                  {isRecent ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                      {row.ftscore || "WON"}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-stone-700">
+                      {row.ft_odds || "—"}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
