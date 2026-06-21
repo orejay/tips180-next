@@ -4,6 +4,7 @@ import { LastUpdated } from "@/components/seo/last-updated";
 import { siteConfig } from "@/config/site";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { getRecentWins, formatDayMonth } from "@/lib/predictions";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 
 export const metadata: Metadata = {
   title: "Prediction Accuracy — Verified Winning Tips | Tips180",
@@ -17,16 +18,19 @@ const faqs = [
     question: "How accurate are Tips180 football predictions?",
     answer:
       "Tips180 publishes a transparent record of recent winning tips showing the match, the prediction we made and the verified final result, so accuracy can be checked rather than just claimed.",
+    icon: "TrendingUp",
   },
   {
     question: "Are these winning tips verified?",
     answer:
       "Yes. Each entry lists the actual final score alongside the tip we issued before kick-off, so every winning prediction shown here is independently checkable.",
+    icon: "ShieldCheck",
   },
   {
     question: "How often is the accuracy record updated?",
     answer:
       "The record refreshes daily as new results are confirmed, reflecting the most recent verified winning predictions across the leagues we cover.",
+    icon: "RefreshCw",
   },
 ];
 
@@ -99,17 +103,10 @@ export default async function AccuracyPage() {
         )}
 
         <section className="mt-12">
-          <h2 className="mb-4 text-xl font-bold text-foreground">
+          <h2 className="mb-5 text-xl font-bold text-foreground">
             Accuracy &amp; Transparency — FAQ
           </h2>
-          <dl className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.question} className="rounded-lg bg-surface p-5 shadow-sm">
-                <dt className="font-semibold text-foreground">{faq.question}</dt>
-                <dd className="mt-1 text-muted">{faq.answer}</dd>
-              </div>
-            ))}
-          </dl>
+          <FaqAccordion items={faqs} />
         </section>
       </div>
     </div>

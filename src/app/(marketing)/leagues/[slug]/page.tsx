@@ -9,6 +9,7 @@ import {
   faqSchema,
   sportsEventSchema,
 } from "@/lib/schema";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 import {
   findLeagueBySlug,
   formatLeagueName,
@@ -63,10 +64,12 @@ export default async function LeaguePage({
     {
       question: `Where can I find ${name} predictions?`,
       answer: `Tips180 publishes ${name} predictions and betting tips daily, including match results, correct scores and accumulators researched by our experts.`,
+      icon: "Search",
     },
     {
       question: `Are ${name} betting tips free?`,
       answer: `Yes. Tips180 offers free ${name} football predictions, with premium plans available for deeper analysis and higher-accuracy selections.`,
+      icon: "Star",
     },
   ];
 
@@ -114,17 +117,10 @@ export default async function LeaguePage({
         )}
 
         <section className="mt-12">
-          <h2 className="mb-4 text-xl font-bold text-foreground">
+          <h2 className="mb-5 text-xl font-bold text-foreground">
             {name} Predictions — FAQ
           </h2>
-          <dl className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.question} className="rounded-lg bg-surface p-5 shadow-sm">
-                <dt className="font-semibold text-foreground">{faq.question}</dt>
-                <dd className="mt-1 text-muted">{faq.answer}</dd>
-              </div>
-            ))}
-          </dl>
+          <FaqAccordion items={faqs} />
         </section>
 
         <div className="mt-12 rounded-xl bg-linear-to-r from-brand-start to-brand-end p-8 text-center text-white">

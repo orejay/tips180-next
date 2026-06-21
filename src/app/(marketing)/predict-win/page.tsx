@@ -3,6 +3,7 @@ import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { siteConfig } from "@/config/site";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 
 export const metadata: Metadata = {
   title: "Predict & Win — Free Football Prediction Game | Tips180",
@@ -23,16 +24,19 @@ const faqs = [
     question: "What is Tips180 Predict & Win?",
     answer:
       "Predict & Win is a free football prediction game where you forecast the outcomes of a set of fixtures each round and earn points for correct predictions, competing for prizes.",
+    icon: "Gamepad2",
   },
   {
     question: "Is Predict & Win free to play?",
     answer:
       "Yes. Predict & Win is free to enter — create a Tips180 account, open the current round and submit your predictions before it closes.",
+    icon: "Star",
   },
   {
     question: "How do I win?",
     answer:
       "You score points for each correct prediction in a round. The players with the most points top the leaderboard and win the round's prizes.",
+    icon: "Trophy",
   },
 ];
 
@@ -83,15 +87,8 @@ export default function PredictWinPage() {
         </div>
 
         <section className="mt-8">
-          <h2 className="mb-4 text-xl font-bold text-foreground">Predict &amp; Win — FAQ</h2>
-          <dl className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.question} className="rounded-lg bg-surface p-5 shadow-sm">
-                <dt className="font-semibold text-foreground">{faq.question}</dt>
-                <dd className="mt-1 text-muted">{faq.answer}</dd>
-              </div>
-            ))}
-          </dl>
+          <h2 className="mb-5 text-xl font-bold text-foreground">Predict &amp; Win — FAQ</h2>
+          <FaqAccordion items={faqs} />
         </section>
       </div>
     </div>

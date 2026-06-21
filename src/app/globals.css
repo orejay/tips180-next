@@ -142,6 +142,28 @@ body {
   }
 }
 
+/* FAQ answer slide-in (plays each time an item opens). */
+@keyframes faq-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.faq-answer-in {
+  animation: faq-answer-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-answer-in {
+    animation: none;
+  }
+}
+
 /* Plan card entrance animation. */
 @keyframes plan-card-in {
   from {

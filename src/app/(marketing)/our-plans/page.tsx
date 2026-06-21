@@ -3,6 +3,7 @@ import { TrendingUp, ShieldCheck, Zap } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { faqSchema } from "@/lib/schema";
 import { PlansPricing } from "@/components/marketing/plans-pricing";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 
 export const metadata: Metadata = {
   title: "Our Plans — Football Prediction Subscriptions | Tips180",
@@ -16,16 +17,19 @@ const faqs = [
     question: "Which Tips180 plan is best for me?",
     answer:
       "Choose Key or Premium for the widest coverage including league tips and Experts ACCA. Smart Bet, Rollover, 50 Odds and Weekend 10 are specialist plans tuned to a specific staking strategy.",
+    icon: "HelpCircle",
   },
   {
     question: "How much do Tips180 predictions cost?",
     answer:
       "Plans start from ₦2,500. Each plan offers several durations (from one week to twelve months) at the prices shown on this page; local pricing is available for other countries.",
+    icon: "CreditCard",
   },
   {
     question: "How do I activate a plan?",
     answer:
       "Sign up for a free account, choose a plan and duration, and pay via card or a supported local method. Your account upgrades automatically once payment is confirmed.",
+    icon: "Rocket",
   },
 ];
 
@@ -96,18 +100,8 @@ export default function OurPlansPage() {
 
       {/* FAQ */}
       <section className="mx-auto w-full max-w-3xl px-4 pb-16">
-        <h2 className="mb-4 text-xl font-bold text-foreground">Plans — FAQ</h2>
-        <dl className="space-y-4">
-          {faqs.map((faq) => (
-            <div
-              key={faq.question}
-              className="rounded-xl border border-border bg-surface p-5 shadow-sm dark:border-white/8 dark:bg-[#18181b]"
-            >
-              <dt className="font-semibold text-foreground">{faq.question}</dt>
-              <dd className="mt-1 text-muted">{faq.answer}</dd>
-            </div>
-          ))}
-        </dl>
+        <h2 className="mb-5 text-xl font-bold text-foreground">Plans — FAQ</h2>
+        <FaqAccordion items={faqs} />
       </section>
 
       {/* Bottom trust strip */}
