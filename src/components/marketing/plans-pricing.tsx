@@ -54,19 +54,36 @@ export function PlansPricing() {
 }
 
 function PlanCard({ plan }: { plan: Plan }) {
-  const from = plan.prices[0];
+  const [durIdx, setDurIdx] = useState(0);
+  const price = plan.prices[Math.min(durIdx, plan.prices.length - 1)];
+
   return (
     <div className="flex flex-col rounded-xl bg-surface p-6 shadow-sm ring-1 ring-border">
       <h2 className="text-xl font-bold text-foreground">{plan.name}</h2>
-      <p className="mt-1 text-sm text-muted">
-        from{" "}
-        <span className="bg-linear-to-r from-brand-start to-brand-end bg-clip-text text-lg font-bold text-transparent">
-          {from.label}
+      <p className="mt-1">
+        <span className="bg-linear-to-r from-brand-start to-brand-end bg-clip-text text-2xl font-bold text-transparent">
+          {price.label}
         </span>
       </p>
 
-      <p className="mt-3 text-xs font-medium tracking-wide text-subtle uppercase">Durations</p>
-      <p className="text-sm text-muted">{plan.durations.join(" · ")}</p>
+      {plan.durations.length > 1 ? (
+        <label className="mt-3 block">
+          <span className="text-xs font-medium tracking-wide text-subtle uppercase">Duration</span>
+          <select
+            value={durIdx}
+            onChange={(e) => setDurIdx(Number(e.target.value))}
+            className="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          >
+            {plan.durations.map((d, i) => (
+              <option key={d} value={i}>
+                {d} — {plan.prices[Math.min(i, plan.prices.length - 1)].label}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <p className="mt-3 text-sm text-muted">{plan.durations[0]}</p>
+      )}
 
       <ul className="mt-4 flex-1 space-y-2">
         {plan.features.map((feature) => (
