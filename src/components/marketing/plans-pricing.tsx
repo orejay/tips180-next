@@ -129,7 +129,7 @@ const ACCENTS = [
 
 /* ── Plan card ───────────────────────────────────────────────── */
 
-function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
+export function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
   const [durIdx, setDurIdx] = useState(0);
   const accent = ACCENTS[idx % ACCENTS.length];
   const Icon = accent.icon;
@@ -147,7 +147,7 @@ function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
           <span
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-4 py-1 text-[11px] font-bold uppercase tracking-widest text-white shadow-lg",
-              `bg-gradient-to-r ${accent.gradient}`,
+              `bg-linear-to-r ${accent.gradient}`,
             )}
           >
             <Star size={10} fill="currentColor" /> Most Popular
@@ -167,7 +167,7 @@ function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
         <div
           className={cn(
             "relative overflow-hidden px-6 pb-8 pt-7",
-            `bg-gradient-to-br ${accent.gradient}`,
+            `bg-linear-to-br ${accent.gradient}`,
           )}
         >
           {/* Decorative orbs */}
@@ -245,7 +245,7 @@ function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
             href="/auth/signup"
             className={cn(
               "block w-full rounded-xl py-3 text-center text-sm font-bold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg active:scale-[0.98]",
-              `bg-gradient-to-r ${accent.cta}`,
+              `bg-linear-to-r ${accent.cta}`,
             )}
           >
             Get {plan.name}
