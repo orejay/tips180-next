@@ -28,7 +28,14 @@ export async function authFetch<T>(
     });
     if (!res.ok) return null;
     if (res.status === 204) return null;
-    return (await res.json()) as T;
+    const json = await res.json();
+    // Several gated endpoints answer non-subscribers with `return
+    // HTTPStatus.UNAUTHORIZED`, which flask-restx serialises as a bare numeric
+    // body (e.g. `401`) under a 200 status. No real payload is a top-level
+    // number, so treat that as "not authorised" rather than letting callers
+    // crash on `.map`/property access.
+    if (typeof json === "number") return null;
+    return json as T;
   } catch {
     return null;
   }

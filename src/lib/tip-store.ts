@@ -1,8 +1,6 @@
 import { api } from "@/lib/api";
 import { authFetch } from "@/lib/api-auth";
-import { formatDayMonth } from "@/lib/predictions";
 import type { TipCategory } from "@/config/tip-store";
-import type { TipRow } from "@/components/dashboard/tips-table";
 
 type RawMatch = {
   id: number;
@@ -13,11 +11,32 @@ type RawMatch = {
 } & Record<string, unknown>;
 
 /**
- * Tips for a tip-store category. Public-tier endpoints fetch without auth (so the
- * tips render server-side for SEO); gated endpoints use the session token and
- * return `null` for non-subscribers (rendered as an upsell).
+ * A tip-store row that keeps the ISO date + time (and HT/FT scores, odds) so the
+ * per-page board can offer the legacy date filter and the right columns.
  */
-export async function getCategoryTips(cat: TipCategory): Promise<TipRow[] | null> {
+export type StoreTipRow = {
+  id: number;
+  /** ISO date, YYYY-MM-DD. */
+  date: string;
+  /** Kick-off time, e.g. "15:00" (may be absent). */
+  time: string | null;
+  league: string;
+  name: string;
+  tip: string;
+  /** Single Bet odds (only populated for the single-bet market). */
+  odds: string | null;
+  /** Half-time score (HT/FT and Half Time markets). */
+  htscore: string | null;
+  /** Full-time result. */
+  ftscore: string | null;
+};
+
+/**
+ * Tips for a tip-store category, preserving the ISO date/time so the page board
+ * can filter by day like the legacy StoreTable. Gated endpoints use the session
+ * token and return `null` for non-subscribers (rendered as an upsell).
+ */
+export async function getStoreTips(cat: TipCategory): Promise<StoreTipRow[] | null> {
   let data: RawMatch[] | null = null;
   if (cat.gated) {
     data = await authFetch<RawMatch[]>(`getendpoints/${cat.endpoint}`);
@@ -30,20 +49,27 @@ export async function getCategoryTips(cat: TipCategory): Promise<TipRow[] | null
       data = null;
     }
   }
-  if (!data) return null;
+  if (!Array.isArray(data)) return null;
 
-  return data.map((m) => {
-    const raw = m[cat.tipField];
-    const tip = cat.marketLabel ? (raw ? cat.marketLabel : "") : String(raw ?? "");
-    return {
-      id: m.id,
-      date: formatDayMonth(m.date),
-      league: m.league,
-      name: m.name,
-      tip,
-      score: m.ftscore,
-    };
-  });
+  const str = (v: unknown) => (typeof v === "string" && v ? v : null);
+
+  return data
+    .map((m) => {
+      const raw = m[cat.tipField];
+      const tip = cat.marketLabel ? (raw ? cat.marketLabel : "") : String(raw ?? "");
+      return {
+        id: m.id,
+        date: typeof m.date === "string" ? m.date.slice(0, 10) : "",
+        time: str(m.time),
+        league: m.league,
+        name: m.name,
+        tip,
+        odds: str(m.singlebetodds),
+        htscore: str(m.htscore),
+        ftscore: str(m.ftscore),
+      };
+    })
+    .filter((r) => r.tip && r.date);
 }
 
 /** A board row that keeps the ISO date so the home board can filter by date. */
@@ -75,7 +101,7 @@ export async function getMarketBoardRows(cat: TipCategory): Promise<BoardRow[]> 
   } catch {
     data = null;
   }
-  if (!data) return [];
+  if (!Array.isArray(data)) return [];
 
   return data
     .map((m) => {

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Lock, Sparkles, HelpCircle, ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LastUpdated } from "@/components/seo/last-updated";
-import { TipsTable } from "@/components/dashboard/tips-table";
+import { TipStoreBoard } from "@/components/marketing/tip-store-board";
 import { siteConfig } from "@/config/site";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { getTipCategory, tipCategories } from "@/config/tip-store";
-import { getCategoryTips } from "@/lib/tip-store";
+import { getStoreTips } from "@/lib/tip-store";
 
 type Params = { name: string };
 
@@ -39,8 +40,10 @@ export default async function TipStorePage({
   const cat = getTipCategory(name);
   if (!cat) notFound();
 
-  const rows = await getCategoryTips(cat);
+  const rows = await getStoreTips(cat);
   const url = `${siteConfig.url}/tip-store/${cat.slug}`;
+  // Weekend Tips show every row with no date tabs (legacy StoreTable behaviour).
+  const dateFilter = cat.slug !== "weekendtip";
 
   const faqs = [
     {
@@ -67,52 +70,83 @@ export default async function TipStorePage({
       />
       <JsonLd data={faqSchema(faqs)} />
 
-      <div className="bg-linear-to-r from-brand-start to-brand-end px-4 py-12 text-center text-white lg:py-16">
-        <h1 className="text-xl font-bold lg:text-3xl">{cat.title} Predictions</h1>
-        <p className="mx-auto mt-2 max-w-2xl text-sm lg:text-base">{cat.description}</p>
+      {/* Hero */}
+      <div className="relative overflow-hidden bg-linear-to-br from-teal-500 via-cyan-600 to-blue-700 px-4 py-14 text-center text-white lg:py-20">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+        <div className="relative mx-auto max-w-3xl">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
+            <Sparkles size={13} />
+            {cat.tier === "Free" ? "Free daily tips" : `${cat.tier} plan`}
+          </span>
+          <h1 className="mt-4 text-2xl font-bold lg:text-4xl">{cat.title} Predictions</h1>
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-white/85 lg:text-base">
+            {cat.description}
+          </p>
+        </div>
       </div>
 
       <div className="mx-auto w-full max-w-5xl px-4 py-10">
         {rows && rows.length > 0 ? (
           <>
-            <div className="mb-3 flex justify-end">
+            <div className="mb-4 flex justify-end">
               <LastUpdated />
             </div>
-            <TipsTable rows={rows} />
+            <TipStoreBoard rows={rows} dateFilter={dateFilter} />
           </>
         ) : cat.gated ? (
-          <div className="rounded-xl border border-border bg-surface p-8 text-center">
-            <h2 className="text-lg font-bold text-foreground">
-              Unlock {cat.title} tips
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-              {cat.title} predictions are part of the {cat.tier} plan. Subscribe to
-              view today&apos;s expert selections.
-            </p>
-            <Link
-              href="/our-plans"
-              className="mt-5 inline-block rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90"
-            >
-              View Plans
-            </Link>
-          </div>
+          <UnlockPanel title={cat.title} tier={cat.tier} />
         ) : (
-          <p className="rounded-lg bg-surface py-10 text-center text-muted shadow-sm">
+          <p className="rounded-2xl border border-stone-200 bg-white py-12 text-center text-muted shadow-sm dark:border-white/8 dark:bg-[#18181b]">
             No {cat.title} tips posted right now. Please check back later.
           </p>
         )}
 
-        <section className="mt-12">
-          <h2 className="mb-4 text-xl font-bold text-foreground">{cat.title} — FAQ</h2>
-          <dl className="space-y-4">
+        {/* FAQ */}
+        <section className="mt-14">
+          <div className="mb-5 flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-teal-500 to-blue-600 text-white">
+              <HelpCircle size={17} />
+            </span>
+            <h2 className="text-xl font-bold text-foreground">{cat.title} — FAQ</h2>
+          </div>
+          <dl className="space-y-3">
             {faqs.map((faq) => (
-              <div key={faq.question} className="rounded-lg bg-surface p-5 shadow-sm">
+              <div
+                key={faq.question}
+                className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-white/8 dark:bg-[#18181b]"
+              >
                 <dt className="font-semibold text-foreground">{faq.question}</dt>
-                <dd className="mt-1 text-muted">{faq.answer}</dd>
+                <dd className="mt-1.5 text-sm leading-relaxed text-muted">{faq.answer}</dd>
               </div>
             ))}
           </dl>
         </section>
+      </div>
+    </div>
+  );
+}
+
+function UnlockPanel({ title, tier }: { title: string; tier: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 text-center shadow-sm dark:border-white/8 dark:bg-[#18181b]">
+      <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-linear-to-br from-teal-500/10 to-blue-600/10 blur-2xl" />
+      <div className="relative">
+        <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-teal-500 to-blue-600 text-white shadow-sm">
+          <Lock size={20} />
+        </span>
+        <h2 className="text-lg font-bold text-foreground">Unlock {title} tips</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted">
+          {title} predictions are part of the {tier} plan. Subscribe to view today&apos;s
+          expert selections.
+        </p>
+        <Link
+          href="/our-plans"
+          className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-linear-to-r from-teal-500 to-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-transform hover:-translate-y-0.5"
+        >
+          View Plans
+          <ArrowRight size={15} />
+        </Link>
       </div>
     </div>
   );
