@@ -13,11 +13,14 @@ export function ManualPayments() {
       </h2>
       <div className="space-y-2">
         {manualPayments.map((country) => (
-          <details key={country.code} className="rounded-lg border border-border">
+          <details
+            key={country.code}
+            className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]"
+          >
             <summary className="cursor-pointer px-4 py-3 font-medium text-foreground">
               {country.name}
             </summary>
-            <div className="space-y-4 border-t border-border px-4 py-4 text-sm text-muted">
+            <div className="space-y-4 border-t border-stone-200 px-4 py-4 text-sm text-muted dark:border-white/8">
               {country.methods.map((method) => (
                 <div key={method.label}>
                   <p className="font-semibold text-foreground">{method.label}</p>
