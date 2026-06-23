@@ -14,9 +14,11 @@ import { cn } from "@/lib/utils";
 export function BookingCodeCard({
   booking,
   logo,
+  totalOdds,
 }: {
   booking: Booking;
   logo: string | null;
+  totalOdds?: string | null;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -81,17 +83,27 @@ export function BookingCodeCard({
           </div>
         </div>
 
-        {booking.link && (
-          <a
-            href={booking.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-linear-to-r from-teal-500 to-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-transform hover:-translate-y-0.5"
-          >
-            Load on {booking.bookie}
-            <ArrowUpRight size={15} className="shrink-0" />
-          </a>
-        )}
+        <div className="flex items-center gap-3">
+          {totalOdds && (
+            <div className="text-right">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-subtle">
+                Total odds
+              </p>
+              <p className="font-mono text-lg font-extrabold text-foreground">{totalOdds}</p>
+            </div>
+          )}
+          {booking.link && (
+            <a
+              href={booking.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-linear-to-r from-teal-500 to-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-transform hover:-translate-y-0.5"
+            >
+              Load on {booking.bookie}
+              <ArrowUpRight size={15} className="shrink-0" />
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

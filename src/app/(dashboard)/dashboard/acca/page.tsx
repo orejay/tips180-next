@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, isActive } from "@/lib/api-auth";
 import { getExpertsAccaRows } from "@/lib/plan-tips";
 import { PlanLocked } from "@/components/dashboard/plan-locked";
+import { PlanBooking } from "@/components/dashboard/plan-booking";
 import { TipsTable } from "@/components/dashboard/tips-table";
 
 export const metadata: Metadata = { title: "Experts ACCA" };
@@ -33,10 +34,16 @@ async function AccaSets() {
       <section>
         <h2 className="mb-3 text-lg font-semibold text-foreground">Set 1</h2>
         <TipsTable rows={set1} />
+        <div className="mt-4">
+          <PlanBooking category="expertsacca1" />
+        </div>
       </section>
       <section>
         <h2 className="mb-3 text-lg font-semibold text-foreground">Set 2</h2>
         <TipsTable rows={set2} />
+        <div className="mt-4">
+          <PlanBooking category="expertsacca2" />
+        </div>
       </section>
     </div>
   );

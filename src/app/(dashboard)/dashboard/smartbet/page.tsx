@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, isActive } from "@/lib/api-auth";
 import { getSmartBetRows } from "@/lib/plan-tips";
 import { PlanLocked } from "@/components/dashboard/plan-locked";
+import { PlanBooking } from "@/components/dashboard/plan-booking";
 import { TipsTable } from "@/components/dashboard/tips-table";
 
 export const metadata: Metadata = { title: "Smart Bet Plan" };
@@ -17,7 +18,17 @@ export default async function SmartBetPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-foreground">Smart Bet Plan</h1>
-      {locked || rows === null ? <PlanLocked plan="Smart Bet" /> : <TipsTable rows={rows} />}
+      {locked || rows === null ? (
+        <PlanLocked plan="Smart Bet" />
+      ) : (
+        <>
+          <TipsTable rows={rows} />
+          <div className="mt-4 space-y-4">
+            <PlanBooking category="smartbet" />
+            <PlanBooking category="smartbetplus" />
+          </div>
+        </>
+      )}
     </div>
   );
 }
