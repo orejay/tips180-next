@@ -36,10 +36,6 @@ export function FeedbackForm() {
           </div>
         ) : (
           <form action={action} className="space-y-3">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field name="name" label="Your name" placeholder="e.g. John D." />
-              <Field name="country" label="Country" placeholder="e.g. Nigeria" />
-            </div>
             <div>
               <label htmlFor="fb-message" className="mb-1.5 block text-xs font-semibold text-subtle">
                 Your feedback
@@ -69,32 +65,6 @@ export function FeedbackForm() {
           </form>
         )}
       </div>
-    </div>
-  );
-}
-
-function Field({
-  name,
-  label,
-  placeholder,
-}: {
-  name: string;
-  label: string;
-  placeholder: string;
-}) {
-  return (
-    <div>
-      <label htmlFor={`fb-${name}`} className="mb-1.5 block text-xs font-semibold text-subtle">
-        {label}
-      </label>
-      <input
-        id={`fb-${name}`}
-        name={name}
-        type="text"
-        required
-        placeholder={placeholder}
-        className="w-full rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-subtle focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15 dark:border-white/10 dark:bg-white/5 dark:focus:bg-white/8"
-      />
     </div>
   );
 }
