@@ -97,7 +97,7 @@ export function SiteHeader() {
   const isFootballActive = !pathname.startsWith("/articles");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-white/80 backdrop-blur-xl dark:border-stone-800/70 dark:bg-stone-950/80">
+    <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-white/80 backdrop-blur-xl dark:border-zinc-800/70 dark:bg-black/80">
       {/* ── Row 1: Brand bar ───────────────────────────────── */}
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-8 px-4 lg:px-8">
 
@@ -136,7 +136,7 @@ export function SiteHeader() {
               "group relative flex h-full items-center text-[15px] font-semibold transition-colors duration-200",
               active
                 ? "text-stone-900 dark:text-white"
-                : "text-stone-400 hover:text-stone-700 dark:text-stone-500 dark:hover:text-stone-200",
+                : "text-stone-400 hover:text-stone-700 dark:text-zinc-500 dark:hover:text-zinc-200",
             );
             return tab.external ? (
               <a key={tab.name} href={tab.href} target="_blank" rel="noopener noreferrer" className={cls}>
@@ -166,8 +166,8 @@ export function SiteHeader() {
               className={cn(
                 "flex items-center gap-1.5 rounded-xl px-2.5 py-2 transition-colors",
                 langOpen
-                  ? "bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-100"
-                  : "text-stone-400 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-stone-800 dark:hover:text-stone-200",
+                  ? "bg-stone-100 text-stone-800 dark:bg-zinc-800 dark:text-zinc-100"
+                  : "text-stone-400 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
               )}
             >
               <Globe size={15} />
@@ -180,9 +180,9 @@ export function SiteHeader() {
                 onMouseEnter={openLang}
                 onMouseLeave={scheduleLangClose}
                 role="listbox"
-                className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-1.5 shadow-2xl shadow-stone-300/40 ring-1 ring-black/[0.02] dark:border-stone-800 dark:bg-stone-900 dark:shadow-black/60 dark:ring-white/5"
+                className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-1.5 shadow-2xl shadow-stone-300/40 ring-1 ring-black/[0.02] dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/60 dark:ring-white/5"
               >
-                <p className="px-3 pb-1.5 pt-2 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-400 dark:text-stone-500">
+                <p className="px-3 pb-1.5 pt-2 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-400 dark:text-zinc-500">
                   Language
                 </p>
                 {LANGUAGES.map((l) => (
@@ -196,7 +196,7 @@ export function SiteHeader() {
                       "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors",
                       l.code === lang
                         ? "bg-linear-to-r from-teal-50 to-blue-50 font-semibold text-stone-900 dark:from-teal-950/40 dark:to-blue-950/40 dark:text-white"
-                        : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white",
+                        : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white",
                     )}
                   >
                     <span className="text-base leading-none">{l.flag}</span>
@@ -211,7 +211,7 @@ export function SiteHeader() {
           </div>
 
           {/* Divider */}
-          <div className="mx-2 h-6 w-px bg-stone-200 dark:bg-stone-800" />
+          <div className="mx-2 h-6 w-px bg-stone-200 dark:bg-zinc-800" />
 
           {/* Auth */}
           {user ? (
@@ -224,8 +224,8 @@ export function SiteHeader() {
                 className={cn(
                   "flex items-center gap-2 rounded-xl px-2.5 py-1.5 text-sm font-semibold transition-colors",
                   userOpen
-                    ? "bg-stone-100 text-stone-900 dark:bg-stone-800 dark:text-white"
-                    : "text-stone-700 hover:bg-stone-100 dark:text-stone-200 dark:hover:bg-stone-800",
+                    ? "bg-stone-100 text-stone-900 dark:bg-zinc-800 dark:text-white"
+                    : "text-stone-700 hover:bg-stone-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
                 )}
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-teal-500 to-blue-600 text-xs font-bold text-white shadow-sm">
@@ -240,7 +240,7 @@ export function SiteHeader() {
                   onMouseEnter={openUser}
                   onMouseLeave={scheduleUserClose}
                   role="menu"
-                  className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-1.5 shadow-2xl shadow-stone-300/40 ring-1 ring-black/[0.02] dark:border-stone-800 dark:bg-stone-900 dark:shadow-black/60 dark:ring-white/5"
+                  className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-1.5 shadow-2xl shadow-stone-300/40 ring-1 ring-black/[0.02] dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/60 dark:ring-white/5"
                 >
                   {/* Identity header */}
                   <div className="flex items-center gap-3 rounded-xl bg-linear-to-r from-teal-50 to-blue-50 px-3 py-2.5 dark:from-teal-950/40 dark:to-blue-950/40">
@@ -249,16 +249,16 @@ export function SiteHeader() {
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-stone-900 dark:text-white">{user.name || "My Account"}</p>
-                      {user.email && <p className="truncate text-xs text-stone-400 dark:text-stone-500">{user.email}</p>}
+                      {user.email && <p className="truncate text-xs text-stone-400 dark:text-zinc-500">{user.email}</p>}
                     </div>
                   </div>
 
-                  <div className="my-1.5 h-px bg-stone-100 dark:bg-stone-800" />
+                  <div className="my-1.5 h-px bg-stone-100 dark:bg-zinc-800" />
 
                   <Link
                     href="/dashboard/profile"
                     role="menuitem"
-                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white"
                   >
                     <User size={16} className="text-stone-400" />
                     My Profile
@@ -266,13 +266,13 @@ export function SiteHeader() {
                   <Link
                     href="/dashboard/messages"
                     role="menuitem"
-                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white"
                   >
                     <Bell size={16} className="text-stone-400" />
                     Notifications
                   </Link>
 
-                  <div className="my-1.5 h-px bg-stone-100 dark:bg-stone-800" />
+                  <div className="my-1.5 h-px bg-stone-100 dark:bg-zinc-800" />
 
                   <form action={logoutAction}>
                     <button
@@ -289,7 +289,7 @@ export function SiteHeader() {
             </div>
           ) : (
             <>
-              <Link href="/auth/login" className="rounded-xl px-3.5 py-2 text-sm font-semibold text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white">
+              <Link href="/auth/login" className="rounded-xl px-3.5 py-2 text-sm font-semibold text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white">
                 Sign In
               </Link>
               <Link
@@ -311,7 +311,7 @@ export function SiteHeader() {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
-            className="rounded-xl p-2 text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-stone-800 dark:hover:text-white"
+            className="rounded-xl p-2 text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-zinc-800 dark:hover:text-white"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -319,7 +319,7 @@ export function SiteHeader() {
       </div>
 
       {/* ── Row 2: Subnav — desktop ─────────────────────────── */}
-      <div className="hidden border-t border-stone-200/60 bg-stone-50/60 dark:border-stone-800/60 dark:bg-stone-900/30 lg:block">
+      <div className="hidden border-t border-stone-200/60 bg-stone-50/60 dark:border-zinc-800/60 dark:bg-zinc-900/30 lg:block">
         <div className="mx-auto flex h-11 w-full max-w-7xl items-stretch px-4 lg:px-8">
           {subNav.map((group) => (
             <SubnavDropdown
@@ -348,9 +348,9 @@ export function SiteHeader() {
 
       {/* ── Mobile menu ─────────────────────────────────────── */}
       {mobileOpen && (
-        <div className="border-t border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-950 lg:hidden">
+        <div className="border-t border-stone-200 bg-white dark:border-zinc-800 dark:bg-black lg:hidden">
           {/* Section tabs — underline style */}
-          <div className="flex gap-6 border-b border-stone-200 px-5 dark:border-stone-800">
+          <div className="flex gap-6 border-b border-stone-200 px-5 dark:border-zinc-800">
             {sectionTabs.map((tab) => {
               const active = tab.href === "/" ? isFootballActive : false;
               const inner = (
@@ -367,7 +367,7 @@ export function SiteHeader() {
               );
               const cls = cn(
                 "relative flex items-center py-3.5 text-sm font-semibold transition-colors",
-                active ? "text-stone-900 dark:text-white" : "text-stone-400 dark:text-stone-500",
+                active ? "text-stone-900 dark:text-white" : "text-stone-400 dark:text-zinc-500",
               );
               return tab.external ? (
                 <a key={tab.name} href={tab.href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
@@ -380,11 +380,11 @@ export function SiteHeader() {
           {/* Subnav accordion */}
           <div className="max-h-[62vh] overflow-y-auto">
             {subNav.map((group) => (
-              <div key={group.label} className="border-b border-stone-100 dark:border-stone-800/60">
+              <div key={group.label} className="border-b border-stone-100 dark:border-zinc-800/60">
                 <button
                   type="button"
                   onClick={() => setMobileGroup(mobileGroup === group.label ? null : group.label)}
-                  className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold text-stone-700 dark:text-stone-200"
+                  className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold text-stone-700 dark:text-zinc-200"
                 >
                   {group.label}
                   <ChevronDown
@@ -393,14 +393,14 @@ export function SiteHeader() {
                   />
                 </button>
                 {mobileGroup === group.label && (
-                  <div className="bg-stone-50/70 pb-2 dark:bg-stone-900/40">
+                  <div className="bg-stone-50/70 pb-2 dark:bg-zinc-900/40">
                     {group.items.map((item, i) =>
                       item.sectionHeader ? (
                         <p
                           key={i}
                           className={cn(
-                            "px-6 pb-1 pt-3 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-400 dark:text-stone-500",
-                            item.divider && "border-t border-stone-200/70 dark:border-stone-800",
+                            "px-6 pb-1 pt-3 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-400 dark:text-zinc-500",
+                            item.divider && "border-t border-stone-200/70 dark:border-zinc-800",
                           )}
                         >
                           {item.name}
@@ -409,7 +409,7 @@ export function SiteHeader() {
                         <Link
                           key={i}
                           href={item.href}
-                          className="block px-6 py-2.5 text-sm text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-white"
+                          className="block px-6 py-2.5 text-sm text-stone-500 transition-colors hover:text-stone-900 dark:text-zinc-400 dark:hover:text-white"
                           {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                         >
                           {item.name}
@@ -422,16 +422,16 @@ export function SiteHeader() {
             ))}
 
             {/* Language */}
-            <div className="border-b border-stone-100 dark:border-stone-800/60">
+            <div className="border-b border-stone-100 dark:border-zinc-800/60">
               <button
                 type="button"
                 onClick={() => setMobileGroup(mobileGroup === "__lang" ? null : "__lang")}
-                className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold text-stone-700 dark:text-stone-200"
+                className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold text-stone-700 dark:text-zinc-200"
               >
                 <span className="flex items-center gap-2.5">
                   <Globe size={14} className="text-stone-400" />
                   Language
-                  <span className="rounded-lg bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-500 dark:bg-stone-800 dark:text-stone-400">
+                  <span className="rounded-lg bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-500 dark:bg-zinc-800 dark:text-zinc-400">
                     {currentLang.flag} {currentLang.code.toUpperCase()}
                   </span>
                 </span>
@@ -441,7 +441,7 @@ export function SiteHeader() {
                 />
               </button>
               {mobileGroup === "__lang" && (
-                <div className="bg-stone-50/70 pb-2 dark:bg-stone-900/40">
+                <div className="bg-stone-50/70 pb-2 dark:bg-zinc-900/40">
                   {LANGUAGES.map((l) => (
                     <button
                       key={l.code}
@@ -449,7 +449,7 @@ export function SiteHeader() {
                       onClick={() => selectLang(l.code)}
                       className={cn(
                         "flex w-full items-center gap-3 px-6 py-2.5 text-sm transition-colors",
-                        l.code === lang ? "font-semibold text-stone-900 dark:text-white" : "text-stone-500 dark:text-stone-400",
+                        l.code === lang ? "font-semibold text-stone-900 dark:text-white" : "text-stone-500 dark:text-zinc-400",
                       )}
                     >
                       <span className="text-base">{l.flag}</span>
@@ -471,13 +471,13 @@ export function SiteHeader() {
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-stone-900 dark:text-white">{user.name || "My Account"}</p>
-                      {user.email && <p className="truncate text-xs text-stone-400 dark:text-stone-500">{user.email}</p>}
+                      {user.email && <p className="truncate text-xs text-stone-400 dark:text-zinc-500">{user.email}</p>}
                     </div>
                   </div>
-                  <Link href="/dashboard/profile" className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-700 dark:border-stone-700 dark:text-stone-200">
+                  <Link href="/dashboard/profile" className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-700 dark:border-zinc-700 dark:text-zinc-200">
                     <User size={16} className="text-stone-400" /> My Profile
                   </Link>
-                  <Link href="/dashboard/messages" className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-700 dark:border-stone-700 dark:text-stone-200">
+                  <Link href="/dashboard/messages" className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-700 dark:border-zinc-700 dark:text-zinc-200">
                     <Bell size={16} className="text-stone-400" /> Notifications
                   </Link>
                   <form action={logoutAction}>
@@ -488,7 +488,7 @@ export function SiteHeader() {
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" className="rounded-xl border border-stone-200 py-2.5 text-center text-sm font-semibold text-stone-700 dark:border-stone-700 dark:text-stone-200">
+                  <Link href="/auth/login" className="rounded-xl border border-stone-200 py-2.5 text-center text-sm font-semibold text-stone-700 dark:border-zinc-700 dark:text-zinc-200">
                     Sign In
                   </Link>
                   <Link href="/auth/signup" className="rounded-xl bg-linear-to-r from-teal-500 to-blue-600 py-2.5 text-center text-sm font-bold text-white shadow-lg shadow-blue-500/20">
@@ -537,7 +537,7 @@ function SubnavDropdown({
           "group relative flex items-center gap-1 px-3 text-xs font-semibold tracking-wide transition-colors",
           open
             ? "text-stone-900 dark:text-white"
-            : "text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200",
+            : "text-stone-500 hover:text-stone-800 dark:text-zinc-400 dark:hover:text-zinc-200",
         )}
       >
         {group.label}
@@ -545,7 +545,7 @@ function SubnavDropdown({
           size={12}
           className={cn(
             "shrink-0 transition-transform duration-200",
-            open ? "rotate-180 text-stone-700 dark:text-stone-200" : "text-stone-400",
+            open ? "rotate-180 text-stone-700 dark:text-zinc-200" : "text-stone-400",
           )}
         />
         {/* underline indicator */}
@@ -562,15 +562,15 @@ function SubnavDropdown({
         <div
           onMouseEnter={onDropdownEnter}
           onMouseLeave={onDropdownLeave}
-          className="absolute left-0 top-full z-50 mt-0 w-64 overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-1.5 shadow-2xl shadow-stone-300/40 ring-1 ring-black/[0.02] dark:border-stone-800 dark:bg-stone-900 dark:shadow-black/60 dark:ring-white/5"
+          className="absolute left-0 top-full z-50 mt-0 w-64 overflow-hidden rounded-2xl border border-stone-200/80 bg-white p-1.5 shadow-2xl shadow-stone-300/40 ring-1 ring-black/[0.02] dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/60 dark:ring-white/5"
         >
           {group.items.map((item, i) =>
             item.sectionHeader ? (
               <p
                 key={i}
                 className={cn(
-                  "px-3 pb-1.5 pt-3 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-400 dark:text-stone-500",
-                  item.divider && "mt-1 border-t border-stone-200/70 dark:border-stone-800",
+                  "px-3 pb-1.5 pt-3 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-400 dark:text-zinc-500",
+                  item.divider && "mt-1 border-t border-stone-200/70 dark:border-zinc-800",
                 )}
               >
                 {item.name}
@@ -583,7 +583,7 @@ function SubnavDropdown({
                   "flex items-center rounded-xl px-3 py-2 text-sm transition-colors",
                   item.name.includes("→")
                     ? "font-semibold text-teal-600 hover:bg-teal-50 hover:text-teal-700 dark:text-teal-400 dark:hover:bg-teal-950/40 dark:hover:text-teal-300"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white",
+                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white",
                 )}
                 {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               >

@@ -15,16 +15,17 @@ const TAGS = [
  */
 export function Hero() {
   return (
-    <section className="relative w-full overflow-hidden bg-surface px-4 pt-20 pb-16 lg:px-12">
-      {/* Decorative ambient blobs */}
+    <section className="relative w-full overflow-hidden bg-surface px-4 pt-20 pb-16 transition-colors duration-300 dark:bg-black lg:px-12">
+      {/* Decorative ambient blobs — light tints in light mode, deep low-opacity
+          tints over pure black in dark (mirrors the 90mins hero). */}
       <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden="true">
-        <div className="hero-blob absolute top-10 right-1/4 h-96 w-96 rounded-full bg-teal-200/40 blur-3xl" />
+        <div className="hero-blob absolute top-10 right-1/4 h-96 w-96 rounded-full bg-teal-200/40 blur-3xl dark:bg-teal-900/20" />
         <div
-          className="hero-blob absolute right-12 bottom-0 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl"
+          className="hero-blob absolute right-12 bottom-0 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl dark:bg-blue-900/20"
           style={{ animationDelay: "3s" }}
         />
         <div
-          className="hero-blob absolute top-16 left-10 h-64 w-64 rounded-full bg-cyan-100/50 blur-3xl"
+          className="hero-blob absolute top-16 left-10 h-64 w-64 rounded-full bg-cyan-100/50 blur-3xl dark:bg-cyan-900/15"
           style={{ animationDelay: "6s" }}
         />
       </div>

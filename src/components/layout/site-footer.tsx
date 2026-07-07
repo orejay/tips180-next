@@ -11,7 +11,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-stone-200 bg-stone-100 text-foreground dark:border-transparent dark:bg-[#0b0d12] dark:text-white">
+    <footer className="relative border-t border-stone-200 bg-stone-100 text-foreground dark:border-transparent dark:bg-black dark:text-white">
       {/* Brand accent hairline */}
       <div className="h-1 w-full bg-linear-to-r from-brand-start to-brand-end" />
 

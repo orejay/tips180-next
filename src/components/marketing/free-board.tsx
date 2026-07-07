@@ -144,7 +144,7 @@ export function FreeBoard({
                   className={
                     active
                       ? "inline-flex items-center gap-1.5 rounded-lg bg-linear-to-r from-teal-500 to-blue-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm"
-                      : "inline-flex items-center gap-1.5 rounded-lg bg-stone-100 px-3.5 py-2 text-sm font-medium text-muted transition-colors hover:bg-teal-50 hover:text-teal-700 dark:bg-white/5 dark:text-stone-300 dark:hover:bg-teal-950/40 dark:hover:text-teal-300"
+                      : "inline-flex items-center gap-1.5 rounded-lg bg-stone-100 px-3.5 py-2 text-sm font-medium text-muted transition-colors hover:bg-teal-50 hover:text-teal-700 dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-teal-950/40 dark:hover:text-teal-300"
                   }
                 >
                   {s.locked && <Lock size={12} className="shrink-0" />}
@@ -329,7 +329,7 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
-                  <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-stone-700">
+                  <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
                     {row.odds || "—"}
                   </span>
                 </td>

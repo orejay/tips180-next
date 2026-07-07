@@ -49,15 +49,18 @@
 }
 
 .dark {
-  --background: #0c0a09; /* stone-950 */
-  --surface: #1c1917; /* stone-900 */
-  --surface-muted: #292524; /* stone-800 */
+  /* Night-mode blacks mirror the 90mins client: a pure-black page with a
+   * neutral-cool zinc ramp for surfaces (not the warm stone ramp used in light
+   * mode). */
+  --background: #000000; /* pure black page */
+  --surface: #18181b; /* zinc-900 — cards, header, footer panels */
+  --surface-muted: #27272a; /* zinc-800 — subtle striping / elevated */
 
-  --foreground: #e7e5e4; /* stone-200 */
-  --muted: #a8a29e; /* stone-400 */
-  --subtle: #78716c; /* stone-500 */
+  --foreground: #fafafa; /* zinc-50 */
+  --muted: #a1a1aa; /* zinc-400 */
+  --subtle: #71717a; /* zinc-500 */
 
-  --border: #292524; /* stone-800 */
+  --border: #27272a; /* zinc-800 */
 
   --primary: #3b82f6; /* blue-500 */
   --primary-hover: #60a5fa; /* blue-400 */
@@ -67,8 +70,8 @@
   --brand-start: #2dd4bf; /* teal-400 */
   --brand-end: #3b82f6; /* blue-500 */
 
-  --sidebar: #0f1420;
-  --sidebar-foreground: #d6d3d1;
+  --sidebar: #09090b; /* zinc-950 */
+  --sidebar-foreground: #d4d4d8; /* zinc-300 */
 
   --success: #22c55e;
   --success-soft: #14361f;

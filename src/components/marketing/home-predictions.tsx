@@ -119,7 +119,7 @@ function PredictionTable({
                       {row.ftscore || "WON"}
                     </span>
                   ) : (
-                    <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-stone-700">
+                    <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
                       {row.ft_odds || "—"}
                     </span>
                   )}
