@@ -36,7 +36,7 @@ export type LeagueTips = {
 
 export async function getAnnouncement(): Promise<Announcement | null> {
   try {
-    const data = await api<Announcement>("getendpoints/announcements", {
+    const data = await api<Announcement>("announcements", {
       next: { revalidate: 600 },
     });
     return data && data.id && data.active !== false ? data : null;
@@ -47,7 +47,7 @@ export async function getAnnouncement(): Promise<Announcement | null> {
 
 export async function getNextSmartBet(): Promise<NextSmartBet[]> {
   try {
-    return await api<NextSmartBet[]>("getendpoints/next-sb", { next: { revalidate: 600 } });
+    return await api<NextSmartBet[]>("tips/next-smartbet", { next: { revalidate: 600 } });
   } catch {
     return [];
   }
@@ -55,7 +55,7 @@ export async function getNextSmartBet(): Promise<NextSmartBet[]> {
 
 export async function getLeagueTips(): Promise<LeagueTips | null> {
   try {
-    return await api<LeagueTips>("getendpoints/league-tips", { next: { revalidate: 300 } });
+    return await api<LeagueTips>("tips/leagues", { next: { revalidate: 300 } });
   } catch {
     return null;
   }
@@ -63,7 +63,7 @@ export async function getLeagueTips(): Promise<LeagueTips | null> {
 
 export async function getNews(): Promise<NewsItem[]> {
   try {
-    return await api<NewsItem[]>("postendpoints/news", { next: { revalidate: 1800 } });
+    return await api<NewsItem[]>("news", { next: { revalidate: 1800 } });
   } catch {
     return [];
   }

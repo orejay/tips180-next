@@ -33,7 +33,7 @@ export default async function PredictWinPage() {
 
   const [round, entries] = await Promise.all([
     getCurrentRound(),
-    authFetch<PwEntry[]>("getendpoints/pw-rounds"),
+    authFetch<PwEntry[]>("predictions/rounds"),
   ]);
 
   let game = null;

@@ -11,7 +11,7 @@ export async function markMessageReadAction(id: number): Promise<void> {
   const token = await getToken();
   if (!token) return;
   try {
-    await fetch(`${siteConfig.apiUrl}/edit/message/${id}`, {
+    await fetch(`${siteConfig.apiUrl}/messages/${id}/read`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export async function changePasswordAction(
   if (!token) return { error: "Your session has expired. Please sign in again." };
 
   try {
-    const res = await fetch(`${siteConfig.apiUrl}/auth/change-pass`, {
+    const res = await fetch(`${siteConfig.apiUrl}/auth/change-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Messages" };
 
 export default async function MessagesPage() {
   const data = await authFetch<{ read: Message[]; unread: Message[] }>(
-    "getendpoints/messages",
+    "messages",
   );
   const read = data?.read ?? [];
   const unread = data?.unread ?? [];

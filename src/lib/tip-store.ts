@@ -39,10 +39,10 @@ export type StoreTipRow = {
 export async function getStoreTips(cat: TipCategory): Promise<StoreTipRow[] | null> {
   let data: RawMatch[] | null = null;
   if (cat.gated) {
-    data = await authFetch<RawMatch[]>(`getendpoints/${cat.endpoint}`);
+    data = await authFetch<RawMatch[]>(`tips/${cat.endpoint}`);
   } else {
     try {
-      data = await api<RawMatch[]>(`getendpoints/${cat.endpoint}`, {
+      data = await api<RawMatch[]>(`tips/${cat.endpoint}`, {
         next: { revalidate: 300 },
       });
     } catch {
@@ -95,7 +95,7 @@ export async function getMarketBoardRows(cat: TipCategory): Promise<BoardRow[]> 
 
   let data: RawMatch[] | null = null;
   try {
-    data = await api<RawMatch[]>(`getendpoints/${cat.endpoint}`, {
+    data = await api<RawMatch[]>(`tips/${cat.endpoint}`, {
       next: { revalidate: 300 },
     });
   } catch {

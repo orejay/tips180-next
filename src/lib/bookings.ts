@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 
 /**
- * Booking codes (legacy "Bet tip on <bookie>"). `/getendpoints/bookings/<cat>`
+ * Booking codes (legacy "Bet tip on <bookie>"). `/bookings/category/<cat>`
  * returns a per-category object; for "freex" it nests today/yesterday/tomorrow.
  * Each booking is { bookie, code, link, category, date }. Public, fail-soft.
  */
@@ -71,7 +71,7 @@ function pickBooking(value: unknown): Booking | null {
 export async function getPlanBooking(category: string): Promise<PlanBooking | null> {
   let data: Record<string, unknown> | null = null;
   try {
-    data = await api<Record<string, unknown>>(`getendpoints/bookings/${category}`, {
+    data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
       next: { revalidate: 600 },
     });
   } catch {
@@ -98,7 +98,7 @@ export async function getPlanBooking(category: string): Promise<PlanBooking | nu
 export async function getBooking(category: string): Promise<Booking | null> {
   let data: Record<string, unknown> | null = null;
   try {
-    data = await api<Record<string, unknown>>(`getendpoints/bookings/${category}`, {
+    data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
       next: { revalidate: 600 },
     });
   } catch {

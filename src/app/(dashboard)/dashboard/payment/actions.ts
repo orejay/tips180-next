@@ -29,7 +29,7 @@ export async function verifyAndUpgradeAction(input: {
 
   try {
     // 1. Verify the transaction with the provider (backend holds the secret key).
-    const verifyRes = await fetch(`${siteConfig.apiUrl}/postendpoints/verify-${provider}`, {
+    const verifyRes = await fetch(`${siteConfig.apiUrl}/subscriptions/verify/${provider}`, {
       method: "POST",
       headers,
       body: JSON.stringify({ reference }),
@@ -44,7 +44,7 @@ export async function verifyAndUpgradeAction(input: {
     }
 
     // 2. Upgrade the plan.
-    const upgradeRes = await fetch(`${siteConfig.apiUrl}/postendpoints/${provider}-upgrade`, {
+    const upgradeRes = await fetch(`${siteConfig.apiUrl}/subscriptions/${provider}`, {
       method: "POST",
       headers,
       body: JSON.stringify({ plan, duration, reference }),

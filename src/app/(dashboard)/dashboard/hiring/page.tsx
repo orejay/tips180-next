@@ -4,7 +4,7 @@ import { authFetch } from "@/lib/api-auth";
 export const metadata: Metadata = { title: "We Are Hiring" };
 
 export default async function HiringPage() {
-  const data = await authFetch<{ jobs?: { roles?: string } }>("getendpoints/jobs");
+  const data = await authFetch<{ jobs?: { roles?: string } }>("jobs");
   const roles = (data?.jobs?.roles ?? "")
     .split(",")
     .map((r) => r.trim())

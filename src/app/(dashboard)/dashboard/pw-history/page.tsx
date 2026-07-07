@@ -12,7 +12,7 @@ type PwRound = {
 };
 
 export default async function PredictWinHistoryPage() {
-  const rounds = (await authFetch<PwRound[]>("getendpoints/pw-rounds")) ?? [];
+  const rounds = (await authFetch<PwRound[]>("predictions/rounds")) ?? [];
 
   return (
     <div>

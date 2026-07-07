@@ -15,7 +15,7 @@ export type FeedbackState = {
  * the only thing we read from the client is the message itself. Visitors who
  * aren't signed in are asked to log in first.
  *
- * NOTE: the backend `POST /postendpoints/feedbacks` is admin-gated
+ * NOTE: the backend `POST /feedbacks` is admin-gated
  * (`@jwt_required(refresh=True)` + admin/superadmin role), so a public
  * submission cannot persist without a backend change. We still post it as
  * best-effort (it 401s silently) and queue the punter with a "pending review"
@@ -46,7 +46,7 @@ export async function submitFeedbackAction(
   }
 
   try {
-    await api("postendpoints/feedbacks", {
+    await api("feedbacks", {
       method: "POST",
       body: JSON.stringify({
         name: user.name,

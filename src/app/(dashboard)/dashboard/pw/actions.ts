@@ -27,7 +27,7 @@ export async function submitPredictionAction(input: {
   set_id: number;
   prediction: string;
 }): Promise<PwResult> {
-  const res = await pwPost("/postendpoints/submit-prediction", input);
+  const res = await pwPost("/predictions/submit", input);
   if (!res) return { ok: false, message: "Your session has expired. Please sign in again." };
   if (res.status === 403) return { ok: false, message: "You have already entered this round." };
   if (!res.ok) return { ok: false, message: "Could not submit your predictions. Please try again." };
@@ -41,14 +41,14 @@ export async function verifyPwEntryAction(input: {
   round: number;
   country: string;
 }): Promise<PwResult> {
-  const verify = await pwPost("/postendpoints/verify-paystack-pw", { reference: input.reference });
+  const verify = await pwPost("/predictions/pay/verify", { reference: input.reference });
   if (!verify) return { ok: false, message: "Your session has expired. Please sign in again." };
   const json = (await verify.json().catch(() => null)) as { data?: { status?: string } } | null;
   if (!verify.ok || json?.data?.status !== "success") {
     return { ok: false, message: "We couldn't confirm your entry payment." };
   }
 
-  const record = await pwPost("/postendpoints/paystack-pw", {
+  const record = await pwPost("/predictions/pay/paystack", {
     round: input.round,
     reference: input.reference,
     country: input.country,

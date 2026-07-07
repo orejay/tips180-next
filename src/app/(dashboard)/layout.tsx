@@ -18,7 +18,7 @@ export default async function DashboardLayout({
   const user = await getCurrentUser();
   if (!user) redirect("/auth/login?from=/dashboard");
 
-  const messages = await authFetch<{ unread?: unknown[] }>("getendpoints/messages");
+  const messages = await authFetch<{ unread?: unknown[] }>("messages");
   const unread = messages?.unread?.length ?? 0;
 
   return (

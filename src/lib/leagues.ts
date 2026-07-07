@@ -2,8 +2,8 @@ import { api } from "@/lib/api";
 
 /**
  * Leagues data access. Both endpoints are public:
- *  - GET /getendpoints/leagues          -> { [region]: League[] }
- *  - GET /getendpoints/leagues/<slug>   -> { matches: LeagueMatch[] }  (open, not yet closed)
+ *  - GET /leagues/all               -> { [region]: League[] }
+ *  - GET /leagues/<slug>/matches    -> { matches: LeagueMatch[] }  (open, not yet closed)
  *
  * The legacy app gated league matches behind a Premium check client-side, but
  * the API itself is open, so we server-render predictions for crawlers. All
@@ -61,7 +61,7 @@ export function formatLeagueName(name: string): string {
 export async function getLeagueRegions(): Promise<LeagueRegions> {
   try {
     // League list changes rarely — cache for an hour.
-    return await api<LeagueRegions>("getendpoints/leagues", {
+    return await api<LeagueRegions>("leagues/all", {
       next: { revalidate: 3600 },
     });
   } catch {
@@ -85,7 +85,7 @@ export async function getLeagueMatches(shortName: string): Promise<LeagueMatch[]
     // Predictions are time-sensitive — refresh every 5 minutes. The backend
     // upper-cases this path segment and matches it against `Match.league`.
     const res = await api<{ matches: LeagueMatch[] }>(
-      `getendpoints/leagues/${encodeURIComponent(shortName)}`,
+      `leagues/${encodeURIComponent(shortName)}/matches`,
       { next: { revalidate: 300 } },
     );
     return res.matches ?? [];

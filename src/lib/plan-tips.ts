@@ -64,7 +64,7 @@ function fmt(date: string): string {
 
 // --- Smart Bet (isubscriptstatus) ---
 export async function getSmartBetRows(): Promise<TipRow[] | null> {
-  const data = await authFetch<AccaWindow>("getendpoints/smart-bet");
+  const data = await authFetch<AccaWindow>("tips/smartbet");
   if (!data) return null;
   return [...data.today, ...data.tomorrow].map((m) => ({
     id: m.id,
@@ -79,7 +79,7 @@ export async function getSmartBetRows(): Promise<TipRow[] | null> {
 
 // --- Rollover (rollsubscriptstatus) ---
 export async function getRolloverRows(): Promise<TipRow[] | null> {
-  const data = await authFetch<AccaWindow>("getendpoints/rollover");
+  const data = await authFetch<AccaWindow>("tips/rollover");
   if (!data) return null;
   return [...data.today, ...data.tomorrow].map((m) => ({
     id: m.id,
@@ -94,7 +94,7 @@ export async function getRolloverRows(): Promise<TipRow[] | null> {
 
 // --- 50 Odds (odds50status) ---
 export async function getSure50Rows(): Promise<TipRow[] | null> {
-  const data = await authFetch<{ matches: SpecMatch[] }>("getendpoints/sure50");
+  const data = await authFetch<{ matches: SpecMatch[] }>("tips/sure50");
   if (!data) return null;
   return data.matches.map((m) => ({
     id: m.id,
@@ -109,7 +109,7 @@ export async function getSure50Rows(): Promise<TipRow[] | null> {
 
 // --- Weekend 10 (w10subscriptstatus) ---
 export async function getWeekend10Rows(): Promise<TipRow[] | null> {
-  const data = await authFetch<{ matches: SpecMatch[] }>("getendpoints/w10");
+  const data = await authFetch<{ matches: SpecMatch[] }>("tips/weekend10");
   if (!data) return null;
   return data.matches.map((m) => ({
     id: m.id,
@@ -127,7 +127,7 @@ export async function getExpertsAccaRows(): Promise<{ set1: TipRow[]; set2: TipR
   const data = await authFetch<{
     set_1: AccaWindow;
     set_2: AccaWindow;
-  }>("getendpoints/experts-acca");
+  }>("tips/experts-acca");
   const toRows = (w: AccaWindow | undefined, n: 1 | 2): TipRow[] =>
     [...(w?.today ?? []), ...(w?.tomorrow ?? [])].map((m) => ({
       id: m.id,
@@ -159,7 +159,7 @@ export async function getOddsSet(
   kind: "sure2" | "sure3",
   set: 1 | 2,
 ): Promise<TipRow[] | null> {
-  const data = await authFetch<OddsMatch[]>(`getendpoints/${kind}/${set}`);
+  const data = await authFetch<OddsMatch[]>(`tips/${kind}/${set}`);
   if (!data) return null;
   return data.map((m) => ({
     id: m.id,
@@ -180,7 +180,7 @@ export async function getOddsSet(
 
 // --- Banker Tip of the day (public) ---
 export async function getBankerTip(): Promise<BankerTip | null> {
-  const data = await authFetch<BankerTip | Record<string, never>>("getendpoints/bankers-tip");
+  const data = await authFetch<BankerTip | Record<string, never>>("tips/bankers");
   if (!data || !("tip" in data)) return null;
   return data as BankerTip;
 }

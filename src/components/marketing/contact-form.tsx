@@ -20,7 +20,7 @@ export function ContactForm() {
     setStatus("sending");
 
     try {
-      const res = await fetch(`${siteConfig.apiUrl}/postendpoints/contact-us`, {
+      const res = await fetch(`${siteConfig.apiUrl}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

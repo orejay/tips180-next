@@ -2,9 +2,9 @@ import { api } from "@/lib/api";
 
 /**
  * Home-page prediction + testimonial data. All three endpoints are public:
- *  - GET /getendpoints/recent-win        -> CardMatch[]  (winning tips, last 20)
- *  - GET /getendpoints/upcoming-matches  -> CardMatch[]  (upcoming tips)
- *  - GET /postendpoints/feedbacks        -> Feedback[]   (active testimonials)
+ *  - GET /tips/recent-win     -> CardMatch[]  (winning tips, last 20)
+ *  - GET /matches/upcoming    -> CardMatch[]  (upcoming tips)
+ *  - GET /feedbacks           -> Feedback[]   (active testimonials)
  * Fetched server-side so predictions land in the initial HTML. Fail-soft.
  */
 
@@ -30,7 +30,7 @@ export type Feedback = {
 
 export async function getRecentWins(): Promise<CardMatch[]> {
   try {
-    return await api<CardMatch[]>("getendpoints/recent-win", {
+    return await api<CardMatch[]>("tips/recent-win", {
       next: { revalidate: 600 },
     });
   } catch {
@@ -40,7 +40,7 @@ export async function getRecentWins(): Promise<CardMatch[]> {
 
 export async function getFreeExperts(): Promise<CardMatch[]> {
   try {
-    return await api<CardMatch[]>("getendpoints/free-experts", {
+    return await api<CardMatch[]>("tips/free-experts", {
       next: { revalidate: 300 },
     });
   } catch {
@@ -50,7 +50,7 @@ export async function getFreeExperts(): Promise<CardMatch[]> {
 
 export async function getUpcomingMatches(): Promise<CardMatch[]> {
   try {
-    return await api<CardMatch[]>("getendpoints/upcoming-matches", {
+    return await api<CardMatch[]>("matches/upcoming", {
       next: { revalidate: 600 },
     });
   } catch {
@@ -60,7 +60,7 @@ export async function getUpcomingMatches(): Promise<CardMatch[]> {
 
 export async function getFeedbacks(): Promise<Feedback[]> {
   try {
-    return await api<Feedback[]>("postendpoints/feedbacks", {
+    return await api<Feedback[]>("feedbacks", {
       next: { revalidate: 3600 },
     });
   } catch {

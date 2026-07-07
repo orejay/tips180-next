@@ -41,7 +41,7 @@ export async function authFetch<T>(
   }
 }
 
-/** Full user payload returned by `/getendpoints/auth` (subscription statuses). */
+/** Full user payload returned by `/users/check-auth` (subscription statuses). */
 export type DashboardUser = {
   is_authenticated: boolean;
   user_id: number | string;
@@ -72,7 +72,7 @@ export type DashboardUser = {
  */
 export const getCurrentUser = cache(async (): Promise<DashboardUser | null> => {
   const data = await authFetch<{ auth: boolean; user_data: DashboardUser }>(
-    "getendpoints/auth",
+    "users/check-auth",
   );
   return data?.user_data ?? null;
 });

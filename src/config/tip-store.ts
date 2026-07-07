@@ -25,7 +25,7 @@ export type TipCategory = {
 };
 
 export const tipCategories: TipCategory[] = [
-  { slug: "doublechance", title: "Double Chance", description: "Double Chance predictions covering two of the three possible match outcomes for lower-risk betting.", endpoint: "dc", tipField: "dctip", tier: "Free", gated: false },
+  { slug: "doublechance", title: "Double Chance", description: "Double Chance predictions covering two of the three possible match outcomes for lower-risk betting.", endpoint: "double-chance", tipField: "dctip", tier: "Free", gated: false },
   { slug: "over1", title: "Over 1.5 Goals", description: "Over 1.5 goals tips — matches our experts expect to produce two or more goals.", endpoint: "over-1", tipField: "over1", marketLabel: "Over 1.5", tier: "Free", gated: false },
   { slug: "pr", title: "Potential Risk", description: "Higher-odds Potential Risk picks for punters chasing bigger returns.", endpoint: "potential-risk", tipField: "potentialrisktip", tier: "Free", gated: false },
   { slug: "correctscore", title: "Correct Score", description: "Correct score predictions — our experts' most likely final scoreline for each fixture.", endpoint: "correct-score", tipField: "cstip", tier: "Free", gated: false },
@@ -36,9 +36,9 @@ export const tipCategories: TipCategory[] = [
   { slug: "weekendtip", title: "Weekend Tips", description: "Curated weekend football accumulator tips across the top fixtures.", endpoint: "weekend", tipField: "weekendtip", tier: "Key", gated: true },
   { slug: "htft", title: "Half Time / Full Time", description: "HT/FT predictions for the half-time and full-time result of each match.", endpoint: "ht-ft", tipField: "htfttip", tier: "Premium", gated: true },
   { slug: "singlebet", title: "Single Bet", description: "High-confidence single bet of the day for steady, lower-variance staking.", endpoint: "single-bet", tipField: "singlebettip", tier: "Premium", gated: true },
-  { slug: "sbh", title: "Score Both Halves", description: "Score Both Halves tips for teams expected to find the net in each half.", endpoint: "sbh", tipField: "sbhtip", tier: "Premium", gated: true },
+  { slug: "sbh", title: "Score Both Halves", description: "Score Both Halves tips for teams expected to find the net in each half.", endpoint: "score-both-halves", tipField: "sbhtip", tier: "Premium", gated: true },
   { slug: "handicap", title: "Handicap", description: "Asian and European handicap predictions for evenly or unevenly matched fixtures.", endpoint: "handicap", tipField: "handicaptip", tier: "Premium", gated: true },
-  { slug: "httips", title: "Half Time Tips", description: "Half-time result predictions for the first 45 minutes of each match.", endpoint: "ht-tips", tipField: "halftimetip", tier: "Premium", gated: true },
+  { slug: "httips", title: "Half Time Tips", description: "Half-time result predictions for the first 45 minutes of each match.", endpoint: "half-time", tipField: "halftimetip", tier: "Premium", gated: true },
   { slug: "winehalf", title: "Win Either Half", description: "Win Either Half tips for sides expected to win at least one half of the match.", endpoint: "win-either-half", tipField: "wineitherhalftip", tier: "Premium", gated: true },
   { slug: "accumulator", title: "Accumulator", description: "Expert accumulator tips combining multiple selections for bigger combined odds.", endpoint: "acca", tipField: "accatip", tier: "Premium", gated: true },
 ];
