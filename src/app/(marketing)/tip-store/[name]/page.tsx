@@ -5,6 +5,7 @@ import { Lock, Sparkles, HelpCircle, ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LastUpdated } from "@/components/seo/last-updated";
 import { TipStoreBoard } from "@/components/marketing/tip-store-board";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 import { siteConfig } from "@/config/site";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { getTipCategory, tipCategories } from "@/config/tip-store";
@@ -93,6 +94,7 @@ export default async function TipStorePage({
               <LastUpdated />
             </div>
             <TipStoreBoard rows={rows} dateFilter={dateFilter} />
+            <TipsterBadge category={cat.slug} />
           </>
         ) : cat.gated ? (
           <UnlockPanel title={cat.title} tier={cat.tier} />

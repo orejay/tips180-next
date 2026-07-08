@@ -25,6 +25,7 @@ export type TipCategory = {
 };
 
 export const tipCategories: TipCategory[] = [
+  { slug: "trendymatches", title: "Trendy Matches", description: "Today's most popular football fixtures — the matches trending with Tips180 punters and the tips going with them.", endpoint: "trendy", tipField: "trendytip", tier: "Free", gated: false },
   { slug: "doublechance", title: "Double Chance", description: "Double Chance predictions covering two of the three possible match outcomes for lower-risk betting.", endpoint: "double-chance", tipField: "dctip", tier: "Free", gated: false },
   { slug: "over1", title: "Over 1.5 Goals", description: "Over 1.5 goals tips — matches our experts expect to produce two or more goals.", endpoint: "over-1", tipField: "over1", marketLabel: "Over 1.5", tier: "Free", gated: false },
   { slug: "pr", title: "Potential Risk", description: "Higher-odds Potential Risk picks for punters chasing bigger returns.", endpoint: "potential-risk", tipField: "potentialrisktip", tier: "Free", gated: false },

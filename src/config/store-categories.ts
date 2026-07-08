@@ -18,6 +18,7 @@ export type StoreTier = "free" | "key" | "premium" | "acca";
 export type StoreCategory = { name: string; href: string; tier: StoreTier };
 
 export const storeCategories: StoreCategory[] = [
+  { name: "Trendy Matches", href: "/tip-store/trendymatches", tier: "free" },
   { name: "Double Chance", href: "/tip-store/doublechance", tier: "free" },
   { name: "Over 1.5", href: "/tip-store/over1", tier: "free" },
   { name: "Potential Risk", href: "/tip-store/pr", tier: "free" },

@@ -6,6 +6,7 @@ import {
 } from "@/lib/predictions";
 import { PredictionTabs } from "@/components/marketing/prediction-tabs";
 import { BookingCode } from "@/components/marketing/booking-code";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 
 /** Brand-ish badge colours for the most-recognised leagues; others fall back. */
 const LEAGUE_COLORS: Record<string, string> = {
@@ -39,6 +40,7 @@ export async function HomePredictions() {
         recent={<PredictionTable rows={recent} variant="recent" />}
         upcoming={<PredictionTable rows={upcoming} variant="upcoming" />}
       />
+      <TipsterBadge category="upcoming" />
     </section>
   );
 }

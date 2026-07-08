@@ -12,9 +12,10 @@ export const siteConfig = {
   locale: "en-NG",
   description:
     "Tips180 is one of the most accurate football prediction sites, providing free and premium football tips, correct scores and accumulators across every market.",
-  // Backend API the legacy app already consumes. Frontend-only rewrite — the
-  // API contract is unchanged. Override via NEXT_PUBLIC_API_URL.
-  apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "https://www.tips180.com/api",
+  // Backend API base. The app now consumes the resource-based v2 routes, so the
+  // base must include /api/v2 (paths are passed as e.g. "tips/free-experts").
+  // Override via NEXT_PUBLIC_API_URL.
+  apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "https://www.tips180.com/api/v2",
   // Payment provider public keys (safe to expose). Verification + the actual
   // upgrade happen server-side against the backend, which holds the secret keys.
   paystackKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY ?? "",

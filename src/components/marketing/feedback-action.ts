@@ -15,11 +15,9 @@ export type FeedbackState = {
  * the only thing we read from the client is the message itself. Visitors who
  * aren't signed in are asked to log in first.
  *
- * NOTE: the backend `POST /feedbacks` is admin-gated
- * (`@jwt_required(refresh=True)` + admin/superadmin role), so a public
- * submission cannot persist without a backend change. We still post it as
- * best-effort (it 401s silently) and queue the punter with a "pending review"
- * acknowledgement. Wire a public endpoint server-side to actually store these.
+ * Persists via the public `POST /feedbacks/submit` endpoint, which stores the
+ * testimonial as inactive (`active=false`); an admin then marks it displayed in
+ * the dashboard before it appears on the site.
  */
 export async function submitFeedbackAction(
   _prev: FeedbackState,
@@ -33,7 +31,7 @@ export async function submitFeedbackAction(
   if (message.length < 10) {
     return {
       status: "error",
-      message: "Tell us a little more — your feedback is too short.",
+      message: "Tell us a little more, your feedback is too short.",
     };
   }
 
@@ -46,24 +44,31 @@ export async function submitFeedbackAction(
   }
 
   try {
-    await api("feedbacks", {
+    const res = await api<{ created?: boolean }>("feedbacks/submit", {
       method: "POST",
       body: JSON.stringify({
         name: user.name,
         country: user.country,
         message,
-        active: false,
       }),
       next: { revalidate: 0 },
     });
+    if (!res?.created) {
+      return {
+        status: "error",
+        message: "Sorry, we couldn't submit your feedback. Please try again.",
+      };
+    }
   } catch {
-    // Endpoint is moderated/admin-gated — the submission is queued for manual
-    // review rather than persisted directly. Swallow so punters still get a
-    // friendly acknowledgement.
+    return {
+      status: "error",
+      message: "Network error. Please try again.",
+    };
   }
 
   return {
     status: "success",
-    message: "Thanks! Your feedback has been received and will be reviewed before it's featured.",
+    message:
+      "Thanks! Your feedback has been received and will be reviewed before it's featured.",
   };
 }
