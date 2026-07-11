@@ -5,16 +5,9 @@ import { getMarketBoardRows, type BoardRow } from "@/lib/tip-store";
 import { getTipCategory } from "@/config/tip-store";
 import { formatDayMonth } from "@/lib/predictions";
 import { Countdown } from "@/components/ui/countdown";
+import { LeagueBadge } from "@/components/marketing/league-badge";
 
 const gradient = "bg-linear-to-r from-brand-start to-brand-end bg-clip-text text-transparent";
-
-/** Brand-ish badge colours for the most-recognised leagues; others fall back. */
-const LEAGUE_COLORS: Record<string, string> = {
-  EPL: "#38003C",
-  "LA LIGA": "#E00C1A",
-  ITA: "#024494",
-  FRA: "#1d4ed8",
-};
 
 function fmtDate(iso: string): string {
   const m = iso?.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -139,18 +132,6 @@ export async function SmartBetLanding() {
         </div>
       </div>
     </section>
-  );
-}
-
-function LeagueBadge({ league }: { league: string }) {
-  const bg = LEAGUE_COLORS[league?.toUpperCase()] ?? "#0f766e";
-  return (
-    <span
-      className="inline-block shrink-0 rounded px-2 py-0.5 text-[11px] font-semibold text-white"
-      style={{ backgroundColor: bg }}
-    >
-      {league}
-    </span>
   );
 }
 

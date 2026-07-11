@@ -8,6 +8,12 @@ import { getTipster, tipsterImageUrl } from "@/lib/tipsters";
 
 type Params = { id: string };
 
+/** Collapse whitespace and cap length for meta/schema (experience can be long). */
+function clamp(s: string, n: number): string {
+  const t = s.replace(/\s+/g, " ").trim();
+  return t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -18,12 +24,14 @@ export async function generateMetadata({
   if (!tipster) return { title: "Tipster Not Found" };
 
   const title = `${tipster.name}${tipster.role ? ` — ${tipster.role}` : ""} | Tips180 Tipster`;
-  const description =
-    `${tipster.name} is a Tips180 tipster` +
-    (tipster.experience ? ` with ${tipster.experience} of experience` : "") +
-    (tipster.win_rate_overall
-      ? `, and an overall prediction win rate of ${tipster.win_rate_overall}.`
-      : ".");
+  const description = clamp(
+    `${tipster.name}${tipster.role ? ` — ${tipster.role}` : ""}, a Tips180 tipster.` +
+      (tipster.experience ? ` ${tipster.experience}` : "") +
+      (tipster.win_rate_overall
+        ? ` Overall prediction win rate ${tipster.win_rate_overall}.`
+        : ""),
+    160,
+  );
 
   return {
     title,
@@ -59,7 +67,7 @@ export default async function TipsterProfilePage({
           url,
           jobTitle: tipster.role ?? undefined,
           description: tipster.experience
-            ? `Tips180 tipster with ${tipster.experience} of experience.`
+            ? clamp(tipster.experience, 300)
             : undefined,
           image: avatar ?? undefined,
         })}
@@ -98,9 +106,9 @@ export default async function TipsterProfilePage({
               Tips180 Tipster
             </span>
             <h1 className="mt-3 text-2xl font-bold lg:text-4xl">{tipster.name}</h1>
-            {(tipster.role || tipster.experience) && (
+            {tipster.role && (
               <p className="mt-1.5 text-sm text-white/85 lg:text-base">
-                {[tipster.role, tipster.experience].filter(Boolean).join(" · ")}
+                {tipster.role}
               </p>
             )}
           </div>
@@ -108,6 +116,18 @@ export default async function TipsterProfilePage({
       </div>
 
       <div className="mx-auto w-full max-w-3xl px-4 py-10">
+        {/* About / experience (long-form bio from the textarea) */}
+        {tipster.experience && (
+          <section className="mb-8 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-white/8 dark:bg-[#18181b] sm:p-6">
+            <h2 className="mb-2 text-lg font-bold text-foreground">
+              About {tipster.name}
+            </h2>
+            <p className="whitespace-pre-line leading-relaxed text-muted">
+              {tipster.experience}
+            </p>
+          </section>
+        )}
+
         {/* Win rates */}
         {(tipster.win_rate_7d || tipster.win_rate_overall) && (
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">

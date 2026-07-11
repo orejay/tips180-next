@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getLeagueTips, type LeagueTips } from "@/lib/home";
-import { leagueSlug } from "@/lib/leagues";
+import { leagueLogo, leagueSlug } from "@/lib/leagues";
 import { formatDayMonth, type CardMatch } from "@/lib/predictions";
+import { LeagueLogo } from "@/components/marketing/league-logo";
 
 const LEAGUES: { key: keyof LeagueTips; title: string }[] = [
   { key: "epl", title: "English Premier League" },
@@ -30,11 +31,15 @@ export async function LandingLeagues() {
 }
 
 function LeagueCard({ title, matches }: { title: string; matches: CardMatch[] }) {
-  const slug = leagueSlug(matches[0]?.league ?? "");
+  const shortName = matches[0]?.league ?? "";
+  const slug = leagueSlug(shortName);
   return (
     <div className="rounded-xl border border-border p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-bold text-foreground">{title}</h2>
+        <h2 className="flex items-center gap-2 font-bold text-foreground">
+          <LeagueLogo src={leagueLogo(shortName)} alt="" size={20} />
+          {title}
+        </h2>
         <Link href={`/leagues/${slug}`} className="text-sm font-medium text-primary hover:underline">
           View all →
         </Link>

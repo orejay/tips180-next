@@ -4,8 +4,11 @@ import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Trophy, Store, ChevronRight, ArrowRight, Lock } from "lucide-react";
 import { formatDayMonth } from "@/lib/predictions";
+import { leagueLogo } from "@/lib/leagues";
 import type { BoardRow } from "@/lib/tip-store";
 import type { TipTier } from "@/config/tip-store";
+import { LeagueBadge } from "@/components/marketing/league-badge";
+import { LeagueLogo } from "@/components/marketing/league-logo";
 
 export type BoardStore = {
   key: string;
@@ -13,14 +16,6 @@ export type BoardStore = {
   rows: BoardRow[];
   locked: boolean;
   tier: TipTier;
-};
-
-/** Brand-ish badge colours for the most-recognised leagues; others fall back. */
-const LEAGUE_COLORS: Record<string, string> = {
-  EPL: "#38003C",
-  "LA LIGA": "#E00C1A",
-  ITA: "#024494",
-  FRA: "#1d4ed8",
 };
 
 const DAY_LABELS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -68,7 +63,7 @@ export function FreeBoard({
   booking,
 }: {
   stores: BoardStore[];
-  topLeagues: { name: string; href: string }[];
+  topLeagues: { name: string; href: string; shortName: string }[];
   allStores: { title: string; slug: string }[];
   lastUpdated: ReactNode;
   booking: ReactNode;
@@ -178,7 +173,11 @@ export function FreeBoard({
 
 /* ── Left-rail cards ───────────────────────────────────── */
 
-function TopLeaguesCard({ leagues }: { leagues: { name: string; href: string }[] }) {
+function TopLeaguesCard({
+  leagues,
+}: {
+  leagues: { name: string; href: string; shortName: string }[];
+}) {
   return (
     <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
       <div className="flex items-center gap-2.5 border-b border-stone-100 px-4 py-3.5 dark:border-white/6">
@@ -194,7 +193,10 @@ function TopLeaguesCard({ leagues }: { leagues: { name: string; href: string }[]
               href={l.href}
               className="group flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-stone-50 hover:text-foreground dark:hover:bg-white/5"
             >
-              <span>{l.name}</span>
+              <span className="flex items-center gap-2">
+                <LeagueLogo src={leagueLogo(l.shortName)} alt="" size={18} />
+                {l.name}
+              </span>
               <ChevronRight
                 size={15}
                 className="shrink-0 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
@@ -274,18 +276,6 @@ function UnlockPanel({ label, tier }: { label: string; tier: TipTier }) {
 
 /* ── Prediction table ──────────────────────────────────── */
 
-function LeagueBadge({ league }: { league: string }) {
-  const bg = LEAGUE_COLORS[league?.toUpperCase()] ?? "#0f766e";
-  return (
-    <span
-      className="inline-block rounded px-2 py-0.5 text-[11px] font-semibold text-white"
-      style={{ backgroundColor: bg }}
-    >
-      {league}
-    </span>
-  );
-}
-
 function PredictionTable({ rows }: { rows: BoardRow[] }) {
   if (rows.length === 0) {
     return (
@@ -301,7 +291,7 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5">
-              <th className="px-4 py-3 font-semibold">League</th>
+              <th className="px-4 py-3 text-center font-semibold">League</th>
               <th className="px-4 py-3 font-semibold">Match</th>
               <th className="px-4 py-3 font-semibold">Tip</th>
               <th className="px-4 py-3 text-right font-semibold">Odds</th>
@@ -313,7 +303,7 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
                 key={row.id}
                 className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
               >
-                <td className="px-4 py-3 align-middle">
+                <td className="px-4 py-3 text-center align-middle">
                   <LeagueBadge league={row.league} />
                 </td>
                 <td className="px-4 py-3 align-middle">

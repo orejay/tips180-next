@@ -7,14 +7,7 @@ import {
 import { PredictionTabs } from "@/components/marketing/prediction-tabs";
 import { BookingCode } from "@/components/marketing/booking-code";
 import { TipsterBadge } from "@/components/marketing/tipster-badge";
-
-/** Brand-ish badge colours for the most-recognised leagues; others fall back. */
-const LEAGUE_COLORS: Record<string, string> = {
-  EPL: "#38003C",
-  "LA LIGA": "#E00C1A",
-  ITA: "#024494",
-  FRA: "#1d4ed8",
-};
+import { LeagueBadge } from "@/components/marketing/league-badge";
 
 /**
  * Home prediction tables (Recent Winning Tips + Upcoming Tips). Server Component:
@@ -42,18 +35,6 @@ export async function HomePredictions() {
       />
       <TipsterBadge category="upcoming" />
     </section>
-  );
-}
-
-function LeagueBadge({ league }: { league: string }) {
-  const bg = LEAGUE_COLORS[league?.toUpperCase()] ?? "#0f766e";
-  return (
-    <span
-      className="inline-block rounded px-2 py-0.5 text-[11px] font-semibold text-white"
-      style={{ backgroundColor: bg }}
-    >
-      {league}
-    </span>
   );
 }
 
@@ -87,7 +68,7 @@ function PredictionTable({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5">
-              <th className="px-4 py-3 font-semibold">League</th>
+              <th className="px-4 py-3 text-center font-semibold">League</th>
               <th className="px-4 py-3 font-semibold">Match</th>
               <th className="px-4 py-3 font-semibold">Tip</th>
               <th className="px-4 py-3 text-right font-semibold">{lastHeading}</th>
@@ -99,7 +80,7 @@ function PredictionTable({
                 key={row.id}
                 className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
               >
-                <td className="px-4 py-3 align-middle">
+                <td className="px-4 py-3 text-center align-middle">
                   <LeagueBadge league={row.league} />
                 </td>
                 <td className="px-4 py-3 align-middle">

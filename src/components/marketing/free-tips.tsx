@@ -22,26 +22,27 @@ const TOP_LEAGUE_MATCHERS: RegExp[] = [
 ];
 
 /** Static fallback used when the league feed is empty (still links to hubs). */
-const TOP_LEAGUE_FALLBACK: { name: string; href: string }[] = [
-  { name: "UEFA Champions League", href: "/leagues" },
-  { name: "Premier League", href: "/leagues" },
-  { name: "La Liga", href: "/leagues" },
-  { name: "Serie A", href: "/leagues" },
-  { name: "Bundesliga", href: "/leagues" },
-  { name: "Ligue 1", href: "/leagues" },
+const TOP_LEAGUE_FALLBACK: { name: string; href: string; shortName: string }[] = [
+  { name: "UEFA Champions League", href: "/leagues", shortName: "UCL" },
+  { name: "Premier League", href: "/leagues", shortName: "EPL" },
+  { name: "La Liga", href: "/leagues", shortName: "LA LIGA" },
+  { name: "Serie A", href: "/leagues", shortName: "ITA" },
+  { name: "Bundesliga", href: "/leagues", shortName: "GER" },
+  { name: "Ligue 1", href: "/leagues", shortName: "FRA" },
 ];
 
 /** Map live league data onto the curated top-league list, with hub links. */
-function pickTopLeagues(all: League[]): { name: string; href: string }[] {
+function pickTopLeagues(all: League[]): { name: string; href: string; shortName: string }[] {
   if (all.length === 0) return TOP_LEAGUE_FALLBACK;
 
-  const picked: { name: string; href: string }[] = [];
+  const picked: { name: string; href: string; shortName: string }[] = [];
   for (const re of TOP_LEAGUE_MATCHERS) {
     const hit = all.find((l) => re.test(l.name) || re.test(l.short_name));
     if (hit) {
       picked.push({
         name: formatLeagueName(hit.name),
         href: `/leagues/${leagueSlug(hit.short_name)}`,
+        shortName: hit.short_name,
       });
     }
   }

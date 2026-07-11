@@ -5,6 +5,7 @@ import { getWeekend10Rows } from "@/lib/plan-tips";
 import { PlanLocked } from "@/components/dashboard/plan-locked";
 import { PlanBooking } from "@/components/dashboard/plan-booking";
 import { TipsTable } from "@/components/dashboard/tips-table";
+import { SetTabs } from "@/components/dashboard/set-tabs";
 
 export const metadata: Metadata = { title: "Weekend 10" };
 
@@ -13,21 +14,30 @@ export default async function Weekend10Page() {
   if (!user) redirect("/auth/login?from=/dashboard/weekend10");
 
   const locked = !isActive(user.w10subscriptstatus);
-  const rows = locked ? null : await getWeekend10Rows();
+  const sets = locked ? null : await getWeekend10Rows();
 
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-foreground">Weekend 10</h1>
-      {locked || rows === null ? (
+      {locked || sets === null ? (
         <PlanLocked plan="Weekend 10" />
       ) : (
-        <>
-          <TipsTable rows={rows} />
-          <div className="mt-4 space-y-4">
-            <PlanBooking category="w101" />
-            <PlanBooking category="w102" />
-          </div>
-        </>
+        <SetTabs
+          panels={[
+            <div key="1">
+              <TipsTable rows={sets.set1} />
+              <div className="mt-4">
+                <PlanBooking category="w101" />
+              </div>
+            </div>,
+            <div key="2">
+              <TipsTable rows={sets.set2} />
+              <div className="mt-4">
+                <PlanBooking category="w102" />
+              </div>
+            </div>,
+          ]}
+        />
       )}
     </div>
   );

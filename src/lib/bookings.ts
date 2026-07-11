@@ -15,19 +15,39 @@ export type Booking = {
 
 type RawBooking = Booking | "" | null;
 
-/** Map an uppercase bookie name to its logo in /public/icons/bookies. */
-const BOOKIE_LOGOS: Record<string, string> = {
-  BET9JA: "/icons/bookies/bet9ja.png",
-  SPORTYBET: "/icons/bookies/sportybet.png",
-  "1XBET": "/icons/bookies/1xbet.png",
-  MSPORT: "/icons/bookies/msport.png",
-  STARBET: "/icons/bookies/starbet.png",
-  "22BET": "/icons/bookies/22bet.png",
-  PARIBET: "/icons/bookies/paribet.png",
+/**
+ * Domains for known bookies, keyed by uppercase name. The backend only ever
+ * stores a free-text `bookie` name (no domain/logo column), so — exactly like
+ * the reference project's `lib/constants/bookmakers.ts` — logos are resolved
+ * at render time from a favicon service keyed by domain, not local assets.
+ */
+const BOOKIE_DOMAINS: Record<string, string> = {
+  BET9JA: "bet9ja.com",
+  BETKING: "betking.com",
+  SPORTYBET: "sportybet.com",
+  "1XBET": "1xbet.com",
+  BANGBET: "bangbet.com",
+  BETWAY: "betway.com",
+  MSPORT: "msport.com",
+  PREMIERBET: "premierbet.com",
+  PARIMATCH: "parimatch.com",
+  "22BET": "22bet.com",
+  MELBET: "melbet.com",
+  FRAPAPA: "frapapa.com",
+  NAIRABET: "nairaabet.com",
+  ACCESSBET: "accessbet.ng",
+  STARBET: "starbet.ng",
+  PARIBET: "paribet.ng",
 };
 
+/** Favicon-based logo for a domain, matching the reference project's `bookmakerLogoUrl`. */
+export function bookmakerLogoUrl(domain: string): string {
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+}
+
 export function bookieLogo(bookie: string): string | null {
-  return BOOKIE_LOGOS[bookie?.toUpperCase()] ?? null;
+  const domain = BOOKIE_DOMAINS[bookie?.toUpperCase()];
+  return domain ? bookmakerLogoUrl(domain) : null;
 }
 
 function pick(raw: RawBooking): Booking | null {

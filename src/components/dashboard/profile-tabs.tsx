@@ -9,11 +9,6 @@ export type ProfileInfo = {
   email: string;
   phone: string;
   country: string;
-  plan: string;
-  refCode: string;
-  refPoints: number;
-  loyaltyPoints: number;
-  balance: number;
 };
 
 const initial: FormState = {};
@@ -50,11 +45,6 @@ function InfoPanel({ info }: { info: ProfileInfo }) {
     ["Email", info.email || "—"],
     ["Phone", info.phone || "—"],
     ["Country", info.country || "—"],
-    ["Account Plan", info.plan || "Free"],
-    ["Referral Code", info.refCode || "—"],
-    ["Referral Points", String(info.refPoints ?? 0)],
-    ["Loyalty Points", String(info.loyaltyPoints ?? 0)],
-    ["Wallet Balance", `₦${(info.balance ?? 0).toLocaleString("en-US")}`],
   ];
 
   return (

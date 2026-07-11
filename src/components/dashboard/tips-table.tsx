@@ -1,3 +1,5 @@
+import { LeagueBadge } from "@/components/marketing/league-badge";
+
 /** A normalised prediction row used across all plan pages. */
 export type TipRow = {
   id: string | number;
@@ -32,7 +34,7 @@ export function TipsTable({ rows }: { rows: TipRow[] }) {
         <thead>
           <tr className="border-b border-border text-muted">
             <th className="px-3 py-3 font-medium">Date</th>
-            {showLeague && <th className="px-3 py-3 font-medium">League</th>}
+            {showLeague && <th className="px-3 py-3 text-center font-medium">League</th>}
             <th className="px-3 py-3 font-medium">Match</th>
             <th className="px-3 py-3 font-medium">Tip</th>
             {showOdds && <th className="px-3 py-3 font-medium">Odds</th>}
@@ -43,7 +45,11 @@ export function TipsTable({ rows }: { rows: TipRow[] }) {
           {rows.map((row) => (
             <tr key={row.id} className="border-b border-border last:border-0">
               <td className="px-3 py-3 whitespace-nowrap text-muted">{row.date || "—"}</td>
-              {showLeague && <td className="px-3 py-3 text-muted">{row.league || "—"}</td>}
+              {showLeague && (
+                <td className="px-3 py-3 text-center text-muted">
+                  {row.league ? <LeagueBadge league={row.league} /> : "—"}
+                </td>
+              )}
               <td className="px-3 py-3 font-medium text-foreground">{row.name}</td>
               <td className="px-3 py-3">
                 <span className="inline-block rounded bg-primary px-2 py-1 text-xs font-medium text-white">

@@ -30,12 +30,16 @@ type SpecMatch = {
   date: string;
   league: string;
   name: string;
+  sure50_1st?: boolean;
   sure50_1st_tip?: string;
   sure50_1st_odds?: string;
+  sure50_2nd?: boolean;
   sure50_2nd_tip?: string;
   sure50_2nd_odds?: string;
+  weekend10_1st?: boolean;
   weekend10_1st_tip?: string;
   weekend10_1st_odds?: string;
+  weekend10_2nd?: boolean;
   weekend10_2nd_tip?: string;
   weekend10_2nd_odds?: string;
   ftscore?: string;
@@ -52,8 +56,6 @@ export type BankerTip = {
   confidence: string;
   analysis: string;
 };
-
-const first = (...vals: (string | undefined)[]) => vals.find((v) => v && v.trim()) ?? "";
 
 /** Backend dates arrive as ISO or a date string; render day/month, else pass through. */
 function fmt(date: string): string {
@@ -92,34 +94,64 @@ export async function getRolloverRows(): Promise<TipRow[] | null> {
   }));
 }
 
-// --- 50 Odds (odds50status) ---
-export async function getSure50Rows(): Promise<TipRow[] | null> {
+// --- 50 Odds (odds50status; two independently-populated sets) ---
+export async function getSure50Rows(): Promise<{ set1: TipRow[]; set2: TipRow[] } | null> {
   const data = await authFetch<{ matches: SpecMatch[] }>("tips/sure50");
   if (!data) return null;
-  return data.matches.map((m) => ({
-    id: m.id,
-    date: fmt(m.date),
-    league: m.league,
-    name: m.name,
-    tip: first(m.sure50_1st_tip, m.sure50_2nd_tip),
-    odds: first(m.sure50_1st_odds, m.sure50_2nd_odds),
-    score: m.ftscore,
-  }));
+  return {
+    set1: data.matches
+      .filter((m) => m.sure50_1st)
+      .map((m) => ({
+        id: m.id,
+        date: fmt(m.date),
+        league: m.league,
+        name: m.name,
+        tip: m.sure50_1st_tip,
+        odds: m.sure50_1st_odds,
+        score: m.ftscore,
+      })),
+    set2: data.matches
+      .filter((m) => m.sure50_2nd)
+      .map((m) => ({
+        id: m.id,
+        date: fmt(m.date),
+        league: m.league,
+        name: m.name,
+        tip: m.sure50_2nd_tip,
+        odds: m.sure50_2nd_odds,
+        score: m.ftscore,
+      })),
+  };
 }
 
-// --- Weekend 10 (w10subscriptstatus) ---
-export async function getWeekend10Rows(): Promise<TipRow[] | null> {
+// --- Weekend 10 (w10subscriptstatus; two independently-populated sets) ---
+export async function getWeekend10Rows(): Promise<{ set1: TipRow[]; set2: TipRow[] } | null> {
   const data = await authFetch<{ matches: SpecMatch[] }>("tips/weekend10");
   if (!data) return null;
-  return data.matches.map((m) => ({
-    id: m.id,
-    date: fmt(m.date),
-    league: m.league,
-    name: m.name,
-    tip: first(m.weekend10_1st_tip, m.weekend10_2nd_tip),
-    odds: first(m.weekend10_1st_odds, m.weekend10_2nd_odds),
-    score: m.ftscore,
-  }));
+  return {
+    set1: data.matches
+      .filter((m) => m.weekend10_1st)
+      .map((m) => ({
+        id: m.id,
+        date: fmt(m.date),
+        league: m.league,
+        name: m.name,
+        tip: m.weekend10_1st_tip,
+        odds: m.weekend10_1st_odds,
+        score: m.ftscore,
+      })),
+    set2: data.matches
+      .filter((m) => m.weekend10_2nd)
+      .map((m) => ({
+        id: m.id,
+        date: fmt(m.date),
+        league: m.league,
+        name: m.name,
+        tip: m.weekend10_2nd_tip,
+        odds: m.weekend10_2nd_odds,
+        score: m.ftscore,
+      })),
+  };
 }
 
 // --- Experts ACCA (public endpoint; gated client-side on plan) ---

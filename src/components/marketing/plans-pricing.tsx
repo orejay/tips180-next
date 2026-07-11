@@ -15,6 +15,7 @@ import {
 import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
 import type { Plan } from "@/config/plans";
 import { cn } from "@/lib/utils";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 /**
  * Plan grid with geo-located price selector. Defaults to Nigeria (NGN) so the
@@ -35,21 +36,13 @@ export function PlansPricing() {
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
       {/* Country selector */}
       <div className="mb-8 flex flex-col items-center gap-2">
-        <label htmlFor="pricing-country" className="text-sm font-medium text-muted">
-          Showing prices for
-        </label>
-        <select
-          id="pricing-country"
+        <span className="text-sm font-medium text-muted">Showing prices for</span>
+        <SearchableSelect
+          options={pricingOptions}
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          className="w-64 rounded-xl border border-border bg-surface px-4 py-2.5 text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/10 dark:bg-[#18181b]"
-        >
-          {pricingOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          onChange={setCountry}
+          className="w-64"
+        />
         <p className="text-xs text-subtle">Prices shown in {currency}.</p>
       </div>
 

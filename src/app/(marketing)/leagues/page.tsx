@@ -6,10 +6,12 @@ import { siteConfig } from "@/config/site";
 import {
   formatLeagueName,
   getLeagueRegions,
+  leagueLogo,
   leagueSlug,
   REGION_ORDER,
   type League,
 } from "@/lib/leagues";
+import { LeagueLogo } from "@/components/marketing/league-logo";
 
 export const metadata: Metadata = {
   title: "Football Leagues — Predictions for Every League | Tips180",
@@ -69,12 +71,16 @@ export default async function LeaguesPage() {
 }
 
 function LeagueLink({ league }: { league: League }) {
+  const name = formatLeagueName(league.name);
   return (
     <Link
       href={`/leagues/${leagueSlug(league.short_name)}`}
-      className="rounded-md px-2 py-1.5 text-foreground transition-colors hover:bg-linear-to-r hover:from-brand-start hover:to-brand-end hover:bg-clip-text hover:text-transparent"
+      className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-foreground transition-colors"
     >
-      {formatLeagueName(league.name)}
+      <LeagueLogo src={leagueLogo(league.short_name)} alt="" size={20} />
+      <span className="group-hover:bg-linear-to-r group-hover:from-brand-start group-hover:to-brand-end group-hover:bg-clip-text group-hover:text-transparent">
+        {name}
+      </span>
     </Link>
   );
 }

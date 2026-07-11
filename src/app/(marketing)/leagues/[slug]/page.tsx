@@ -15,11 +15,13 @@ import {
   formatLeagueName,
   getLeagueMatches,
   getLeagueRegions,
+  leagueLogo,
   leagueSlug,
   parseTeams,
   toIsoDate,
   type LeagueMatch,
 } from "@/lib/leagues";
+import { LeagueLogo } from "@/components/marketing/league-logo";
 
 type Params = { slug: string };
 
@@ -86,7 +88,15 @@ export default async function LeaguePage({
       <MatchesSchema matches={matches} competition={name} url={url} />
 
       <div className="bg-linear-to-r from-brand-start to-brand-end px-4 py-12 text-center text-white lg:py-16">
-        <h1 className="text-xl font-bold lg:text-3xl">{name} Predictions</h1>
+        <div className="flex items-center justify-center gap-3">
+          <LeagueLogo
+            src={leagueLogo(league.short_name)}
+            alt=""
+            size={40}
+            className="rounded-full bg-white/15 p-1.5"
+          />
+          <h1 className="text-xl font-bold lg:text-3xl">{name} Predictions</h1>
+        </div>
         <p className="mx-auto mt-2 max-w-2xl text-sm lg:text-base">
           Expert {name} betting tips, correct scores and accumulators — updated
           daily.

@@ -74,9 +74,12 @@ function TipsterCard({ tipster }: { tipster: Tipster }) {
               className="text-subtle transition-colors group-hover:text-teal-500"
             />
           </h3>
-          {(tipster.role || tipster.experience) && (
-            <p className="text-sm text-muted">
-              {[tipster.role, tipster.experience].filter(Boolean).join(" · ")}
+          {tipster.role && (
+            <p className="text-sm font-medium text-muted">{tipster.role}</p>
+          )}
+          {tipster.experience && (
+            <p className="mt-0.5 line-clamp-2 text-sm text-muted">
+              {tipster.experience}
             </p>
           )}
           <span className="text-xs font-medium text-teal-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-teal-400">

@@ -52,8 +52,9 @@ Rules:
   rest of `dashboard/src` if a deeper audit is wanted.
 
 **Still needs you / can't do in-code (NOT parity gaps):** real test login + Paystack/
-Flutterwave test keys to verify authed + payment flows end-to-end; named tipster real
-data; monthly win-rate % needs a backend stats endpoint.
+Flutterwave test keys to verify authed + payment flows end-to-end; monthly win-rate %
+needs a backend stats endpoint. (Named tipster data is now enterable via the tips180-theta
+admin tipster manager — no longer a code gap; see Phase 8.)
 
 ## Repos
 
@@ -304,9 +305,14 @@ rate %; BreadcrumbList + FAQPage + LastUpdated; added to sitemap (0.9 daily), fo
 helpful links, llms.txt. FAQ block + faqSchema added to our-plans. llms.txt refreshed
 (accuracy, leagues, how-to-pay, contact + schema inventory). Build green (44 routes,
 accuracy renders 20 Won rows + schema in HTML).
-⚠ DELIBERATELY NOT DONE (integrity / needs real backend data, do NOT fabricate):
-named tipster profiles with photos/bios/win-rates (Person builder is READY — populate
-`config/tipsters.ts` + build `/tipsters/[slug]` when real expert data exists); computed
+✅ Named tipster profiles — now LIVE (2026-07-08), delivered via a backend-driven tipster
+feature rather than the `config/tipsters.ts` stub: public `/tipsters/[id]` profile page +
+`components/marketing/tipster-badge.tsx` (rendered BELOW the prediction tables) reading
+`/tipsters/for/<category>/<date>` and `/tipsters/<id>/profile` (`lib/tipsters.ts`), with
+full tipster CRUD + per-date/per-category assignment in the tips180-theta admin. `personSchema`
+is now populated from real data. Avatars resolve to the hardcoded `/api/uploads/photos/...`
+(nginx-served) URL.
+⚠ DELIBERATELY NOT DONE (integrity / needs real backend data, do NOT fabricate): computed
 monthly win-rate % + data studies (no backend stats endpoint — `/recent-win` is the only
 results data); hreflang for KE/GH (roadmap M6-9). Off-page (Section 5: backlinks/DR/PR/
 Reddit/Wikipedia) is NOT code — track separately.
@@ -340,9 +346,15 @@ predict-win` (public landing + FAQ), `(marketing)/ad` (CleverCore script, noinde
 `(dashboard)/dashboard/page.tsx` (redirect→profile). Sitemap extended (tips-store,
 tip-store/*, predict-win, how-to-pay). All nav links now 200. Build+lint green (66 routes).
 
-— MIGRATION CORE COMPLETE (Phases 1–9). Documented deferrals: PW live entry submission,
-geo card-pricing tables, named tipster profiles (need real data), monthly win-rate %/data
-studies (no backend stats endpoint), hreflang KE/GH, legacy Home secondary sections.
+— MIGRATION CORE COMPLETE (Phases 1–9).
+Since cleared (do NOT re-list as pending): PW live entry submission + geo card-pricing
+(see Parity gaps, 2026-06-20); legacy Home secondary sections (Phase 4 gap-fill); named
+tipster profiles (now LIVE via the backend tipster feature — see Phase 8, 2026-07-08).
+Genuine remaining deferrals — need external data / keys / deploy, NOT code: verify authed +
+payment flows with real test creds/keys; computed monthly win-rate % + data studies (no
+backend stats endpoint); hreflang KE/GH; live CWV/Lighthouse audit; minor dark-mode QA pass.
+Note: the admin (tips180-theta) upgrade, Trendy Matches store, feedback/analytics, and the
+/theta-v2 parallel deploy are OUT OF SCOPE for this skill (tips180-next migration only).
 
 See `references/legacy-route-map.md` for the full route → legacy-file mapping.
 

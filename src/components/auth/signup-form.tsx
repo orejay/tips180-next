@@ -1,15 +1,18 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signupAction, type AuthState } from "@/app/(auth)/auth/actions";
 import { countries } from "@/config/countries";
 import { AuthField, FormMessage, PasswordField, SubmitButton } from "./auth-ui";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 const initial: AuthState = {};
+const countryOptions = countries.map((c) => ({ value: c.label, label: c.label }));
 
 export function SignupForm() {
   const [state, formAction, pending] = useActionState(signupAction, initial);
+  const [country, setCountry] = useState("");
 
   return (
     <div>
@@ -21,25 +24,18 @@ export function SignupForm() {
         <AuthField label="Phone Number" name="phone" type="tel" />
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="country" className="text-sm font-medium text-muted">
+          <span className="text-sm font-medium text-muted">
             Country<span className="text-red-500"> *</span>
-          </label>
-          <select
-            id="country"
+          </span>
+          <SearchableSelect
+            options={countryOptions}
+            value={country}
+            onChange={setCountry}
             name="country"
             required
-            defaultValue=""
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="" disabled>
-              Select a country
-            </option>
-            {countries.map((c) => (
-              <option key={c.value} value={c.label}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+            placeholder="Select a country"
+            searchPlaceholder="Search countries…"
+          />
         </div>
 
         <PasswordField />
