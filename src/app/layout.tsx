@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { Analytics } from "@/components/analytics/analytics";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { GoogleTranslate } from "@/components/i18n/google-translate";
+import { TranslateNavGuard } from "@/components/i18n/translate-nav-guard";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const geistSans = Geist({
@@ -76,6 +78,8 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-full flex flex-col">
         <JsonLd data={websiteSchema()} />
         <JsonLd data={organizationSchema()} />
+        <GoogleTranslate />
+        <TranslateNavGuard />
         <SiteHeader />
         {children}
         <SiteFooter />

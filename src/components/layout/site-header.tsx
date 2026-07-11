@@ -14,6 +14,7 @@ import {
 } from "@/config/nav";
 import { logoutAction } from "@/app/(auth)/auth/actions";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { applyLanguage, readStoredLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type HeaderUser = { name: string; email: string; plan: string; subscribed: boolean };
@@ -23,13 +24,6 @@ function readUserCookie(): HeaderUser | null {
   if (!match) return null;
   try { return JSON.parse(decodeURIComponent(match[1])) as HeaderUser; }
   catch { return null; }
-}
-
-const LANG_KEY = "tips180_lang";
-
-function readLang(): LanguageCode {
-  if (typeof window === "undefined") return "en";
-  return (localStorage.getItem(LANG_KEY) as LanguageCode) ?? "en";
 }
 
 export function SiteHeader() {
@@ -50,7 +44,7 @@ export function SiteHeader() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading external (cookie/localStorage) state
     setUser(readUserCookie());
-    setLang(readLang());
+    setLang(readStoredLanguage());
   }, [pathname]);
 
   // Collapse the mobile menu whenever the route changes.
@@ -88,9 +82,10 @@ export function SiteHeader() {
   }, []);
 
   const selectLang = (code: LanguageCode) => {
-    setLang(code);
-    localStorage.setItem(LANG_KEY, code);
     setLangOpen(false);
+    setMobileGroup(null);
+    if (code === lang) return;
+    applyLanguage(code); // reloads the page once the translate cookie is set
   };
 
   const currentLang = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
@@ -156,8 +151,15 @@ export function SiteHeader() {
         <div className="hidden items-center gap-1.5 lg:flex">
           <ThemeToggle />
 
-          {/* Language */}
-          <div className="relative" onMouseEnter={openLang} onMouseLeave={scheduleLangClose}>
+          {/* Language — excluded from Google Translate so the picker always
+              shows each language's own name, never translated into the
+              currently-selected one. */}
+          <div
+            className="notranslate relative"
+            translate="no"
+            onMouseEnter={openLang}
+            onMouseLeave={scheduleLangClose}
+          >
             <button
               type="button"
               onClick={() => setLangOpen((v) => !v)}
@@ -422,7 +424,7 @@ export function SiteHeader() {
             ))}
 
             {/* Language */}
-            <div className="border-b border-stone-100 dark:border-zinc-800/60">
+            <div className="notranslate border-b border-stone-100 dark:border-zinc-800/60" translate="no">
               <button
                 type="button"
                 onClick={() => setMobileGroup(mobileGroup === "__lang" ? null : "__lang")}

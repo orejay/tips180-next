@@ -198,3 +198,27 @@ body {
     animation: none;
   }
 }
+
+/*
+ * Google Website Translator (components/i18n/google-translate.tsx): the
+ * dropdown UI is ours (site-header.tsx), so hide the widget's own visible
+ * chrome — its top banner iframe, the `body` offset it injects while that
+ * banner is shown, and the highlight it puts on translated text.
+ */
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-text-highlight {
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+#google_translate_element {
+  display: none !important;
+}
