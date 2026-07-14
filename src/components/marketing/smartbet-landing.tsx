@@ -1,5 +1,15 @@
 import Link from "next/link";
-import { Zap, Crown, Clock, CalendarDays, ArrowRight, Flame } from "lucide-react";
+import {
+  Zap,
+  Crown,
+  Clock,
+  CalendarDays,
+  ArrowRight,
+  Flame,
+  ChevronRight,
+  FileText,
+  Percent,
+} from "lucide-react";
 import { getNextSmartBet } from "@/lib/home";
 import { getMarketBoardRows, type BoardRow } from "@/lib/tip-store";
 import { getTipCategory } from "@/config/tip-store";
@@ -163,20 +173,40 @@ function TrendyMatchesCard({ rows }: { rows: BoardRow[] }) {
       ) : (
         <ul className="flex-1 divide-y divide-stone-50 dark:divide-white/5">
           {rows.map((row) => (
-            <li key={row.id} className="flex items-center gap-3 px-4 py-3">
-              <LeagueBadge league={row.league} />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold leading-snug text-foreground">
-                  {row.name}
-                </p>
-                <p className="mt-0.5 text-xs text-subtle">
-                  {formatDayMonth(row.date)}
-                  {row.time ? ` · ${row.time}` : ""}
-                </p>
-              </div>
-              <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                {row.tip}
-              </span>
+            <li key={row.id}>
+              <Link
+                href={`/tip-store/trendymatches/${row.id}`}
+                className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-stone-50 dark:hover:bg-white/5"
+              >
+                <LeagueBadge league={row.league} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold leading-snug text-foreground">
+                    {row.name}
+                  </p>
+                  <p className="mt-0.5 text-xs text-subtle">
+                    {formatDayMonth(row.date)}
+                    {row.time ? ` · ${row.time}` : ""}
+                  </p>
+                  {row.analysis && (
+                    <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-primary">
+                      <FileText size={11} className="shrink-0" />
+                      View Analysis
+                    </span>
+                  )}
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-1.5">
+                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                    {row.tip}
+                  </span>
+                  {row.percentage != null && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary">
+                      <Percent size={11} className="shrink-0" />
+                      View Percentage
+                    </span>
+                  )}
+                </div>
+                <ChevronRight size={16} className="shrink-0 text-subtle" />
+              </Link>
             </li>
           ))}
         </ul>

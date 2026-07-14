@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalendarDays } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CalendarDays, ChevronRight, FileText, Percent } from "lucide-react";
 import type { StoreTipRow } from "@/lib/tip-store";
 import { cn } from "@/lib/utils";
 import { LeagueBadge } from "@/components/marketing/league-badge";
@@ -98,6 +100,8 @@ function PredictionTable({
   showOdds: boolean;
   showHt: boolean;
 }) {
+  const router = useRouter();
+
   if (rows.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 rounded-2xl border border-stone-200 bg-white py-14 text-center dark:border-white/8 dark:bg-[#18181b]">
@@ -125,43 +129,75 @@ function PredictionTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-50 dark:divide-white/5">
-            {rows.map((row) => (
-              <tr
-                key={row.id}
-                className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
-              >
-                <td className="px-4 py-3 text-center align-middle">
-                  <LeagueBadge league={row.league} />
-                </td>
-                <td className="px-4 py-3 align-middle">
-                  <p className="font-semibold leading-snug text-foreground">{row.name}</p>
-                  {row.time && <p className="mt-0.5 text-xs text-subtle">{row.time}</p>}
-                </td>
-                <td className="px-4 py-3 align-middle">
-                  <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                    {row.tip || "—"}
-                  </span>
-                </td>
-                {showOdds && (
-                  <td className="px-4 py-3 align-middle font-semibold text-foreground">
-                    {row.odds || "—"}
-                  </td>
-                )}
-                {showHt && (
-                  <td className="px-4 py-3 align-middle text-muted">{row.htscore || "—"}</td>
-                )}
-                <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
-                  {row.ftscore ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
-                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                      {row.ftscore}
-                    </span>
-                  ) : (
-                    <span className="text-xs text-subtle">—</span>
+            {rows.map((row) => {
+              const detailsHref = row.analysis || row.percentage != null
+                ? `/tip-store/trendymatches/${row.id}`
+                : null;
+              return (
+                <tr
+                  key={row.id}
+                  onClick={detailsHref ? () => router.push(detailsHref) : undefined}
+                  className={cn(
+                    "transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5",
+                    detailsHref && "cursor-pointer",
                   )}
-                </td>
-              </tr>
-            ))}
+                >
+                  <td className="px-4 py-3 text-center align-middle">
+                    <LeagueBadge league={row.league} />
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    {detailsHref ? (
+                      <Link href={detailsHref} className="font-semibold leading-snug text-foreground hover:underline">
+                        {row.name}
+                      </Link>
+                    ) : (
+                      <p className="font-semibold leading-snug text-foreground">{row.name}</p>
+                    )}
+                    {row.time && <p className="mt-0.5 text-xs text-subtle">{row.time}</p>}
+                    {row.analysis && (
+                      <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-primary">
+                        <FileText size={11} className="shrink-0" />
+                        View Analysis
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                      {row.tip || "—"}
+                    </span>
+                    {row.percentage != null && (
+                      <span className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-primary">
+                        <Percent size={11} className="shrink-0" />
+                        View Percentage
+                      </span>
+                    )}
+                  </td>
+                  {showOdds && (
+                    <td className="px-4 py-3 align-middle font-semibold text-foreground">
+                      {row.odds || "—"}
+                    </td>
+                  )}
+                  {showHt && (
+                    <td className="px-4 py-3 align-middle text-muted">{row.htscore || "—"}</td>
+                  )}
+                  <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-2">
+                      {row.ftscore ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
+                          <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                          {row.ftscore}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-subtle">—</span>
+                      )}
+                      {detailsHref && (
+                        <ChevronRight size={16} className="shrink-0 text-subtle" />
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

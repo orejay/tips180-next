@@ -29,6 +29,12 @@ export type StoreTipRow = {
   htscore: string | null;
   /** Full-time result. */
   ftscore: string | null;
+  /** Trendy-match headline (only populated for the Trendy Matches market). */
+  title?: string | null;
+  /** Trendy-match write-up (only populated for the Trendy Matches market). */
+  analysis?: string | null;
+  /** Trendy-match confidence, 1-100 (only populated for the Trendy Matches market). */
+  percentage?: number | null;
 };
 
 /**
@@ -67,6 +73,9 @@ export async function getStoreTips(cat: TipCategory): Promise<StoreTipRow[] | nu
         odds: str(m.singlebetodds),
         htscore: str(m.htscore),
         ftscore: str(m.ftscore),
+        title: str(m.trendytitle),
+        analysis: str(m.trendyanalysis),
+        percentage: typeof m.trendypercentage === "number" ? m.trendypercentage : null,
       };
     })
     .filter((r) => r.tip && r.date);
@@ -83,6 +92,12 @@ export type BoardRow = {
   name: string;
   tip: string;
   odds: string | null;
+  /** Trendy-match headline (only populated for the Trendy Matches market). */
+  title?: string | null;
+  /** Trendy-match write-up (only populated for the Trendy Matches market). */
+  analysis?: string | null;
+  /** Trendy-match confidence, 1-100 (only populated for the Trendy Matches market). */
+  percentage?: number | null;
 };
 
 /**
@@ -117,6 +132,9 @@ export async function getMarketBoardRows(cat: TipCategory): Promise<BoardRow[]> 
         name: m.name,
         tip,
         odds: typeof odds === "string" && odds ? odds : null,
+        title: typeof m.trendytitle === "string" && m.trendytitle ? m.trendytitle : null,
+        analysis: typeof m.trendyanalysis === "string" && m.trendyanalysis ? m.trendyanalysis : null,
+        percentage: typeof m.trendypercentage === "number" ? m.trendypercentage : null,
       };
     })
     .filter((r) => r.tip && r.date);
