@@ -77,8 +77,9 @@ export function Hero() {
           className="hero-fade-in mt-5 max-w-xl text-base leading-relaxed text-muted lg:text-lg"
           style={{ animationDelay: "0.15s" }}
         >
-          Daily football predictions, correct scores and accumulator tips —
-          researched by expert analysts so you can bet smarter, not harder.
+          Best free football prediction site in the world. Get today&apos;s football
+          predictions and free daily betting tips from Tips180 – your trusted football
+          prediction site.
         </p>
 
         {/* CTAs */}

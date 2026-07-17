@@ -35,6 +35,19 @@ export type StoreTipRow = {
   analysis?: string | null;
   /** Trending-match confidence, 1-100 (only populated for the Trending Matches market). */
   percentage?: number | null;
+  /** Trending-match odds (only populated for the Trending Matches market). */
+  trendyOdds?: string | null;
+  /** Head-to-head record, last 5 meetings (Trending Matches only). */
+  h2h?: string | null;
+  /** Home/away team recent form, last 5 matches (Trending Matches only). */
+  formHome?: string | null;
+  formAway?: string | null;
+  /** Home/away team goals scored, last 5 matches (Trending Matches only). */
+  goalsScoredHome?: string | null;
+  goalsScoredAway?: string | null;
+  /** Home/away team goals conceded, last 5 matches (Trending Matches only). */
+  goalsConcededHome?: string | null;
+  goalsConcededAway?: string | null;
 };
 
 /**
@@ -70,12 +83,20 @@ export async function getStoreTips(cat: TipCategory): Promise<StoreTipRow[] | nu
         league: m.league,
         name: m.name,
         tip,
-        odds: str(m.singlebetodds),
+        odds: cat.slug === "trendingmatches" ? str(m.trendyodds) : str(m.singlebetodds),
         htscore: str(m.htscore),
         ftscore: str(m.ftscore),
         title: str(m.trendytitle),
         analysis: str(m.trendyanalysis),
         percentage: typeof m.trendypercentage === "number" ? m.trendypercentage : null,
+        trendyOdds: str(m.trendyodds),
+        h2h: str(m.trendyh2h),
+        formHome: str(m.trendyformhome),
+        formAway: str(m.trendyformaway),
+        goalsScoredHome: str(m.trendygoalsscoredhome),
+        goalsScoredAway: str(m.trendygoalsscoredaway),
+        goalsConcededHome: str(m.trendygoalsconcededhome),
+        goalsConcededAway: str(m.trendygoalsconcededaway),
       };
     })
     .filter((r) => r.tip && r.date);
@@ -98,6 +119,8 @@ export type BoardRow = {
   analysis?: string | null;
   /** Trending-match confidence, 1-100 (only populated for the Trending Matches market). */
   percentage?: number | null;
+  /** Trending-match odds (only populated for the Trending Matches market). */
+  trendyOdds?: string | null;
 };
 
 /**
@@ -135,6 +158,7 @@ export async function getMarketBoardRows(cat: TipCategory): Promise<BoardRow[]> 
         title: typeof m.trendytitle === "string" && m.trendytitle ? m.trendytitle : null,
         analysis: typeof m.trendyanalysis === "string" && m.trendyanalysis ? m.trendyanalysis : null,
         percentage: typeof m.trendypercentage === "number" ? m.trendypercentage : null,
+        trendyOdds: typeof m.trendyodds === "string" && m.trendyodds ? m.trendyodds : null,
       };
     })
     .filter((r) => r.tip && r.date);

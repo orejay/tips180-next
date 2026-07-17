@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, FileText, Percent } from "lucide-react";
+import { ArrowLeft, FileText, Percent, History, TrendingUp, Target, ShieldAlert } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/config/site";
 import { breadcrumbSchema } from "@/lib/schema";
 import { getTipCategory } from "@/config/tip-store";
 import { getStoreTips, type StoreTipRow } from "@/lib/tip-store";
 import { formatDayMonth } from "@/lib/predictions";
+import { parseTeams } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/marketing/league-badge";
 
 type Params = { id: string };
@@ -50,6 +51,35 @@ export default async function TrendingMatchPage({
 
   const url = `${siteConfig.url}/tip-store/trendingmatches/${id}`;
   const title = match.title || match.name;
+  const teams = parseTeams(match.name);
+  const homeLabel = teams?.home ?? "Home";
+  const awayLabel = teams?.away ?? "Away";
+
+  const statRows = [
+    {
+      icon: <History size={14} />,
+      label: "Head to Head (Last 5)",
+      value: match.h2h,
+    },
+    {
+      icon: <TrendingUp size={14} />,
+      label: "Recent Form (Last 5)",
+      home: match.formHome,
+      away: match.formAway,
+    },
+    {
+      icon: <Target size={14} />,
+      label: "Goals Scored (Last 5)",
+      home: match.goalsScoredHome,
+      away: match.goalsScoredAway,
+    },
+    {
+      icon: <ShieldAlert size={14} />,
+      label: "Goals Conceded (Last 5)",
+      home: match.goalsConcededHome,
+      away: match.goalsConcededAway,
+    },
+  ].filter((row) => row.value || row.home || row.away);
 
   return (
     <div className="bg-background">
@@ -94,9 +124,16 @@ export default async function TrendingMatchPage({
                 </p>
               </div>
             </div>
-            <span className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-bold text-primary">
-              {match.tip}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-bold text-primary">
+                {match.tip}
+              </span>
+              {match.trendyOdds && (
+                <span className="rounded-full bg-stone-800 px-3 py-1.5 text-sm font-bold text-white dark:bg-zinc-700">
+                  Odds: {match.trendyOdds}
+                </span>
+              )}
+            </div>
           </div>
 
           {match.analysis && (
@@ -126,6 +163,41 @@ export default async function TrendingMatchPage({
                   {match.percentage}%
                 </span>
               </div>
+            </div>
+          )}
+
+          {statRows.length > 0 && (
+            <div className="mt-6">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-subtle">
+                Match Stats
+              </p>
+              <dl className="space-y-3">
+                {statRows.map((row) => (
+                  <div
+                    key={row.label}
+                    className="rounded-xl border border-stone-100 p-3 dark:border-white/6"
+                  >
+                    <dt className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-subtle">
+                      {row.icon}
+                      {row.label}
+                    </dt>
+                    {row.value ? (
+                      <dd className="text-sm font-medium text-foreground">{row.value}</dd>
+                    ) : (
+                      <dd className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <p className="text-[11px] text-subtle">{homeLabel}</p>
+                          <p className="font-medium text-foreground">{row.home || "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-subtle">{awayLabel}</p>
+                          <p className="font-medium text-foreground">{row.away || "—"}</p>
+                        </div>
+                      </dd>
+                    )}
+                  </div>
+                ))}
+              </dl>
             </div>
           )}
         </div>
