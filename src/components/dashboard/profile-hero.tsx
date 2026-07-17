@@ -11,7 +11,6 @@ export function ProfileHero({
   name,
   email,
   plan,
-  balance,
   refCode,
   refPoints,
   loyaltyPoints,
@@ -19,7 +18,6 @@ export function ProfileHero({
   name: string;
   email: string;
   plan: string;
-  balance: number;
   refCode: string;
   refPoints: number;
   loyaltyPoints: number;
@@ -61,7 +59,6 @@ export function ProfileHero({
         </div>
 
         <div className="flex flex-wrap gap-6">
-          <Stat label="Wallet Balance" value={`₦${(balance ?? 0).toLocaleString("en-US")}`} />
           <Stat label="Referral Points" value={String(refPoints ?? 0)} />
           <Stat label="Loyalty Points" value={String(loyaltyPoints ?? 0)} />
         </div>

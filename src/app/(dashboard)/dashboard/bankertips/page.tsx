@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getBankerTip } from "@/lib/plan-tips";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 
 export const metadata: Metadata = { title: "Banker Tips of the Day" };
 
@@ -39,6 +40,7 @@ export default async function BankerTipsPage() {
           )}
         </div>
       )}
+      {banker && <TipsterBadge category="bankers" />}
     </div>
   );
 }

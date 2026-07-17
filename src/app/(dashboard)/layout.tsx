@@ -24,7 +24,7 @@ export default async function DashboardLayout({
   return (
     <main className="min-h-screen bg-background py-6 lg:py-10">
       <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-xl bg-surface shadow-sm lg:flex">
-        <aside className="lg:max-h-[80vh] lg:w-1/4 lg:overflow-y-auto">
+        <aside className="lg:w-1/4">
           <DashboardSidebar unread={unread} />
         </aside>
 

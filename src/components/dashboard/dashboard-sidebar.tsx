@@ -28,7 +28,7 @@ export function DashboardSidebar({ unread = 0 }: { unread?: number }) {
 
       <nav
         className={cn(
-          "bg-sidebar p-4 text-sm lg:block lg:rounded-l-xl",
+          "bg-sidebar p-4 text-sm lg:block lg:h-full lg:rounded-l-xl",
           open ? "block" : "hidden",
         )}
       >

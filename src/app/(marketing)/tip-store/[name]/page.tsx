@@ -43,8 +43,8 @@ export default async function TipStorePage({
 
   const rows = await getStoreTips(cat);
   const url = `${siteConfig.url}/tip-store/${cat.slug}`;
-  // Weekend Tips show every row with no date tabs (legacy StoreTable behaviour).
-  const dateFilter = cat.slug !== "weekendtip";
+  // Weekend Tips and Trending Matches show every row with no date tabs.
+  const dateFilter = cat.slug !== "weekendtip" && cat.slug !== "trendingmatches";
 
   const faqs = [
     {

@@ -77,7 +77,7 @@ function LeagueLink({ league }: { league: League }) {
       href={`/leagues/${leagueSlug(league.short_name)}`}
       className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-foreground transition-colors"
     >
-      <LeagueLogo src={leagueLogo(league.short_name)} alt="" size={20} />
+      <LeagueLogo src={league.logo ?? leagueLogo(league.short_name)} alt="" size={20} />
       <span className="group-hover:bg-linear-to-r group-hover:from-brand-start group-hover:to-brand-end group-hover:bg-clip-text group-hover:text-transparent">
         {name}
       </span>

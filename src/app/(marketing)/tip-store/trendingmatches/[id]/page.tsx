@@ -12,11 +12,11 @@ import { LeagueBadge } from "@/components/marketing/league-badge";
 
 type Params = { id: string };
 
-const trendyCat = getTipCategory("trendymatches");
+const trendingCat = getTipCategory("trendingmatches");
 
-async function getTrendyMatch(id: number): Promise<StoreTipRow | null> {
-  if (!trendyCat || Number.isNaN(id)) return null;
-  const rows = await getStoreTips(trendyCat);
+async function getTrendingMatch(id: number): Promise<StoreTipRow | null> {
+  if (!trendingCat || Number.isNaN(id)) return null;
+  const rows = await getStoreTips(trendingCat);
   return rows?.find((r) => r.id === id) ?? null;
 }
 
@@ -26,29 +26,29 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const match = await getTrendyMatch(Number(id));
-  if (!match) return { title: "Trendy Match Not Found" };
+  const match = await getTrendingMatch(Number(id));
+  if (!match) return { title: "Trending Match Not Found" };
 
   const title = match.title || match.name;
   return {
-    title: `${title} | Tips180 Trendy Matches`,
+    title: `${title} | Tips180 Trending Matches`,
     description: match.analysis
       ? match.analysis.slice(0, 155)
-      : `Trendy match prediction for ${match.name} — ${match.tip}.`,
-    alternates: { canonical: `/tip-store/trendymatches/${id}` },
+      : `Trending match prediction for ${match.name} — ${match.tip}.`,
+    alternates: { canonical: `/tip-store/trendingmatches/${id}` },
   };
 }
 
-export default async function TrendyMatchPage({
+export default async function TrendingMatchPage({
   params,
 }: {
   params: Promise<Params>;
 }) {
   const { id } = await params;
-  const match = await getTrendyMatch(Number(id));
+  const match = await getTrendingMatch(Number(id));
   if (!match) notFound();
 
-  const url = `${siteConfig.url}/tip-store/trendymatches/${id}`;
+  const url = `${siteConfig.url}/tip-store/trendingmatches/${id}`;
   const title = match.title || match.name;
 
   return (
@@ -57,7 +57,7 @@ export default async function TrendyMatchPage({
         data={breadcrumbSchema([
           { name: "Home", url: siteConfig.url },
           { name: "Tips Store", url: `${siteConfig.url}/tips-store` },
-          { name: "Trendy Matches", url: `${siteConfig.url}/tip-store/trendymatches` },
+          { name: "Trending Matches", url: `${siteConfig.url}/tip-store/trendingmatches` },
           { name: title, url },
         ])}
       />
@@ -68,10 +68,10 @@ export default async function TrendyMatchPage({
         <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
         <div className="relative mx-auto max-w-3xl">
           <Link
-            href="/tip-store/trendymatches"
+            href="/tip-store/trendingmatches"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/80 hover:text-white"
           >
-            <ArrowLeft size={13} /> Back to Trendy Matches
+            <ArrowLeft size={13} /> Back to Trending Matches
           </Link>
           <h1 className="mt-4 text-2xl font-bold lg:text-4xl">{title}</h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm text-white/85 lg:text-base">
@@ -132,10 +132,10 @@ export default async function TrendyMatchPage({
 
         <div className="mt-8 text-center">
           <Link
-            href="/tip-store/trendymatches"
+            href="/tip-store/trendingmatches"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
           >
-            <ArrowLeft size={14} /> View all Trendy Matches
+            <ArrowLeft size={14} /> View all Trending Matches
           </Link>
         </div>
       </div>

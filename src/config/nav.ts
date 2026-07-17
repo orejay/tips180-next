@@ -45,7 +45,7 @@ export const subNav: SubnavGroup[] = [
       { name: "Leagues' Predictions", href: "/leagues" },
       { name: "Banker Tip of the Day", href: "/dashboard/bankertips" },
       { name: "Predictions Store", href: "#", sectionHeader: true, divider: true },
-      { name: "Trendy Matches", href: "/tip-store/trendymatches" },
+      { name: "Trending Matches", href: "/tip-store/trendingmatches" },
       { name: "Double Chance", href: "/tip-store/doublechance" },
       { name: "Over 1.5 Goals", href: "/tip-store/over1" },
       { name: "Over/Under 2.5", href: "/tip-store/over2" },
@@ -60,7 +60,6 @@ export const subNav: SubnavGroup[] = [
     items: [
       { name: "Today's football predictions", href: "/" },
       { name: "Tomorrow's football predictions", href: "/predictions/tomorrow" },
-      { name: "Weekend football predictions", href: "/predictions/weekend" },
       { name: "Monday football predictions", href: "/predictions/monday" },
       { name: "Tuesday football predictions", href: "/predictions/tuesday" },
       { name: "Wednesday football predictions", href: "/predictions/wednesday" },
@@ -68,6 +67,7 @@ export const subNav: SubnavGroup[] = [
       { name: "Friday football predictions", href: "/predictions/friday" },
       { name: "Saturday football predictions", href: "/predictions/saturday" },
       { name: "Sunday football predictions", href: "/predictions/sunday" },
+      { name: "Weekend football predictions", href: "/tip-store/weekendtip" },
     ],
   },
   {
@@ -133,7 +133,7 @@ export const footerNav = {
     { name: "German Bundesliga", href: "/leagues/bundesliga" },
     { name: "Italian Serie A", href: "/leagues/serie-a" },
     { name: "French Ligue One", href: "/leagues/ligue-1" },
-    { name: "Trendy Matches", href: "/tip-store/trendymatches" },
+    { name: "Trending Matches", href: "/tip-store/trendingmatches" },
     { name: "Both Teams To Score Tips", href: "/tip-store/bts" },
     { name: "Over 2.5 Goals Tips", href: "/tip-store/over2" },
     { name: "Double Chance Tips", href: "/tip-store/doublechance" },

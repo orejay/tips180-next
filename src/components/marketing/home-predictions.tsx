@@ -8,6 +8,10 @@ import { PredictionTabs } from "@/components/marketing/prediction-tabs";
 import { BookingCode } from "@/components/marketing/booking-code";
 import { TipsterBadge } from "@/components/marketing/tipster-badge";
 import { LeagueBadge } from "@/components/marketing/league-badge";
+import { cn } from "@/lib/utils";
+
+/** Row height beyond which Recent Winning Tips scrolls instead of growing the page. */
+const RECENT_TIPS_VISIBLE_ROWS = 10;
 
 /**
  * Home prediction tables (Recent Winning Tips + Upcoming Tips). Server Component:
@@ -32,8 +36,9 @@ export async function HomePredictions() {
       <PredictionTabs
         recent={<PredictionTable rows={recent} variant="recent" />}
         upcoming={<PredictionTable rows={upcoming} variant="upcoming" />}
+        recentTipster={<TipsterBadge category="recent-win" />}
+        upcomingTipster={<TipsterBadge category="upcoming" />}
       />
-      <TipsterBadge category="upcoming" />
     </section>
   );
 }
@@ -61,13 +66,19 @@ function PredictionTable({
 
   const isRecent = variant === "recent";
   const lastHeading = isRecent ? "Result" : "Odds";
+  const scrollable = isRecent && rows.length > RECENT_TIPS_VISIBLE_ROWS;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
-      <div className="overflow-x-auto">
+      <div
+        className={cn(
+          "overflow-x-auto",
+          scrollable && "max-h-120 overflow-y-auto lg:max-h-none lg:overflow-y-visible",
+        )}
+      >
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5">
+            <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5 sticky top-0">
               <th className="px-4 py-3 text-center font-semibold">League</th>
               <th className="px-4 py-3 font-semibold">Match</th>
               <th className="px-4 py-3 font-semibold">Tip</th>

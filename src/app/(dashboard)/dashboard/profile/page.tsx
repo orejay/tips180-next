@@ -25,7 +25,6 @@ export default async function ProfilePage() {
         name={user.name}
         email={user.email}
         plan={user.accoutplan}
-        balance={user.balance}
         refCode={user.ref_code}
         refPoints={user.ref_points}
         loyaltyPoints={user.loyalty_points}

@@ -6,6 +6,7 @@ import { PlanLocked } from "@/components/dashboard/plan-locked";
 import { PlanBooking } from "@/components/dashboard/plan-booking";
 import { TipsTable } from "@/components/dashboard/tips-table";
 import { SetTabs } from "@/components/dashboard/set-tabs";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 
 export const metadata: Metadata = { title: "Weekend 10" };
 
@@ -39,6 +40,7 @@ export default async function Weekend10Page() {
           ]}
         />
       )}
+      {!(locked || sets === null) && <TipsterBadge category="weekend10" />}
     </div>
   );
 }

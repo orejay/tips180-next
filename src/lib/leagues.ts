@@ -15,6 +15,10 @@ export type League = {
   name: string;
   short_name: string;
   region: string;
+  /** Crest URL from the backend league catalog, or null for entries without one. */
+  logo?: string | null;
+  /** Pinned on the homepage "Top Football Leagues" widget. */
+  is_top?: boolean;
 };
 
 export type LeagueRegions = Record<string, League[]>;
@@ -179,8 +183,9 @@ export function leagueLogo(shortName: string): string | null {
 
 export async function getLeagueRegions(): Promise<LeagueRegions> {
   try {
-    // League list changes rarely — cache for an hour.
-    return await api<LeagueRegions>("leagues/all", {
+    // The comprehensive, logo-carrying league catalog (see the backend's
+    // `league_catalog` table) — league list changes rarely, cache for an hour.
+    return await api<LeagueRegions>("leagues/catalog", {
       next: { revalidate: 3600 },
     });
   } catch {

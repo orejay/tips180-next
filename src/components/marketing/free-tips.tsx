@@ -9,20 +9,11 @@ import { tipCategories, getTipCategory } from "@/config/tip-store";
 import { getMarketBoardRows, type BoardRow } from "@/lib/tip-store";
 import { LastUpdated } from "@/components/seo/last-updated";
 import { BookingCode } from "@/components/marketing/booking-code";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 import { FreeBoard, type BoardStore } from "@/components/marketing/free-board";
 
-/** Curated "top league" matchers, tried in order against the live league feed. */
-const TOP_LEAGUE_MATCHERS: RegExp[] = [
-  /champions\s*league/i,
-  /premier\s*league|\bEPL\b/i,
-  /la\s*liga/i,
-  /serie\s*a\b|\bITA\b/i,
-  /bundesliga/i,
-  /ligue\s*1|\bFRA\b/i,
-];
-
 /** Static fallback used when the league feed is empty (still links to hubs). */
-const TOP_LEAGUE_FALLBACK: { name: string; href: string; shortName: string }[] = [
+const TOP_LEAGUE_FALLBACK: { name: string; href: string; shortName: string; logo?: string | null }[] = [
   { name: "UEFA Champions League", href: "/leagues", shortName: "UCL" },
   { name: "Premier League", href: "/leagues", shortName: "EPL" },
   { name: "La Liga", href: "/leagues", shortName: "LA LIGA" },
@@ -31,22 +22,19 @@ const TOP_LEAGUE_FALLBACK: { name: string; href: string; shortName: string }[] =
   { name: "Ligue 1", href: "/leagues", shortName: "FRA" },
 ];
 
-/** Map live league data onto the curated top-league list, with hub links. */
-function pickTopLeagues(all: League[]): { name: string; href: string; shortName: string }[] {
-  if (all.length === 0) return TOP_LEAGUE_FALLBACK;
+/** The six leagues pinned `is_top` in the league catalog, with hub links. */
+function pickTopLeagues(
+  all: League[],
+): { name: string; href: string; shortName: string; logo?: string | null }[] {
+  const top = all.filter((l) => l.is_top);
+  if (top.length === 0) return TOP_LEAGUE_FALLBACK;
 
-  const picked: { name: string; href: string; shortName: string }[] = [];
-  for (const re of TOP_LEAGUE_MATCHERS) {
-    const hit = all.find((l) => re.test(l.name) || re.test(l.short_name));
-    if (hit) {
-      picked.push({
-        name: formatLeagueName(hit.name),
-        href: `/leagues/${leagueSlug(hit.short_name)}`,
-        shortName: hit.short_name,
-      });
-    }
-  }
-  return picked.length > 0 ? picked : TOP_LEAGUE_FALLBACK;
+  return top.map((l) => ({
+    name: formatLeagueName(l.name),
+    href: `/leagues/${leagueSlug(l.short_name)}`,
+    shortName: l.short_name,
+    logo: l.logo,
+  }));
 }
 
 /** Quick-pick store pills on the board. Public markets render their tips inline;
@@ -97,6 +85,7 @@ export async function FreeTips() {
       allStores={allStores}
       lastUpdated={<LastUpdated />}
       booking={<BookingCode category="freex" />}
+      tipsterBadge={<TipsterBadge category="free-experts" />}
     />
   );
 }

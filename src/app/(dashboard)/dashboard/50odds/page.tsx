@@ -6,6 +6,7 @@ import { PlanLocked } from "@/components/dashboard/plan-locked";
 import { PlanBooking } from "@/components/dashboard/plan-booking";
 import { TipsTable } from "@/components/dashboard/tips-table";
 import { SetTabs } from "@/components/dashboard/set-tabs";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 
 export const metadata: Metadata = { title: "50 Odds Plan" };
 
@@ -39,6 +40,7 @@ export default async function Odds50Page() {
           ]}
         />
       )}
+      {!(locked || sets === null) && <TipsterBadge category="odds50" />}
     </div>
   );
 }

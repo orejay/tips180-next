@@ -11,9 +11,13 @@ import { cn } from "@/lib/utils";
 export function PredictionTabs({
   recent,
   upcoming,
+  recentTipster,
+  upcomingTipster,
 }: {
   recent: React.ReactNode;
   upcoming: React.ReactNode;
+  recentTipster?: React.ReactNode;
+  upcomingTipster?: React.ReactNode;
 }) {
   const [tab, setTab] = useState<0 | 1>(0);
 
@@ -41,9 +45,11 @@ export function PredictionTabs({
 
       <div role="tabpanel" hidden={tab !== 0}>
         {recent}
+        {recentTipster}
       </div>
       <div role="tabpanel" hidden={tab !== 1}>
         {upcoming}
+        {upcomingTipster}
       </div>
     </div>
   );

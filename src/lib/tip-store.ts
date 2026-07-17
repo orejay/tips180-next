@@ -29,11 +29,11 @@ export type StoreTipRow = {
   htscore: string | null;
   /** Full-time result. */
   ftscore: string | null;
-  /** Trendy-match headline (only populated for the Trendy Matches market). */
+  /** Trending-match headline (only populated for the Trending Matches market). */
   title?: string | null;
-  /** Trendy-match write-up (only populated for the Trendy Matches market). */
+  /** Trending-match write-up (only populated for the Trending Matches market). */
   analysis?: string | null;
-  /** Trendy-match confidence, 1-100 (only populated for the Trendy Matches market). */
+  /** Trending-match confidence, 1-100 (only populated for the Trending Matches market). */
   percentage?: number | null;
 };
 
@@ -92,11 +92,11 @@ export type BoardRow = {
   name: string;
   tip: string;
   odds: string | null;
-  /** Trendy-match headline (only populated for the Trendy Matches market). */
+  /** Trending-match headline (only populated for the Trending Matches market). */
   title?: string | null;
-  /** Trendy-match write-up (only populated for the Trendy Matches market). */
+  /** Trending-match write-up (only populated for the Trending Matches market). */
   analysis?: string | null;
-  /** Trendy-match confidence, 1-100 (only populated for the Trendy Matches market). */
+  /** Trending-match confidence, 1-100 (only populated for the Trending Matches market). */
   percentage?: number | null;
 };
 

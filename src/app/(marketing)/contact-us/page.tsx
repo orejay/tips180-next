@@ -13,7 +13,7 @@ const contactDetails = [
   { label: "For Advert & sponsorship please reach us", value: "adverts@tips180.com" },
   {
     label: "Call us on",
-    value: "+234 813 1149 662, +254 796 118 357 (Kenya)",
+    value: "+234 813 1149 662",
   },
   {
     label: "Working Hours",

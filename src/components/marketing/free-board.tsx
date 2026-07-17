@@ -49,10 +49,10 @@ function getHeading(dateStr: string): string {
     month: "short",
     year: "numeric",
   });
-  if (dateStr === today) return `Today's Predictions — ${formatted}`;
-  if (dateStr === yesterday) return `Yesterday's Predictions — ${formatted}`;
-  if (dateStr === tomorrow) return `Tomorrow's Predictions — ${formatted}`;
-  return `Predictions — ${formatted}`;
+  if (dateStr === today) return `Today's Predictions, ${formatted}`;
+  if (dateStr === yesterday) return `Yesterday's Predictions, ${formatted}`;
+  if (dateStr === tomorrow) return `Tomorrow's Predictions, ${formatted}`;
+  return `Predictions, ${formatted}`;
 }
 
 export function FreeBoard({
@@ -61,12 +61,14 @@ export function FreeBoard({
   allStores,
   lastUpdated,
   booking,
+  tipsterBadge,
 }: {
   stores: BoardStore[];
-  topLeagues: { name: string; href: string; shortName: string }[];
+  topLeagues: { name: string; href: string; shortName: string; logo?: string | null }[];
   allStores: { title: string; slug: string }[];
   lastUpdated: ReactNode;
   booking: ReactNode;
+  tipsterBadge?: ReactNode;
 }) {
   const [selectedKey, setSelectedKey] = useState<string>(stores[0]?.key ?? "free");
   const [selectedDate, setSelectedDate] = useState<string>(toDateString(new Date()));
@@ -83,14 +85,14 @@ export function FreeBoard({
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-6 lg:gap-8">
-        {/* ── Left rail ─────────────────────────────────── */}
-        <aside className="space-y-5 lg:col-span-2">
+        {/* ── Left rail (after the predictions table on mobile) ────── */}
+        <aside className="order-2 space-y-5 lg:order-1 lg:col-span-2">
           <TopLeaguesCard leagues={topLeagues} />
           <AllStoresCard stores={allStores} />
         </aside>
 
         {/* ── Main column ───────────────────────────────── */}
-        <div className="lg:col-span-4">
+        <div className="order-1 lg:order-2 lg:col-span-4">
           <div className="mb-5 flex flex-col items-center gap-1.5 text-center">
             <h2 className="text-xl font-bold text-foreground lg:text-2xl">
               {getHeading(selectedDate)}
@@ -127,6 +129,8 @@ export function FreeBoard({
             })}
           </div>
 
+          <div className="mx-auto mb-5 h-px w-full max-w-md bg-stone-200 dark:bg-white/10" />
+
           {/* Store pills */}
           <div className="mb-5 flex flex-wrap justify-center gap-2">
             {stores.map((s) => {
@@ -162,7 +166,12 @@ export function FreeBoard({
           ) : (
             <>
               <PredictionTable rows={rows} />
-              {activeStore.key === "free" && <div className="mt-4">{booking}</div>}
+              {activeStore.key === "free" && (
+                <>
+                  <div className="mt-4">{booking}</div>
+                  {tipsterBadge}
+                </>
+              )}
             </>
           )}
         </div>
@@ -176,7 +185,7 @@ export function FreeBoard({
 function TopLeaguesCard({
   leagues,
 }: {
-  leagues: { name: string; href: string; shortName: string }[];
+  leagues: { name: string; href: string; shortName: string; logo?: string | null }[];
 }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
@@ -194,7 +203,7 @@ function TopLeaguesCard({
               className="group flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-stone-50 hover:text-foreground dark:hover:bg-white/5"
             >
               <span className="flex items-center gap-2">
-                <LeagueLogo src={leagueLogo(l.shortName)} alt="" size={18} />
+                <LeagueLogo src={l.logo ?? leagueLogo(l.shortName)} alt="" size={18} />
                 {l.name}
               </span>
               <ChevronRight

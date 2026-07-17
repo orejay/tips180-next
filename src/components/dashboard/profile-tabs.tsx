@@ -18,15 +18,19 @@ export function ProfileTabs({ info }: { info: ProfileInfo }) {
 
   return (
     <div>
-      <div className="mb-6 inline-flex rounded-md border border-border bg-background p-1 text-sm">
+      <div className="mb-6 inline-flex gap-1 rounded-xl bg-stone-100 p-1 text-sm dark:bg-white/5">
         {["My Information", "Change Password"].map((label, i) => (
           <button
             key={label}
             type="button"
+            role="tab"
+            aria-selected={tab === i}
             onClick={() => setTab(i as 0 | 1)}
             className={cn(
-              "rounded px-3 py-1.5 font-medium transition-colors",
-              tab === i ? "bg-primary text-white" : "text-muted hover:text-foreground",
+              "cursor-pointer rounded-lg px-4 py-2 font-semibold transition-colors",
+              tab === i
+                ? "bg-white text-primary shadow-sm dark:bg-white/10"
+                : "text-muted hover:text-foreground",
             )}
           >
             {label}

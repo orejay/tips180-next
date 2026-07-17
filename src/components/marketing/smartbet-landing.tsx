@@ -24,22 +24,22 @@ function fmtDate(iso: string): string {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : iso ?? "";
 }
 
-const trendyCat = getTipCategory("trendymatches");
+const trendingCat = getTipCategory("trendingmatches");
 
 /**
  * Smart Bet block. The Smart Bet hero card and the (redesigned, compact) Smart
- * Bet Plus card are stacked in the left column; a live Trendy Matches widget
+ * Bet Plus card are stacked in the left column; a live Trending Matches widget
  * fills the right column where Smart Bet Plus used to sit.
  */
 export async function SmartBetLanding() {
-  const [next, trendyRows] = await Promise.all([
+  const [next, trendingRows] = await Promise.all([
     getNextSmartBet(),
-    trendyCat ? getMarketBoardRows(trendyCat) : Promise.resolve<BoardRow[]>([]),
+    trendingCat ? getMarketBoardRows(trendingCat) : Promise.resolve<BoardRow[]>([]),
   ]);
   const sb = next[0];
   if (!sb) return null;
 
-  const trendy = trendyRows.slice(0, 5);
+  const trending = trendingRows.slice(0, 5);
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-10">
@@ -136,16 +136,16 @@ export async function SmartBetLanding() {
           </div>
         </div>
 
-        {/* Right column — Trendy Matches widget */}
+        {/* Right column — Trending Matches widget */}
         <div className="lg:col-span-5">
-          <TrendyMatchesCard rows={trendy} />
+          <TrendingMatchesCard rows={trending} />
         </div>
       </div>
     </section>
   );
 }
 
-function TrendyMatchesCard({ rows }: { rows: BoardRow[] }) {
+function TrendingMatchesCard({ rows }: { rows: BoardRow[] }) {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
       {/* Header */}
@@ -154,7 +154,7 @@ function TrendyMatchesCard({ rows }: { rows: BoardRow[] }) {
           <Flame size={16} />
         </span>
         <div>
-          <h3 className="font-bold text-foreground">Trendy Matches</h3>
+          <h3 className="font-bold text-foreground">Trending Matches</h3>
           <p className="text-xs text-subtle">The fixtures trending with Tips180 punters</p>
         </div>
       </div>
@@ -165,7 +165,7 @@ function TrendyMatchesCard({ rows }: { rows: BoardRow[] }) {
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-orange-500 dark:bg-orange-500/10">
             <Flame size={20} />
           </span>
-          <p className="text-sm font-semibold text-foreground">No trendy matches right now</p>
+          <p className="text-sm font-semibold text-foreground">No trending matches right now</p>
           <p className="text-xs text-subtle">
             Check back soon for today&apos;s hottest fixtures.
           </p>
@@ -175,7 +175,7 @@ function TrendyMatchesCard({ rows }: { rows: BoardRow[] }) {
           {rows.map((row) => (
             <li key={row.id}>
               <Link
-                href={`/tip-store/trendymatches/${row.id}`}
+                href={`/tip-store/trendingmatches/${row.id}`}
                 className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-stone-50 dark:hover:bg-white/5"
               >
                 <LeagueBadge league={row.league} />
@@ -215,10 +215,10 @@ function TrendyMatchesCard({ rows }: { rows: BoardRow[] }) {
       {/* Footer link */}
       <div className="mt-auto border-t border-stone-100 p-3 dark:border-white/6">
         <Link
-          href="/tip-store/trendymatches"
+          href="/tip-store/trendingmatches"
           className="flex items-center justify-center gap-1.5 rounded-xl bg-stone-50 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-stone-100 dark:bg-white/5 dark:hover:bg-white/10"
         >
-          View more trendy matches
+          View more trending matches
           <ArrowRight size={14} />
         </Link>
       </div>

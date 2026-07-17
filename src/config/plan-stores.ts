@@ -28,7 +28,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     accent: "from-teal-500 to-emerald-600",
     tint: "bg-emerald-50 dark:bg-emerald-950/30",
     stores: [
-      { label: "Trendy Matches", href: "/tip-store/trendymatches" },
+      { label: "Trending Matches", href: "/tip-store/trendingmatches" },
       { label: "Over 1.5 Goals", href: "/tip-store/over1" },
       { label: "Correct Score", href: "/tip-store/correctscore" },
       { label: "Double Chance", href: "/tip-store/doublechance" },

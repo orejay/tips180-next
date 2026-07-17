@@ -131,7 +131,7 @@ function PredictionTable({
           <tbody className="divide-y divide-stone-50 dark:divide-white/5">
             {rows.map((row) => {
               const detailsHref = row.analysis || row.percentage != null
-                ? `/tip-store/trendymatches/${row.id}`
+                ? `/tip-store/trendingmatches/${row.id}`
                 : null;
               return (
                 <tr
