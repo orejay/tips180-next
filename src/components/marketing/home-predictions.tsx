@@ -72,56 +72,57 @@ function PredictionTable({
     <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
       <div
         className={cn(
-          "overflow-x-auto",
-          scrollable && "max-h-120 overflow-y-auto lg:max-h-none lg:overflow-y-visible",
+          scrollable && "max-h-120 touch-pan-y overflow-y-auto lg:max-h-none lg:overflow-y-visible",
         )}
       >
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5 sticky top-0">
-              <th className="px-4 py-3 text-center font-semibold">League</th>
-              <th className="px-4 py-3 font-semibold">Match</th>
-              <th className="px-4 py-3 font-semibold">Tip</th>
-              <th className="px-4 py-3 text-right font-semibold">{lastHeading}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-stone-50 dark:divide-white/5">
-            {rows.map((row) => (
-              <tr
-                key={row.id}
-                className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
-              >
-                <td className="px-4 py-3 text-center align-middle">
-                  <LeagueBadge league={row.league} />
-                </td>
-                <td className="px-4 py-3 align-middle">
-                  <p className="font-semibold leading-snug text-foreground">{row.name}</p>
-                  <p className="mt-0.5 text-xs text-subtle">
-                    {formatDayMonth(row.date)}
-                    {row.time ? ` · ${row.time}` : ""}
-                  </p>
-                </td>
-                <td className="px-4 py-3 align-middle">
-                  <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                    {row.fttip || row.upcoming_tip || "—"}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
-                  {isRecent ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
-                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                      {row.ftscore || "WON"}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
-                      {row.ft_odds || "—"}
-                    </span>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-stone-100 bg-stone-50/70 text-left text-[11px] uppercase tracking-wide text-subtle dark:border-white/6 dark:bg-white/5 sticky top-0">
+                <th className="px-4 py-3 text-center font-semibold">League</th>
+                <th className="px-4 py-3 font-semibold">Match</th>
+                <th className="px-4 py-3 font-semibold">Tip</th>
+                <th className="px-4 py-3 text-right font-semibold">{lastHeading}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-stone-50 dark:divide-white/5">
+              {rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
+                >
+                  <td className="px-4 py-3 text-center align-middle">
+                    <LeagueBadge league={row.league} />
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    <p className="font-semibold leading-snug text-foreground">{row.name}</p>
+                    <p className="mt-0.5 text-xs text-subtle">
+                      {formatDayMonth(row.date)}
+                      {row.time ? ` · ${row.time}` : ""}
+                    </p>
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                      {row.fttip || row.upcoming_tip || "—"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
+                    {isRecent ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
+                        <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                        {row.ftscore || "WON"}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
+                        {row.ft_odds || "—"}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
