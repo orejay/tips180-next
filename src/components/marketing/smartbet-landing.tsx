@@ -17,11 +17,12 @@ import { formatDayMonth } from "@/lib/predictions";
 import { Countdown } from "@/components/ui/countdown";
 import { LeagueBadge } from "@/components/marketing/league-badge";
 
-const gradient = "bg-linear-to-r from-brand-start to-brand-end bg-clip-text text-transparent";
+const gradient =
+  "bg-linear-to-r from-brand-start to-brand-end bg-clip-text text-transparent";
 
 function fmtDate(iso: string): string {
   const m = iso?.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso ?? "";
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso ?? "");
 }
 
 const trendingCat = getTipCategory("trendingmatches");
@@ -34,7 +35,9 @@ const trendingCat = getTipCategory("trendingmatches");
 export async function SmartBetLanding() {
   const [next, trendingRows] = await Promise.all([
     getNextSmartBet(),
-    trendingCat ? getMarketBoardRows(trendingCat) : Promise.resolve<BoardRow[]>([]),
+    trendingCat
+      ? getMarketBoardRows(trendingCat)
+      : Promise.resolve<BoardRow[]>([]),
   ]);
   const sb = next[0];
   if (!sb) return null;
@@ -48,8 +51,12 @@ export async function SmartBetLanding() {
           <Zap size={17} />
         </span>
         <div>
-          <h2 className="text-xl font-bold text-foreground md:text-2xl">Smart Bet</h2>
-          <p className="text-xs text-subtle">Expert-curated tips that keep your slips green</p>
+          <h2 className="text-xl font-bold text-foreground md:text-2xl">
+            Smart Bet
+          </h2>
+          <p className="text-xs text-subtle">
+            Expert-curated tips that keep your slips green
+          </p>
         </div>
       </div>
 
@@ -76,7 +83,8 @@ export async function SmartBetLanding() {
                 Bet smart, win consistently
               </h3>
               <p className="mt-1.5 text-sm text-white/80">
-                Unveil our expert smart-betting tips, built to deliver steady, reliable returns.
+                Unveil our expert smart-betting tips, built to deliver steady,
+                reliable returns.
               </p>
 
               <div className="mt-5 rounded-xl bg-white/10 p-4 ring-1 ring-white/15 backdrop-blur">
@@ -109,7 +117,9 @@ export async function SmartBetLanding() {
                 </span>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base font-bold text-foreground">Smart Bet Plus</h3>
+                    <h3 className="text-base font-bold text-foreground">
+                      Smart Bet Plus
+                    </h3>
                     <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
                       Members only
                     </span>
@@ -120,7 +130,9 @@ export async function SmartBetLanding() {
                   <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-subtle">
                     <CalendarDays size={13} className="shrink-0" />
                     Next tip
-                    <span className={`font-bold ${gradient}`}>{fmtDate(sb.nextsmartbetplus)}</span>
+                    <span className={`font-bold ${gradient}`}>
+                      {fmtDate(sb.nextsmartbetplus)}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -155,7 +167,9 @@ function TrendingMatchesCard({ rows }: { rows: BoardRow[] }) {
         </span>
         <div>
           <h3 className="font-bold text-foreground">Trending Matches</h3>
-          <p className="text-xs text-subtle">The fixtures trending with Tips180 punters</p>
+          <p className="text-xs text-subtle">
+            The fixtures trending among football fans on social media
+          </p>
         </div>
       </div>
 
@@ -165,7 +179,9 @@ function TrendingMatchesCard({ rows }: { rows: BoardRow[] }) {
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-orange-500 dark:bg-orange-500/10">
             <Flame size={20} />
           </span>
-          <p className="text-sm font-semibold text-foreground">No trending matches right now</p>
+          <p className="text-sm font-semibold text-foreground">
+            No trending matches right now
+          </p>
           <p className="text-xs text-subtle">
             Check back soon for today&apos;s hottest fixtures.
           </p>
