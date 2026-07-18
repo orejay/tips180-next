@@ -339,7 +339,8 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
               <th className="px-4 py-3 text-center font-semibold">League</th>
               <th className="px-4 py-3 font-semibold">Match</th>
               <th className="px-4 py-3 font-semibold">Tip</th>
-              <th className="px-4 py-3 text-right font-semibold">Odds / Score</th>
+              <th className="px-4 py-3 text-right font-semibold">Odds</th>
+              <th className="px-4 py-3 text-right font-semibold">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-50 dark:divide-white/5">
@@ -366,15 +367,14 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
-                  {row.ftscore ? (
-                    <span className="inline-flex items-center rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-bold text-white dark:bg-emerald-700">
-                      {row.ftscore}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
-                      {row.odds || "—"}
-                    </span>
-                  )}
+                  <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
+                    {row.odds || "—"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
+                  <span className="inline-flex items-center rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-bold text-white dark:bg-emerald-700">
+                    {row.ftscore || "?-?"}
+                  </span>
                 </td>
               </tr>
             ))}
