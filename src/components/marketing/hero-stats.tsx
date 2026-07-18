@@ -14,7 +14,11 @@ type Stat = {
 };
 
 const STATS: Stat[] = [
+  { end: 10, suffix: "+", label: "Years Betting Experience" },
   { end: 1_100_000, divisor: 1_000_000, decimals: 1, suffix: "M+", label: "Registered Members" },
+  { end: 486, suffix: "+", label: "Tips Provided Weekly" },
+  { end: 75, suffix: "%", label: "Accuracy Rate" },
+  { end: 70, suffix: "+", label: "Leagues Covered" },
   { end: 785_622, suffix: "+", label: "Tips Provided So Far" },
 ];
 
@@ -53,7 +57,7 @@ export function HeroStats() {
   return (
     <div
       ref={ref}
-      className="hero-fade-in mt-12 flex flex-wrap gap-x-10 gap-y-8"
+      className="hero-fade-in mt-12 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3"
       style={{ animationDelay: "0.35s" }}
     >
       {STATS.map((stat) => (
