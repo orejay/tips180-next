@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Trophy, Store, ChevronRight, ArrowRight, Lock } from "lucide-react";
 import { formatDayMonth } from "@/lib/predictions";
 import { leagueLogo } from "@/lib/leagues";
@@ -89,45 +88,35 @@ export function FreeBoard({
   booking: ReactNode;
   tipsterBadge?: ReactNode;
 }) {
-  const searchParams = useSearchParams();
-  const requestedDate = searchParams.get("date");
   const sectionRef = useRef<HTMLElement>(null);
 
   const [selectedKey, setSelectedKey] = useState<string>(
     stores[0]?.key ?? "free",
   );
-  const [selectedDate, setSelectedDate] = useState<string>(
-    () => requestedDate || toDateString(new Date()),
+  // Always starts on today's date so server and client render identically —
+  // a ?date= param (from the header's day links) is picked up client-side
+  // after mount instead, to avoid a hydration mismatch against the static/ISR
+  // shell (which has no way to know the requested date at build/revalidate time).
+  const [selectedDate, setSelectedDate] = useState<string>(() =>
+    toDateString(new Date()),
   );
 
-  // Header day links (e.g. "Monday football predictions") land here with
-  // ?date=YYYY-MM-DD#free-tips. Adjust selectedDate during render (React's
-  // recommended pattern for syncing state to a changed prop) so navigating
-  // between two different dates without a remount still picks it up.
-  const [syncedDate, setSyncedDate] = useState(requestedDate);
-  if (requestedDate !== syncedDate) {
-    setSyncedDate(requestedDate);
-    if (requestedDate) setSelectedDate(requestedDate);
-  }
-
-  // Scrolling the board into view is a genuine side effect, so it stays here.
-  useEffect(() => {
-    if (requestedDate) {
-      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [requestedDate]);
-
-  // ±3 days around today, like the referenced date picker — plus the
-  // requested date itself, if a header link pointed further out.
+  // ±3 days around today, like the referenced date picker.
   const days = useMemo(() => {
     const today = new Date();
-    const base = Array.from({ length: 7 }, (_, i) => addDays(today, i - 3));
-    if (requestedDate && !base.some((d) => toDateString(d) === requestedDate)) {
-      const [y, m, d] = requestedDate.split("-").map(Number);
-      base.push(new Date(y, m - 1, d));
-    }
-    return base;
-  }, [requestedDate]);
+    return Array.from({ length: 7 }, (_, i) => addDays(today, i - 3));
+  }, []);
+
+  useEffect(() => {
+    const date = new URLSearchParams(window.location.search).get("date");
+    // Only ever select one of the pills already on screen — never a date
+    // outside the visible ±3 day window.
+    if (!date || !days.some((d) => toDateString(d) === date)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading external (URL) state
+    setSelectedDate(date);
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- days is stable per mount; only run once
+  }, []);
 
   const activeStore = stores.find((s) => s.key === selectedKey) ?? stores[0];
   const rows = activeStore.rows.filter((r) => r.date === selectedDate);
