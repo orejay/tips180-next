@@ -113,6 +113,8 @@ export type BoardRow = {
   name: string;
   tip: string;
   odds: string | null;
+  /** Full-time score, populated once the match has finished. */
+  ftscore?: string | null;
   /** Trending-match headline (only populated for the Trending Matches market). */
   title?: string | null;
   /** Trending-match write-up (only populated for the Trending Matches market). */
@@ -155,6 +157,7 @@ export async function getMarketBoardRows(cat: TipCategory): Promise<BoardRow[]> 
         name: m.name,
         tip,
         odds: typeof odds === "string" && odds ? odds : null,
+        ftscore: typeof m.ftscore === "string" && m.ftscore ? m.ftscore : null,
         title: typeof m.trendytitle === "string" && m.trendytitle ? m.trendytitle : null,
         analysis: typeof m.trendyanalysis === "string" && m.trendyanalysis ? m.trendyanalysis : null,
         percentage: typeof m.trendypercentage === "number" ? m.trendypercentage : null,

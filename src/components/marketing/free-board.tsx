@@ -20,8 +20,18 @@ export type BoardStore = {
 
 const DAY_LABELS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const MONTH_LABELS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 /** Local YYYY-MM-DD (avoids the UTC offset shifting the day). */
@@ -43,16 +53,19 @@ function getHeading(dateStr: string): string {
   const today = toDateString(new Date());
   const yesterday = toDateString(addDays(new Date(), -1));
   const tomorrow = toDateString(addDays(new Date(), 1));
-  const formatted = new Date(`${dateStr}T12:00:00`).toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-  if (dateStr === today) return `Today's Predictions, ${formatted}`;
-  if (dateStr === yesterday) return `Yesterday's Predictions, ${formatted}`;
-  if (dateStr === tomorrow) return `Tomorrow's Predictions, ${formatted}`;
-  return `Predictions, ${formatted}`;
+  const formatted = new Date(`${dateStr}T12:00:00`).toLocaleDateString(
+    "en-GB",
+    {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    },
+  );
+  if (dateStr === today) return `Today's Predictions — ${formatted}`;
+  if (dateStr === yesterday) return `Yesterday's Predictions — ${formatted}`;
+  if (dateStr === tomorrow) return `Tomorrow's Predictions — ${formatted}`;
+  return `Predictions — ${formatted}`;
 }
 
 export function FreeBoard({
@@ -64,14 +77,23 @@ export function FreeBoard({
   tipsterBadge,
 }: {
   stores: BoardStore[];
-  topLeagues: { name: string; href: string; shortName: string; logo?: string | null }[];
+  topLeagues: {
+    name: string;
+    href: string;
+    shortName: string;
+    logo?: string | null;
+  }[];
   allStores: { title: string; slug: string }[];
   lastUpdated: ReactNode;
   booking: ReactNode;
   tipsterBadge?: ReactNode;
 }) {
-  const [selectedKey, setSelectedKey] = useState<string>(stores[0]?.key ?? "free");
-  const [selectedDate, setSelectedDate] = useState<string>(toDateString(new Date()));
+  const [selectedKey, setSelectedKey] = useState<string>(
+    stores[0]?.key ?? "free",
+  );
+  const [selectedDate, setSelectedDate] = useState<string>(
+    toDateString(new Date()),
+  );
 
   // ±3 days around today, like the referenced date picker.
   const days = useMemo(() => {
@@ -185,7 +207,12 @@ export function FreeBoard({
 function TopLeaguesCard({
   leagues,
 }: {
-  leagues: { name: string; href: string; shortName: string; logo?: string | null }[];
+  leagues: {
+    name: string;
+    href: string;
+    shortName: string;
+    logo?: string | null;
+  }[];
 }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
@@ -203,7 +230,11 @@ function TopLeaguesCard({
               className="group flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-stone-50 hover:text-foreground dark:hover:bg-white/5"
             >
               <span className="flex items-center gap-2">
-                <LeagueLogo src={l.logo ?? leagueLogo(l.shortName)} alt="" size={18} />
+                <LeagueLogo
+                  src={l.logo ?? leagueLogo(l.shortName)}
+                  alt=""
+                  size={18}
+                />
                 {l.name}
               </span>
               <ChevronRight
@@ -227,7 +258,11 @@ function TopLeaguesCard({
   );
 }
 
-function AllStoresCard({ stores }: { stores: { title: string; slug: string }[] }) {
+function AllStoresCard({
+  stores,
+}: {
+  stores: { title: string; slug: string }[];
+}) {
   return (
     <div
       id="all-tip-stores"
@@ -269,8 +304,8 @@ function UnlockPanel({ label, tier }: { label: string; tier: TipTier }) {
       </span>
       <h3 className="text-lg font-bold text-foreground">Unlock {label} tips</h3>
       <p className="mx-auto max-w-md px-4 text-sm text-muted">
-        {label} predictions are part of the {tier} plan. Subscribe to view today&apos;s
-        expert selections.
+        {label} predictions are part of the {tier} plan. Subscribe to view
+        today&apos;s expert selections.
       </p>
       <Link
         href="/our-plans"
@@ -289,7 +324,8 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
   if (rows.length === 0) {
     return (
       <p className="rounded-2xl border border-stone-200 bg-white py-12 text-center text-base font-medium text-muted dark:border-white/8 dark:bg-[#18181b]">
-        Sorry, tips aren&apos;t available for this date. Please check back later.
+        Sorry, tips aren&apos;t available for this date. Please check back
+        later.
       </p>
     );
   }
@@ -303,7 +339,7 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
               <th className="px-4 py-3 text-center font-semibold">League</th>
               <th className="px-4 py-3 font-semibold">Match</th>
               <th className="px-4 py-3 font-semibold">Tip</th>
-              <th className="px-4 py-3 text-right font-semibold">Odds</th>
+              <th className="px-4 py-3 text-right font-semibold">Odds / Score</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-50 dark:divide-white/5">
@@ -316,7 +352,9 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
                   <LeagueBadge league={row.league} />
                 </td>
                 <td className="px-4 py-3 align-middle">
-                  <p className="font-semibold leading-snug text-foreground">{row.name}</p>
+                  <p className="font-semibold leading-snug text-foreground">
+                    {row.name}
+                  </p>
                   <p className="mt-0.5 text-xs text-subtle">
                     {formatDayMonth(row.date)}
                     {row.time ? ` · ${row.time}` : ""}
@@ -328,9 +366,15 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
-                  <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
-                    {row.odds || "—"}
-                  </span>
+                  {row.ftscore ? (
+                    <span className="inline-flex items-center rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-bold text-white dark:bg-emerald-700">
+                      {row.ftscore}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
+                      {row.odds || "—"}
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}

@@ -65,6 +65,7 @@ export async function FreeTips() {
     name: t.name,
     tip: t.fttip || t.upcoming_tip || "",
     odds: t.ft_odds ?? null,
+    ftscore: t.ftscore ?? null,
   }));
 
   const stores: BoardStore[] = [
