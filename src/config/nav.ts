@@ -55,21 +55,9 @@ export const subNav: SubnavGroup[] = [
       { name: "View all stores →", href: "/tips-store" },
     ],
   },
-  {
-    label: "Daily Predictions",
-    items: [
-      { name: "Today's football predictions", href: "/" },
-      { name: "Tomorrow's football predictions", href: "/predictions/tomorrow" },
-      { name: "Monday football predictions", href: "/predictions/monday" },
-      { name: "Tuesday football predictions", href: "/predictions/tuesday" },
-      { name: "Wednesday football predictions", href: "/predictions/wednesday" },
-      { name: "Thursday football predictions", href: "/predictions/thursday" },
-      { name: "Friday football predictions", href: "/predictions/friday" },
-      { name: "Saturday football predictions", href: "/predictions/saturday" },
-      { name: "Sunday football predictions", href: "/predictions/sunday" },
-      { name: "Weekend football predictions", href: "/tip-store/weekendtip" },
-    ],
-  },
+  // Items are date-based and computed per-render by getDailyPredictionsGroup()
+  // below (a static list would go stale the moment the server started).
+  { label: "Daily Predictions", items: [] },
   {
     label: "Betting Strategies",
     items: [
@@ -105,6 +93,57 @@ export const subNav: SubnavGroup[] = [
     ],
   },
 ];
+
+/** Local YYYY-MM-DD (avoids the UTC offset shifting the day), mirrors FreeBoard. */
+function toDateString(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function addDays(base: Date, n: number): Date {
+  const d = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+const WEEKDAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+/**
+ * "Daily Predictions" group, computed fresh on every render: each day links
+ * to the homepage Free Tips board with that date pre-selected (and scrolled
+ * into view), so the dates never go stale. Weekend links to the Weekend Tips
+ * plan (`/dashboard/weekend10`) instead of a date.
+ */
+export function getDailyPredictionsGroup(): SubnavGroup {
+  const today = new Date();
+  const todayDow = today.getDay();
+  const dateHref = (d: Date) => `/?date=${toDateString(d)}#free-tips`;
+
+  const weekdayItems: DropdownItem[] = WEEKDAY_NAMES.map((name, dow) => {
+    const offset = (dow - todayDow + 7) % 7;
+    return { name: `${name} football predictions`, href: dateHref(addDays(today, offset)) };
+  });
+
+  return {
+    label: "Daily Predictions",
+    items: [
+      { name: "Today's football predictions", href: dateHref(today) },
+      { name: "Tomorrow's football predictions", href: dateHref(addDays(today, 1)) },
+      ...weekdayItems,
+      { name: "Weekend football predictions", href: "/dashboard/weekend10" },
+    ],
+  };
+}
 
 /* ── Language options ────────────────────────────────────────── */
 

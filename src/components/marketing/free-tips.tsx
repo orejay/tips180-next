@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getFreeExperts } from "@/lib/predictions";
 import {
   getAllLeagues,
@@ -80,13 +81,15 @@ export async function FreeTips() {
   const allStores = tipCategories.map((c) => ({ title: c.title, slug: c.slug }));
 
   return (
-    <FreeBoard
-      stores={stores}
-      topLeagues={pickTopLeagues(leagues)}
-      allStores={allStores}
-      lastUpdated={<LastUpdated />}
-      booking={<BookingCode category="freex" />}
-      tipsterBadge={<TipsterBadge category="free-experts" />}
-    />
+    <Suspense fallback={null}>
+      <FreeBoard
+        stores={stores}
+        topLeagues={pickTopLeagues(leagues)}
+        allStores={allStores}
+        lastUpdated={<LastUpdated />}
+        booking={<BookingCode category="freex" />}
+        tipsterBadge={<TipsterBadge category="free-experts" />}
+      />
+    </Suspense>
   );
 }

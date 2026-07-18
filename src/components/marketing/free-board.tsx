@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Trophy, Store, ChevronRight, ArrowRight, Lock } from "lucide-react";
 import { formatDayMonth } from "@/lib/predictions";
 import { leagueLogo } from "@/lib/leagues";
@@ -88,24 +89,51 @@ export function FreeBoard({
   booking: ReactNode;
   tipsterBadge?: ReactNode;
 }) {
+  const searchParams = useSearchParams();
+  const requestedDate = searchParams.get("date");
+  const sectionRef = useRef<HTMLElement>(null);
+
   const [selectedKey, setSelectedKey] = useState<string>(
     stores[0]?.key ?? "free",
   );
   const [selectedDate, setSelectedDate] = useState<string>(
-    toDateString(new Date()),
+    () => requestedDate || toDateString(new Date()),
   );
 
-  // ±3 days around today, like the referenced date picker.
+  // Header day links (e.g. "Monday football predictions") land here with
+  // ?date=YYYY-MM-DD#free-tips. Adjust selectedDate during render (React's
+  // recommended pattern for syncing state to a changed prop) so navigating
+  // between two different dates without a remount still picks it up.
+  const [syncedDate, setSyncedDate] = useState(requestedDate);
+  if (requestedDate !== syncedDate) {
+    setSyncedDate(requestedDate);
+    if (requestedDate) setSelectedDate(requestedDate);
+  }
+
+  // Scrolling the board into view is a genuine side effect, so it stays here.
+  useEffect(() => {
+    if (requestedDate) {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [requestedDate]);
+
+  // ±3 days around today, like the referenced date picker — plus the
+  // requested date itself, if a header link pointed further out.
   const days = useMemo(() => {
     const today = new Date();
-    return Array.from({ length: 7 }, (_, i) => addDays(today, i - 3));
-  }, []);
+    const base = Array.from({ length: 7 }, (_, i) => addDays(today, i - 3));
+    if (requestedDate && !base.some((d) => toDateString(d) === requestedDate)) {
+      const [y, m, d] = requestedDate.split("-").map(Number);
+      base.push(new Date(y, m - 1, d));
+    }
+    return base;
+  }, [requestedDate]);
 
   const activeStore = stores.find((s) => s.key === selectedKey) ?? stores[0];
   const rows = activeStore.rows.filter((r) => r.date === selectedDate);
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-12">
+    <section id="free-tips" ref={sectionRef} className="mx-auto w-full max-w-6xl px-4 py-12">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-6 lg:gap-8">
         {/* ── Left rail (after the predictions table on mobile) ────── */}
         <aside className="order-2 space-y-5 lg:order-1 lg:col-span-2">

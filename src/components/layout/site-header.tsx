@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +8,7 @@ import { ChevronDown, Globe, X, Menu, Zap, User, Bell, LogOut } from "lucide-rea
 import {
   sectionTabs,
   subNav,
+  getDailyPredictionsGroup,
   LANGUAGES,
   type SubnavGroup,
   type LanguageCode,
@@ -90,6 +91,16 @@ export function SiteHeader() {
 
   const currentLang = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
   const isFootballActive = !pathname.startsWith("/articles");
+
+  // The "Daily Predictions" hrefs are date-based, so resolve them fresh
+  // instead of relying on a static array that would go stale overnight.
+  const resolvedSubNav = useMemo(
+    () =>
+      subNav.map((group) =>
+        group.label === "Daily Predictions" ? getDailyPredictionsGroup() : group,
+      ),
+    [],
+  );
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-white/80 backdrop-blur-xl dark:border-zinc-800/70 dark:bg-black/80">
@@ -323,7 +334,7 @@ export function SiteHeader() {
       {/* ── Row 2: Subnav — desktop ─────────────────────────── */}
       <div className="hidden border-t border-stone-200/60 bg-stone-50/60 dark:border-zinc-800/60 dark:bg-zinc-900/30 lg:block">
         <div className="mx-auto flex h-11 w-full max-w-7xl items-stretch px-4 lg:px-8">
-          {subNav.map((group) => (
+          {resolvedSubNav.map((group) => (
             <SubnavDropdown
               key={group.label}
               group={group}
@@ -381,7 +392,7 @@ export function SiteHeader() {
 
           {/* Subnav accordion */}
           <div className="max-h-[62vh] overflow-y-auto">
-            {subNav.map((group) => (
+            {resolvedSubNav.map((group) => (
               <div key={group.label} className="border-b border-stone-100 dark:border-zinc-800/60">
                 <button
                   type="button"
