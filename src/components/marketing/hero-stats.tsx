@@ -22,7 +22,10 @@ const STATS: Stat[] = [
   { end: 785_622, suffix: "+", label: "Tips Provided So Far" },
 ];
 
-const DURATION = 1800;
+/** Pause after scrolling into view, before the count-up starts — gives the
+ *  user a moment to notice the numbers are about to animate. */
+const START_DELAY = 500;
+const DURATION = 2800;
 
 /** Stats strip that counts each number up once it scrolls into view. */
 export function HeroStats() {
@@ -41,17 +44,21 @@ export function HeroStats() {
       return;
     }
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setStart(true);
+          timer = setTimeout(() => setStart(true), START_DELAY);
           observer.disconnect();
         }
       },
       { threshold: 0.3 },
     );
     observer.observe(node);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   return (

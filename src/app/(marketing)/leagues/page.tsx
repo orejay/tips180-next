@@ -12,6 +12,7 @@ import {
   type League,
 } from "@/lib/leagues";
 import { LeagueLogo } from "@/components/marketing/league-logo";
+import { LeagueRegionAccordion } from "@/components/marketing/league-region-accordion";
 
 export const metadata: Metadata = {
   title: "Football Leagues — Predictions for Every League | Tips180",
@@ -54,15 +55,14 @@ export default async function LeaguesPage() {
             Leagues are being updated. Please check back shortly.
           </p>
         ) : (
-          orderedRegions.map((region) => (
-            <section key={region} className="mb-10">
-              <h2 className="mb-4 text-xl font-bold text-foreground">{region}</h2>
+          orderedRegions.map((region, i) => (
+            <LeagueRegionAccordion key={region} region={region} defaultOpen={i === 0}>
               <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
                 {regions[region].map((league) => (
                   <LeagueLink key={league.short_name} league={league} />
                 ))}
               </div>
-            </section>
+            </LeagueRegionAccordion>
           ))
         )}
       </div>
