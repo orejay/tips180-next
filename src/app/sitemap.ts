@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getAllLeagues, leagueSlug } from "@/lib/leagues";
 import { tipCategories } from "@/config/tip-store";
+import { BETTING_COUNTRIES } from "@/config/betting-countries";
 
 /**
  * Generates /sitemap.xml.
@@ -25,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/our-plans", changeFrequency: "weekly", priority: 0.8 },
     { path: "/leagues", changeFrequency: "daily", priority: 0.9 },
     { path: "/tips-store", changeFrequency: "daily", priority: 0.8 },
+    { path: "/best-betting-sites", changeFrequency: "weekly", priority: 0.7 },
     { path: "/predict-win", changeFrequency: "weekly", priority: 0.6 },
     { path: "/how-to-pay", changeFrequency: "monthly", priority: 0.5 },
     { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },
@@ -59,5 +61,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticEntries, ...leagueEntries, ...tipStoreEntries];
+  // Best Betting Sites country pages — the country set is fixed config.
+  const bettingSiteEntries: MetadataRoute.Sitemap = BETTING_COUNTRIES.map((country) => ({
+    url: `${siteConfig.url}/best-betting-sites/${country.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
+  return [...staticEntries, ...leagueEntries, ...tipStoreEntries, ...bettingSiteEntries];
 }

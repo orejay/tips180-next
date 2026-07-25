@@ -118,6 +118,37 @@ export function articleSchema(article: {
   };
 }
 
+/**
+ * Ranked bookmaker list for a "Best Betting Sites" country page — an ItemList of
+ * Product + AggregateRating nodes, one per reviewed bookmaker, in rank order.
+ */
+export function bettingSiteListSchema(
+  sites: { name: string; url: string; rating?: number | null; description?: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: sites.map((site, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Product",
+        name: site.name,
+        url: site.url,
+        ...(site.description && { description: site.description }),
+        ...(site.rating && {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: site.rating,
+            bestRating: 5,
+            ratingCount: 1,
+          },
+        }),
+      },
+    })),
+  };
+}
+
 /** A single football match prediction. Drives rich event cards + AI citations. */
 export function sportsEventSchema(event: {
   homeTeam: string;

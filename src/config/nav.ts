@@ -3,6 +3,8 @@
  * consistent and components remain presentational.
  */
 
+import { BETTING_COUNTRIES } from "@/config/betting-countries";
+
 export type NavLink = {
   name: string;
   href: string;
@@ -36,6 +38,9 @@ export type DropdownItem = {
 export type SubnavGroup = {
   label: string;
   items: DropdownItem[];
+  /** If set, the group label itself is a link to a hub page (click), on top of
+   *  the hover dropdown of items. Groups without a single landing page omit this. */
+  href?: string;
 };
 
 export const subNav: SubnavGroup[] = [
@@ -73,16 +78,13 @@ export const subNav: SubnavGroup[] = [
   },
   {
     label: "Best Betting Sites",
-    items: [
-      { name: "Best betting sites in Nigeria", href: "/best-betting-sites/nigeria" },
-      { name: "Best betting sites in Kenya", href: "/best-betting-sites/kenya" },
-      { name: "Best betting sites in Ghana", href: "/best-betting-sites/ghana" },
-      { name: "Best betting sites in Cameroon", href: "/best-betting-sites/cameroon" },
-      { name: "Best betting sites in Uganda", href: "/best-betting-sites/uganda" },
-      { name: "Best betting sites in Tanzania", href: "/best-betting-sites/tanzania" },
-      { name: "Best betting sites in South Africa", href: "/best-betting-sites/south-africa" },
-      { name: "Best betting sites in Zambia", href: "/best-betting-sites/zambia" },
-    ],
+    href: "/best-betting-sites",
+    // The set of countries is static config (`config/betting-countries.ts`) —
+    // only the per-country content is admin-managed.
+    items: BETTING_COUNTRIES.map((c) => ({
+      name: `Best betting sites in ${c.name}`,
+      href: `/best-betting-sites/${c.slug}`,
+    })),
   },
   {
     label: "Get More",
@@ -153,11 +155,15 @@ export function getDailyPredictionsGroup(): SubnavGroup {
 
 /* ── Language options ────────────────────────────────────────── */
 
+// `flagCode` is an ISO 3166-1 alpha-2 code for a flagcdn.com image (see
+// `flagImageUrl` in config/betting-countries.ts) — emoji flags render as plain
+// two-letter text on Windows, so real flag images are used instead. English
+// International has no single flag; it keeps the Globe icon (flagCode: null).
 export const LANGUAGES = [
-  { code: "en", name: "English International", flag: "🌐" },
-  { code: "sw", name: "Swahili", flag: "🇰🇪" },
-  { code: "fr", name: "French", flag: "🇫🇷" },
-  { code: "es", name: "Spanish", flag: "🇪🇸" },
+  { code: "en", name: "English International", flagCode: null },
+  { code: "sw", name: "Swahili", flagCode: "ke" },
+  { code: "fr", name: "French", flagCode: "fr" },
+  { code: "es", name: "Spanish", flagCode: "es" },
 ] as const;
 
 export type LanguageCode = (typeof LANGUAGES)[number]["code"];
@@ -185,6 +191,7 @@ export const footerNav = {
   ] satisfies NavLink[],
   helpful: [
     { name: "About Us", href: "/about-us" },
+    { name: "Best Betting Sites", href: "/best-betting-sites" },
     { name: "Prediction Accuracy", href: "/accuracy" },
     { name: "How to Pay", href: "/how-to-pay" },
     { name: "Our Plans", href: "/our-plans" },

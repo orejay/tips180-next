@@ -13,6 +13,7 @@ import {
   type SubnavGroup,
   type LanguageCode,
 } from "@/config/nav";
+import { flagImageUrl } from "@/config/betting-countries";
 import { logoutAction } from "@/app/(auth)/auth/actions";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { applyLanguage, readStoredLanguage } from "@/lib/i18n";
@@ -25,6 +26,21 @@ function readUserCookie(): HeaderUser | null {
   if (!match) return null;
   try { return JSON.parse(decodeURIComponent(match[1])) as HeaderUser; }
   catch { return null; }
+}
+
+/** A language's flag image, or the Globe icon for entries with no single flag. */
+function LangFlag({ flagCode, size = 15 }: { flagCode: string | null; size?: number }) {
+  if (!flagCode) return <Globe size={size} />;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={flagImageUrl(flagCode)}
+      alt=""
+      width={size * 1.3}
+      height={size}
+      className="inline-block shrink-0 rounded-xs object-cover align-middle"
+    />
+  );
 }
 
 export function SiteHeader() {
@@ -183,8 +199,7 @@ export function SiteHeader() {
                   : "text-stone-400 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200",
               )}
             >
-              <Globe size={15} />
-              <span className="text-base leading-none">{currentLang.flag}</span>
+              <LangFlag flagCode={currentLang.flagCode} />
               <ChevronDown size={12} className={cn("transition-transform duration-200", langOpen && "rotate-180")} />
             </button>
 
@@ -212,7 +227,7 @@ export function SiteHeader() {
                         : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white",
                     )}
                   >
-                    <span className="text-base leading-none">{l.flag}</span>
+                    <LangFlag flagCode={l.flagCode} />
                     <span className="flex-1 text-left">{l.name}</span>
                     {l.code === lang && (
                       <span className="h-2 w-2 shrink-0 rounded-full bg-linear-to-r from-teal-500 to-blue-600" />
@@ -394,17 +409,35 @@ export function SiteHeader() {
           <div className="max-h-[62vh] overflow-y-auto">
             {resolvedSubNav.map((group) => (
               <div key={group.label} className="border-b border-stone-100 dark:border-zinc-800/60">
-                <button
-                  type="button"
-                  onClick={() => setMobileGroup(mobileGroup === group.label ? null : group.label)}
-                  className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold text-stone-700 dark:text-zinc-200"
-                >
-                  {group.label}
-                  <ChevronDown
-                    size={15}
-                    className={cn("text-stone-400 transition-transform duration-200", mobileGroup === group.label && "rotate-180")}
-                  />
-                </button>
+                <div className="flex w-full items-center justify-between">
+                  {group.href ? (
+                    <Link
+                      href={group.href}
+                      className="flex-1 px-5 py-3.5 text-sm font-semibold text-stone-700 dark:text-zinc-200"
+                    >
+                      {group.label}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setMobileGroup(mobileGroup === group.label ? null : group.label)}
+                      className="flex-1 px-5 py-3.5 text-left text-sm font-semibold text-stone-700 dark:text-zinc-200"
+                    >
+                      {group.label}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    aria-label={`Toggle ${group.label} submenu`}
+                    onClick={() => setMobileGroup(mobileGroup === group.label ? null : group.label)}
+                    className="px-5 py-3.5"
+                  >
+                    <ChevronDown
+                      size={15}
+                      className={cn("text-stone-400 transition-transform duration-200", mobileGroup === group.label && "rotate-180")}
+                    />
+                  </button>
+                </div>
                 {mobileGroup === group.label && (
                   <div className="bg-stone-50/70 pb-2 dark:bg-zinc-900/40">
                     {group.items.map((item, i) =>
@@ -444,8 +477,8 @@ export function SiteHeader() {
                 <span className="flex items-center gap-2.5">
                   <Globe size={14} className="text-stone-400" />
                   Language
-                  <span className="rounded-lg bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-500 dark:bg-zinc-800 dark:text-zinc-400">
-                    {currentLang.flag} {currentLang.code.toUpperCase()}
+                  <span className="flex items-center gap-1 rounded-lg bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-500 dark:bg-zinc-800 dark:text-zinc-400">
+                    <LangFlag flagCode={currentLang.flagCode} size={11} /> {currentLang.code.toUpperCase()}
                   </span>
                 </span>
                 <ChevronDown
@@ -465,7 +498,7 @@ export function SiteHeader() {
                         l.code === lang ? "font-semibold text-stone-900 dark:text-white" : "text-stone-500 dark:text-zinc-400",
                       )}
                     >
-                      <span className="text-base">{l.flag}</span>
+                      <LangFlag flagCode={l.flagCode} />
                       <span className="flex-1 text-left">{l.name}</span>
                       {l.code === lang && <span className="h-2 w-2 rounded-full bg-linear-to-r from-teal-500 to-blue-600" />}
                     </button>
@@ -540,36 +573,49 @@ function SubnavDropdown({
   onDropdownEnter: () => void;
   onDropdownLeave: () => void;
 }) {
+  const triggerClassName = cn(
+    "group relative flex items-center gap-1 px-3 text-xs font-semibold tracking-wide transition-colors",
+    open
+      ? "text-stone-900 dark:text-white"
+      : "text-stone-500 hover:text-stone-800 dark:text-zinc-400 dark:hover:text-zinc-200",
+  );
+  const triggerContent = (
+    <>
+      {group.label}
+      <ChevronDown
+        size={12}
+        className={cn(
+          "shrink-0 transition-transform duration-200",
+          open ? "rotate-180 text-stone-700 dark:text-zinc-200" : "text-stone-400",
+        )}
+      />
+      {/* underline indicator */}
+      <span
+        aria-hidden
+        className={cn(
+          "absolute inset-x-2.5 bottom-0 h-[2.5px] rounded-t-full bg-linear-to-r from-teal-500 to-blue-600 transition-all duration-300 ease-out",
+          open ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-40",
+        )}
+      />
+    </>
+  );
+
   return (
     <div className="relative flex items-stretch" onMouseEnter={onEnter} onMouseLeave={onLeave}>
-      <button
-        type="button"
-        aria-haspopup="true"
-        aria-expanded={open}
-        className={cn(
-          "group relative flex items-center gap-1 px-3 text-xs font-semibold tracking-wide transition-colors",
-          open
-            ? "text-stone-900 dark:text-white"
-            : "text-stone-500 hover:text-stone-800 dark:text-zinc-400 dark:hover:text-zinc-200",
-        )}
-      >
-        {group.label}
-        <ChevronDown
-          size={12}
-          className={cn(
-            "shrink-0 transition-transform duration-200",
-            open ? "rotate-180 text-stone-700 dark:text-zinc-200" : "text-stone-400",
-          )}
-        />
-        {/* underline indicator */}
-        <span
-          aria-hidden
-          className={cn(
-            "absolute inset-x-2.5 bottom-0 h-[2.5px] rounded-t-full bg-linear-to-r from-teal-500 to-blue-600 transition-all duration-300 ease-out",
-            open ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-40",
-          )}
-        />
-      </button>
+      {group.href ? (
+        <Link href={group.href} aria-haspopup="true" aria-expanded={open} className={triggerClassName}>
+          {triggerContent}
+        </Link>
+      ) : (
+        <button
+          type="button"
+          aria-haspopup="true"
+          aria-expanded={open}
+          className={triggerClassName}
+        >
+          {triggerContent}
+        </button>
+      )}
 
       {open && (
         <div

@@ -27,7 +27,7 @@ function initials(name: string): string {
     .join("");
 }
 
-function TipsterCard({ tipster }: { tipster: Tipster }) {
+export function TipsterCard({ tipster }: { tipster: Tipster }) {
   const avatar = tipsterImageUrl(tipster.image_url);
   const favourites = [
     { label: "Favourite Sport", value: tipster.favourite_sports },
