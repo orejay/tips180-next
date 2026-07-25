@@ -1,9 +1,8 @@
 import { api } from "@/lib/api";
-import type { CardMatch } from "@/lib/predictions";
 
 /**
- * Remaining home-page feeds (announcement bar, smart-bet promo, league tips,
- * sports news). All public, fail-soft.
+ * Remaining home-page feeds (announcement bar, smart-bet promo, sports news).
+ * All public, fail-soft.
  */
 
 export type Announcement = {
@@ -27,13 +26,6 @@ export type NewsItem = {
   news_link: string;
 };
 
-export type LeagueTips = {
-  epl: CardMatch[];
-  la_liga: CardMatch[];
-  seria_a: CardMatch[];
-  bundesliga: CardMatch[];
-};
-
 export async function getAnnouncement(): Promise<Announcement | null> {
   try {
     const data = await api<Announcement>("announcements", {
@@ -50,14 +42,6 @@ export async function getNextSmartBet(): Promise<NextSmartBet[]> {
     return await api<NextSmartBet[]>("tips/next-smartbet", { next: { revalidate: 600 } });
   } catch {
     return [];
-  }
-}
-
-export async function getLeagueTips(): Promise<LeagueTips | null> {
-  try {
-    return await api<LeagueTips>("tips/leagues", { next: { revalidate: 300 } });
-  } catch {
-    return null;
   }
 }
 

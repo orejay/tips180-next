@@ -19,18 +19,34 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 
 /**
  * Plan grid with geo-located price selector. Defaults to Nigeria (NGN) so the
- * cards render server-side for SEO; refines to visitor's country after mount.
+ * cards render server-side for SEO; refines to visitor's country after mount
+ * — unless a country was already preselected (e.g. from the homepage plan
+ * recommender), in which case that choice wins and geo-detection is skipped.
  */
-export function PlansPricing() {
-  const [country, setCountry] = useState("NG");
+export function PlansPricing({
+  initialCountry,
+  highlightPlan,
+}: {
+  initialCountry?: string;
+  highlightPlan?: string;
+} = {}) {
+  const [country, setCountry] = useState(initialCountry ?? "NG");
   const { plans, currency } = getPricingFor(country);
 
   useEffect(() => {
+    if (initialCountry) return;
     fetch("/api/geo")
       .then((r) => r.json())
       .then((d: { country?: string | null }) => setCountry(toPricingCountry(d.country)))
       .catch(() => {});
-  }, []);
+  }, [initialCountry]);
+
+  useEffect(() => {
+    if (!highlightPlan) return;
+    document
+      .getElementById(`plan-${highlightPlan}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [highlightPlan]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
@@ -48,7 +64,12 @@ export function PlansPricing() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {plans.map((plan, idx) => (
-          <PlanCard key={plan.slug} plan={plan} idx={idx} />
+          <PlanCard
+            key={plan.slug}
+            plan={plan}
+            idx={idx}
+            highlighted={highlightPlan === plan.slug}
+          />
         ))}
       </div>
     </div>
@@ -122,19 +143,28 @@ const ACCENTS = [
 
 /* ── Plan card ───────────────────────────────────────────────── */
 
-export function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
+export function PlanCard({
+  plan,
+  idx,
+  highlighted = false,
+}: {
+  plan: Plan;
+  idx: number;
+  highlighted?: boolean;
+}) {
   const [durIdx, setDurIdx] = useState(0);
   const accent = ACCENTS[idx % ACCENTS.length];
   const Icon = accent.icon;
   const price = plan.prices[Math.min(durIdx, plan.prices.length - 1)];
-  const isFeatured = plan.slug === "premium";
+  const isFeatured = highlighted || plan.slug === "premium";
 
   return (
     <div
-      className="plan-card-in relative flex flex-col"
+      id={`plan-${plan.slug}`}
+      className="plan-card-in relative flex scroll-mt-28 flex-col"
       style={{ animationDelay: `${idx * 80}ms` }}
     >
-      {/* "Most Popular" badge above featured card */}
+      {/* "Most Popular" / "Recommended" badge above featured card */}
       {isFeatured && (
         <div className="absolute -top-3.5 inset-x-0 z-10 flex justify-center">
           <span
@@ -143,7 +173,7 @@ export function PlanCard({ plan, idx }: { plan: Plan; idx: number }) {
               `bg-linear-to-r ${accent.gradient}`,
             )}
           >
-            <Star size={10} fill="currentColor" /> Most Popular
+            <Star size={10} fill="currentColor" /> {highlighted ? "Recommended for You" : "Most Popular"}
           </span>
         </div>
       )}

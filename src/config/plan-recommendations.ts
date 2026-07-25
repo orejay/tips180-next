@@ -5,7 +5,16 @@
  * differ by currency purchasing power. Ported from the product-provided sheet.
  */
 
-export type Currency = "NGN" | "KES" | "GHS" | "UGX" | "XOF" | "TZS" | "ZAR" | "USD";
+export type Currency =
+  | "NGN"
+  | "KES"
+  | "GHS"
+  | "UGX"
+  | "XOF"
+  | "TZS"
+  | "ZAR"
+  | "USD"
+  | "USD_OTHER";
 
 export const CURRENCIES: { code: Currency; label: string; stakeLabel: string }[] = [
   { code: "NGN", label: "Nigerian Naira", stakeLabel: "NGN" },
@@ -15,7 +24,8 @@ export const CURRENCIES: { code: Currency; label: string; stakeLabel: string }[]
   { code: "XOF", label: "Cameroonian CFA", stakeLabel: "CFA" },
   { code: "TZS", label: "Tanzanian Shillings", stakeLabel: "TSh" },
   { code: "ZAR", label: "South African Rand", stakeLabel: "ZAR" },
-  { code: "USD", label: "US Dollar (Others)", stakeLabel: "USD" },
+  { code: "USD", label: "US Dollar", stakeLabel: "USD" },
+  { code: "USD_OTHER", label: "Other (USD)", stakeLabel: "USD" },
 ];
 
 /** Slider ceiling per currency — roughly the top stake breakpoint, rounded up. */
@@ -28,6 +38,7 @@ export const STAKE_MAX: Record<Currency, number> = {
   TZS: 2_000_000,
   ZAR: 10_000,
   USD: 1_000,
+  USD_OTHER: 1_000,
 };
 
 export type OddsBucket =
@@ -116,6 +127,10 @@ const FIVE_ODDS_RULES: Record<Currency, Rule[]> = {
     { odds: "5", minStake: 1, maxStake: 10, plans: ["Key Plan", "Premium Plan"] },
     { odds: "5", minStake: 11, maxStake: 1_000, plans: ["Premium Plan"] },
   ],
+  USD_OTHER: [
+    { odds: "5", minStake: 1, maxStake: 10, plans: ["Key Plan", "Premium Plan"] },
+    { odds: "5", minStake: 11, maxStake: 1_000, plans: ["Premium Plan"] },
+  ],
 };
 
 export const RECOMMENDATION_RULES: Record<Currency, Rule[]> = Object.fromEntries(
@@ -136,4 +151,31 @@ export function recommendPlans(
     (r) => stake >= (r.minStake ?? -Infinity) && stake <= (r.maxStake ?? Infinity),
   );
   return (hit ?? matches[0])?.plans ?? [];
+}
+
+/** Maps a recommender currency to the /our-plans country-pricing selector code. */
+export const CURRENCY_TO_PRICING_COUNTRY: Record<Currency, string> = {
+  NGN: "NG",
+  KES: "KE",
+  GHS: "GH",
+  UGX: "UG",
+  XOF: "CM",
+  TZS: "TZ",
+  ZAR: "ZA",
+  USD: "US",
+  USD_OTHER: "OT",
+};
+
+/** Maps a recommended plan name (e.g. "Key Plan") to its /our-plans slug (e.g. "key"). */
+export function recommendedPlanToSlug(name: string): string {
+  const bare = name.replace(/\s*Plan$/i, "").trim().toLowerCase();
+  const SLUGS: Record<string, string> = {
+    key: "key",
+    premium: "premium",
+    "smart bet": "smartbet",
+    rollover: "rollover",
+    "50 odds": "odds50",
+    "weekend 10 odds": "weekend10",
+  };
+  return SLUGS[bare] ?? bare.replace(/\s+/g, "");
 }

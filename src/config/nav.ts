@@ -88,6 +88,7 @@ export const subNav: SubnavGroup[] = [
     label: "Get More",
     items: [
       { name: "Our Plans", href: "/our-plans" },
+      { name: "Predict & Win", href: "/predict-win" },
       { name: "How to Subscribe", href: "/dashboard/subscribe" },
       { name: "Contact Us", href: "/contact-us" },
     ],

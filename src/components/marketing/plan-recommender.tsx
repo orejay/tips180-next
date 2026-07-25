@@ -5,9 +5,11 @@ import Link from "next/link";
 import { ChevronDown, Sparkles, ArrowRight } from "lucide-react";
 import {
   CURRENCIES,
+  CURRENCY_TO_PRICING_COUNTRY,
   ODDS_OPTIONS,
   STAKE_MAX,
   recommendPlans,
+  recommendedPlanToSlug,
   type Currency,
   type OddsBucket,
 } from "@/config/plan-recommendations";
@@ -19,7 +21,7 @@ import {
  * matched plan(s) on submit. See `config/plan-recommendations.ts` for the rules.
  */
 export function PlanRecommender() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [currency, setCurrency] = useState<Currency>("NGN");
   const [stake, setStake] = useState(0);
   const [odds, setOdds] = useState<OddsBucket>(ODDS_OPTIONS[0].value);
@@ -144,7 +146,7 @@ export function PlanRecommender() {
                   ))}
                 </div>
                 <Link
-                  href="/our-plans"
+                  href={`/our-plans?country=${CURRENCY_TO_PRICING_COUNTRY[currency]}&plan=${recommendedPlanToSlug(result[0])}`}
                   className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-blue-700 shadow-sm transition-transform hover:-translate-y-0.5"
                 >
                   Subscribe Now

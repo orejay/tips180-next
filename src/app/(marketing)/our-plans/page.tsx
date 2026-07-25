@@ -39,7 +39,14 @@ const HERO_FEATURES = [
   { Icon: Zap, text: "Betting codes included" },
 ];
 
-export default function OurPlansPage() {
+type SearchParams = { country?: string; plan?: string };
+
+export default async function OurPlansPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { country, plan } = await searchParams;
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-zinc-950 dark:to-black transition-colors duration-300">
       <JsonLd data={faqSchema(faqs)} />
@@ -96,7 +103,7 @@ export default function OurPlansPage() {
       </div>
 
       {/* Plan cards */}
-      <PlansPricing />
+      <PlansPricing initialCountry={country} highlightPlan={plan} />
 
       {/* FAQ */}
       <section className="mx-auto w-full max-w-3xl px-4 pb-16">

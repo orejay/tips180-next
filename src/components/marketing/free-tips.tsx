@@ -22,7 +22,14 @@ const TOP_LEAGUE_FALLBACK: { name: string; href: string; shortName: string; logo
   { name: "Ligue 1", href: "/leagues", shortName: "FRA" },
 ];
 
-/** The six leagues pinned `is_top` in the league catalog, with hub links. */
+/**
+ * The leagues pinned `is_top` in the league catalog. Their hrefs are in-page
+ * anchors (`#league-<slug>`) into the homepage's "Betting Tips for <league>"
+ * grid (see `landing-leagues.tsx`) rather than links to `/leagues/[slug]` —
+ * clicking a top league should scroll to its predictions on this page, not
+ * navigate away. The static fallback (feed empty) still points at the /leagues
+ * hub since there's no in-page card to scroll to in that case.
+ */
 function pickTopLeagues(
   all: League[],
 ): { name: string; href: string; shortName: string; logo?: string | null }[] {
@@ -31,7 +38,7 @@ function pickTopLeagues(
 
   return top.map((l) => ({
     name: formatLeagueName(l.name),
-    href: `/leagues/${leagueSlug(l.short_name)}`,
+    href: `#league-${leagueSlug(l.short_name)}`,
     shortName: l.short_name,
     logo: l.logo,
   }));

@@ -1296,6 +1296,12 @@ export const countryPricing: CountryPricing[] = [
     "currency": "XOF"
   },
   {
+    "code": "US",
+    "label": "United States",
+    "table": "usd",
+    "currency": "USD"
+  },
+  {
     "code": "OT",
     "label": "Other countries",
     "table": "usd",
