@@ -224,14 +224,14 @@ function ComparisonTable({
     <div className="overflow-x-auto rounded-lg bg-surface shadow-sm">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-border text-muted">
-            <th className="px-4 py-3 font-medium">Bookmaker</th>
-            <th className="px-4 py-3 font-medium">Rating</th>
-            <th className="px-4 py-3 font-medium">Welcome Bonus</th>
-            <th className="px-4 py-3 font-medium">Min. Deposit</th>
-            <th className="px-4 py-3 font-medium">Withdrawal Time</th>
-            <th className="px-4 py-3 font-medium"></th>
-            <th className="px-4 py-3 font-medium"></th>
+          <tr className="border-b-2 border-border bg-surface-muted">
+            <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Bookmaker</th>
+            <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Rating</th>
+            <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Welcome Bonus</th>
+            <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Min. Deposit</th>
+            <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Withdrawal Time</th>
+            <th className="px-4 py-3"></th>
+            <th className="px-4 py-3"></th>
           </tr>
         </thead>
         <tbody>

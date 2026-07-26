@@ -117,11 +117,11 @@ export default async function BestBettingSitesPage() {
           <div className="overflow-x-auto rounded-lg bg-surface shadow-sm">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-border text-muted">
-                  <th className="px-4 py-3 font-medium">Country</th>
-                  <th className="px-4 py-3 font-medium">Regulator</th>
-                  <th className="px-4 py-3 font-medium">Legal Age</th>
-                  <th className="px-4 py-3 font-medium">Tax on Winnings</th>
+                <tr className="border-b-2 border-border bg-surface-muted">
+                  <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Country</th>
+                  <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Regulator</th>
+                  <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Legal Age</th>
+                  <th className="px-4 py-3 text-xs font-bold tracking-wide text-subtle uppercase">Tax on Winnings</th>
                 </tr>
               </thead>
               <tbody>
