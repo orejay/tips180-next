@@ -34,8 +34,8 @@ export type LeagueMatch = {
   ft_tip: string | null;
   ht_score: string | null;
   ft_score: string | null;
+  /** Full-time odds for `ft_tip` (same field the backend exposes as `ft_odds` elsewhere). */
   league_tip: string | null;
-  odds: string | null;
 };
 
 /** Display order for the region groups the backend returns. */

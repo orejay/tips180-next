@@ -4,11 +4,12 @@ import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { siteConfig } from "@/config/site";
-import { BETTING_COUNTRIES, flagImageUrl } from "@/config/betting-countries";
+import { BETTING_COUNTRIES, BETTING_SITES_PUBLISHER, flagImageUrl } from "@/config/betting-countries";
 import { getBettingSiteCounts } from "@/lib/betting-sites";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { LastUpdated } from "@/components/seo/last-updated";
 import { RatingCriterion } from "@/components/marketing/rating-criterion";
+import { PageSectionHeading } from "@/components/marketing/page-section-heading";
 import { ResponsibleGamblingNotice } from "@/components/marketing/responsible-gambling-notice";
 
 export const metadata: Metadata = {
@@ -60,7 +61,7 @@ export default async function BestBettingSitesPage() {
       </div>
 
       <div className="mx-auto w-full max-w-6xl px-4 py-10 lg:py-14">
-        <LastUpdated />
+        <LastUpdated publisher={BETTING_SITES_PUBLISHER} />
 
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
           There isn&apos;t a single, cohesive betting market in Africa — the
@@ -112,9 +113,7 @@ export default async function BestBettingSitesPage() {
         </div>
 
         <section className="mt-14">
-          <h2 className="mb-5 text-xl font-bold text-foreground">
-            Regulation &amp; Tax by Country
-          </h2>
+          <PageSectionHeading>Regulation &amp; Tax by Country</PageSectionHeading>
           <div className="overflow-x-auto rounded-lg bg-surface shadow-sm">
             <table className="w-full text-left text-sm">
               <thead>
@@ -141,9 +140,7 @@ export default async function BestBettingSitesPage() {
 
         {paymentRows.length > 0 ? (
           <section className="mt-10">
-            <h2 className="mb-5 text-xl font-bold text-foreground">
-              Common Payment Methods by Country
-            </h2>
+            <PageSectionHeading>Common Payment Methods by Country</PageSectionHeading>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {paymentRows.map((country) => (
                 <div key={country.slug} className="rounded-lg bg-surface p-4 shadow-sm">
@@ -158,9 +155,7 @@ export default async function BestBettingSitesPage() {
         ) : null}
 
         <section className="mt-14">
-          <h2 className="mb-5 text-xl font-bold text-foreground">
-            How We Rate Betting Sites
-          </h2>
+          <PageSectionHeading>How We Rate Betting Sites</PageSectionHeading>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <RatingCriterion
               title="Reliability & Legality"
@@ -182,7 +177,7 @@ export default async function BestBettingSitesPage() {
         </section>
 
         <section className="mt-14">
-          <h2 className="mb-5 text-xl font-bold text-foreground">FAQ</h2>
+          <PageSectionHeading>FAQ</PageSectionHeading>
           <FaqAccordion items={faqs} />
         </section>
 

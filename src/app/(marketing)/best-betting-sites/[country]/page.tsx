@@ -9,12 +9,14 @@ import { ResponsibleGamblingNotice } from "@/components/marketing/responsible-ga
 import { SiteLogo } from "@/components/marketing/betting-site-logo";
 import {
   BETTING_COUNTRIES,
+  BETTING_SITES_PUBLISHER,
   findBettingCountryConfig,
   type BettingCountryConfig,
 } from "@/config/betting-countries";
 import { getBettingSitesForCountry, type BettingSite } from "@/lib/betting-sites";
 import { LastUpdated } from "@/components/seo/last-updated";
 import { RatingCriterion } from "@/components/marketing/rating-criterion";
+import { PageSectionHeading } from "@/components/marketing/page-section-heading";
 
 type Params = { country: string };
 
@@ -91,7 +93,7 @@ export default async function BettingSitesCountryPage({
       <Hero country={country} />
 
       <div className="mx-auto w-full max-w-5xl px-4 py-10">
-        <LastUpdated />
+        <LastUpdated publisher={BETTING_SITES_PUBLISHER} />
 
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
           This page breaks down the top betting sites in {country.name} so you
@@ -132,9 +134,9 @@ export default async function BettingSitesCountryPage({
         )}
 
         <section className="mt-14">
-          <h2 className="mb-5 text-xl font-bold text-foreground">
+          <PageSectionHeading>
             How Do We Pick The Top Betting Sites in {country.name}?
-          </h2>
+          </PageSectionHeading>
           <p className="max-w-3xl text-sm leading-relaxed text-muted">
             We don&apos;t sell our rankings — they&apos;re earned. We check
             each bookmaker&apos;s licence
@@ -172,9 +174,9 @@ export default async function BettingSitesCountryPage({
         </section>
 
         <section className="mt-14">
-          <h2 className="mb-5 text-xl font-bold text-foreground">
+          <PageSectionHeading>
             Best Betting Sites in {country.name} — FAQ
-          </h2>
+          </PageSectionHeading>
           <FaqAccordion items={faqs} />
         </section>
 
