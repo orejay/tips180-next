@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/config/site";
 import { breadcrumbSchema, faqSchema, bettingSiteListSchema } from "@/lib/schema";
@@ -120,7 +121,7 @@ export default async function BettingSitesCountryPage({
         </p>
 
         {sites.length === 0 ? (
-          <div className="rounded-lg bg-surface p-8 text-center text-muted shadow-sm">
+          <div className="mt-8 rounded-lg bg-surface p-8 text-center text-muted shadow-sm">
             <p>Betting site reviews for {country.name} are being updated. Check back soon.</p>
             <Link
               href="/best-betting-sites"
@@ -130,7 +131,9 @@ export default async function BettingSitesCountryPage({
             </Link>
           </div>
         ) : (
-          <ComparisonTable sites={sites} countrySlug={slug} />
+          <div className="mt-8">
+            <ComparisonTable sites={sites} countrySlug={slug} />
+          </div>
         )}
 
         <section className="mt-14">
@@ -254,9 +257,10 @@ function ComparisonTable({
                   href={`/best-betting-sites/${countrySlug}/${site.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="whitespace-nowrap font-medium text-primary hover:underline"
+                  className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-primary hover:underline"
                 >
                   {site.name} Review
+                  <ArrowUpRight size={13} className="shrink-0" />
                 </Link>
               </td>
               <td className="px-4 py-3">
@@ -265,12 +269,16 @@ function ComparisonTable({
                     href={site.affiliate_link}
                     target="_blank"
                     rel="noopener noreferrer nofollow sponsored"
-                    className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-brand-start to-brand-end py-1.5 pr-3.5 pl-1.5 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-brand-start to-brand-end py-1.5 pr-3 pl-1.5 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                   >
                     <span className="flex shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
                       <SiteLogo site={site} size={18} />
                     </span>
                     Register on {site.name}
+                    <ArrowUpRight
+                      size={13}
+                      className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    />
                   </a>
                 ) : null}
               </td>
