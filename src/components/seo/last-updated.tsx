@@ -11,15 +11,8 @@ const getNow = cache(() => new Date());
  * Visible "Last updated" timestamp. Google AI Overviews cite recently-updated
  * pages markedly more often, and it reinforces freshness for daily predictions.
  * Pass a date (defaults to now — valid because these pages render on ISR).
- * An optional `publisher` renders "by {name}" alongside it (E-E-A-T byline).
  */
-export function LastUpdated({
-  date = getNow(),
-  publisher,
-}: {
-  date?: Date;
-  publisher?: string;
-}) {
+export function LastUpdated({ date = getNow() }: { date?: Date }) {
   const formatted = date.toLocaleDateString("en-NG", {
     day: "numeric",
     month: "long",
@@ -31,12 +24,6 @@ export function LastUpdated({
       <time dateTime={date.toISOString()} className="font-medium text-muted">
         {formatted}
       </time>
-      {publisher ? (
-        <>
-          {" "}
-          by <span className="font-medium text-muted">{publisher}</span>
-        </>
-      ) : null}
     </p>
   );
 }

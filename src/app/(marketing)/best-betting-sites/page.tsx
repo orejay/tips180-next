@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { siteConfig } from "@/config/site";
-import { BETTING_COUNTRIES, BETTING_SITES_PUBLISHER, flagImageUrl } from "@/config/betting-countries";
+import { BETTING_COUNTRIES, flagImageUrl } from "@/config/betting-countries";
 import { getBettingSiteCounts } from "@/lib/betting-sites";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { LastUpdated } from "@/components/seo/last-updated";
@@ -60,7 +60,7 @@ export default async function BestBettingSitesPage() {
       </div>
 
       <div className="mx-auto w-full max-w-6xl px-4 py-10 lg:py-14">
-        <LastUpdated publisher={BETTING_SITES_PUBLISHER} />
+        <LastUpdated />
 
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
           There isn&apos;t a single, cohesive betting market in Africa — the

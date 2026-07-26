@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/site";
 import { getAllLeagues, leagueSlug } from "@/lib/leagues";
 import { tipCategories } from "@/config/tip-store";
 import { BETTING_COUNTRIES } from "@/config/betting-countries";
+import { getBettingSitesForCountry } from "@/lib/betting-sites";
 
 /**
  * Generates /sitemap.xml.
@@ -62,12 +63,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Best Betting Sites country pages — the country set is fixed config.
-  const bettingSiteEntries: MetadataRoute.Sitemap = BETTING_COUNTRIES.map((country) => ({
+  const bettingCountryEntries: MetadataRoute.Sitemap = BETTING_COUNTRIES.map((country) => ({
     url: `${siteConfig.url}/best-betting-sites/${country.slug}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.6,
   }));
 
-  return [...staticEntries, ...leagueEntries, ...tipStoreEntries, ...bettingSiteEntries];
+  // Individual bookmaker review pages, one per country's admin-managed list.
+  const bettingSitesByCountry = await Promise.all(
+    BETTING_COUNTRIES.map((country) => getBettingSitesForCountry(country.slug)),
+  );
+  const bettingSiteEntries: MetadataRoute.Sitemap = BETTING_COUNTRIES.flatMap(
+    (country, i) =>
+      bettingSitesByCountry[i].map((site) => ({
+        url: `${siteConfig.url}/best-betting-sites/${country.slug}/${site.slug}`,
+        lastModified: now,
+        changeFrequency: "weekly" as const,
+        priority: 0.5,
+      })),
+  );
+
+  return [
+    ...staticEntries,
+    ...leagueEntries,
+    ...tipStoreEntries,
+    ...bettingCountryEntries,
+    ...bettingSiteEntries,
+  ];
 }

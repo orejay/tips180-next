@@ -12,9 +12,6 @@
  * than trusting this indefinitely.
  */
 
-/** Editorial byline shown next to "Last updated" on Best Betting Sites pages. */
-export const BETTING_SITES_PUBLISHER = "Sam Shamoun";
-
 // ISO 3166-1 alpha-2 code, used to build a flagcdn.com image URL (see
 // `flagImageUrl` below) — emoji flags render as plain two-letter text on
 // Windows (no flag-emoji font support), so this project uses flag images

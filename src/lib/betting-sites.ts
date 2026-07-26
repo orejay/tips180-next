@@ -58,6 +58,15 @@ export async function getBettingSitesForCountry(slug: string): Promise<BettingSi
   }
 }
 
+/** A single bookmaker review by country + site slug, or undefined if not found. */
+export async function findBettingSite(
+  countrySlug: string,
+  siteSlug: string,
+): Promise<BettingSite | undefined> {
+  const sites = await getBettingSitesForCountry(countrySlug);
+  return sites.find((s) => s.slug === siteSlug);
+}
+
 /**
  * Bookmaker counts for each of the given country slugs (e.g. for the hub page's
  * country cards). Fetches all countries in parallel — each call is itself
