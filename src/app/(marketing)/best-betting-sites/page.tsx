@@ -4,9 +4,11 @@ import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { siteConfig } from "@/config/site";
-import { BETTING_COUNTRIES, flagImageUrl } from "@/config/betting-countries";
+import { BETTING_COUNTRIES, BETTING_SITES_PUBLISHER, flagImageUrl } from "@/config/betting-countries";
 import { getBettingSiteCounts } from "@/lib/betting-sites";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
+import { LastUpdated } from "@/components/seo/last-updated";
+import { RatingCriterion } from "@/components/marketing/rating-criterion";
 import { ResponsibleGamblingNotice } from "@/components/marketing/responsible-gambling-notice";
 
 export const metadata: Metadata = {
@@ -58,7 +60,22 @@ export default async function BestBettingSitesPage() {
       </div>
 
       <div className="mx-auto w-full max-w-6xl px-4 py-10 lg:py-14">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <LastUpdated publisher={BETTING_SITES_PUBLISHER} />
+
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
+          There isn&apos;t a single, cohesive betting market in Africa — the
+          experience differs greatly from one country to the next, since each
+          nation has its own laws, licensing schemes, payment methods and
+          currency regulations. This page gives you a pan-African overview of
+          the top betting sites on the continent; pick a country below for a
+          full, country-specific breakdown, or head to our{" "}
+          <Link href="/leagues" className="font-medium text-primary hover:underline">
+            leagues hub
+          </Link>{" "}
+          for today&apos;s match predictions.
+        </p>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {BETTING_COUNTRIES.map((country) => {
             const siteCount = counts[country.slug] ?? 0;
             return (
@@ -139,6 +156,30 @@ export default async function BestBettingSitesPage() {
             </div>
           </section>
         ) : null}
+
+        <section className="mt-14">
+          <h2 className="mb-5 text-xl font-bold text-foreground">
+            How We Rate Betting Sites
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <RatingCriterion
+              title="Reliability & Legality"
+              body="We verify a valid licence, responsible-gambling compliance and clear ownership/rules before a bookmaker is even considered."
+            />
+            <RatingCriterion
+              title="Odds & Markets"
+              body="We check prices across well-known sports and markets, plus the breadth of pre-match, live, and player-prop coverage."
+            />
+            <RatingCriterion
+              title="Customer Support"
+              body="We test live chat, email, phone and FAQ coverage for how quickly and helpfully queries actually get resolved."
+            />
+            <RatingCriterion
+              title="App & Site Performance"
+              body="Registration, deposits, withdrawals, bet placement and cash-out are tested on real mobile devices, not just desktop."
+            />
+          </div>
+        </section>
 
         <section className="mt-14">
           <h2 className="mb-5 text-xl font-bold text-foreground">FAQ</h2>

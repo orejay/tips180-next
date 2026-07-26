@@ -128,9 +128,9 @@ const PILL_WINDOW_DAYS = 3;
  * "Daily Predictions" group, computed fresh on every render: each day links
  * to the homepage Free Tips board with that date pre-selected (and scrolled
  * into view), so the dates never go stale. Weekend links to the Weekend Tips
- * plan (`/dashboard/weekend10`) instead of a date. Weekday offsets are capped
- * to the pill row's own window (today ±3 days) — the board only ever selects
- * from those existing pills, never a date outside what's shown.
+ * tip-store category (`/tip-store/weekendtip`) instead of a date. Weekday
+ * offsets are capped to the pill row's own window (today ±3 days) — the board
+ * only ever selects from those existing pills, never a date outside what's shown.
  */
 export function getDailyPredictionsGroup(): SubnavGroup {
   const today = new Date();
@@ -148,7 +148,7 @@ export function getDailyPredictionsGroup(): SubnavGroup {
       { name: "Today's football predictions", href: dateHref(today) },
       { name: "Tomorrow's football predictions", href: dateHref(addDays(today, 1)) },
       ...weekdayItems,
-      { name: "Weekend football predictions", href: "/dashboard/weekend10" },
+      { name: "Weekend football predictions", href: "/tip-store/weekendtip" },
     ],
   };
 }

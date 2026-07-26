@@ -10,6 +10,7 @@ import { ResponsibleGamblingNotice } from "@/components/marketing/responsible-ga
 import { TipsterCard } from "@/components/marketing/tipster-badge";
 import {
   BETTING_COUNTRIES,
+  BETTING_SITES_PUBLISHER,
   findBettingCountryConfig,
   type BettingCountryConfig,
 } from "@/config/betting-countries";
@@ -19,6 +20,8 @@ import {
   type BettingSite,
 } from "@/lib/betting-sites";
 import { tipsterImageUrl } from "@/lib/tipsters";
+import { LastUpdated } from "@/components/seo/last-updated";
+import { RatingCriterion } from "@/components/marketing/rating-criterion";
 
 type Params = { country: string };
 
@@ -95,6 +98,32 @@ export default async function BettingSitesCountryPage({
       <Hero country={country} />
 
       <div className="mx-auto w-full max-w-5xl px-4 py-10">
+        <LastUpdated publisher={BETTING_SITES_PUBLISHER} />
+
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
+          This page breaks down the top betting sites in {country.name} so you
+          don&apos;t have to dig through each bookmaker&apos;s terms yourself.
+          Every operator below is graded on licensing, local payment support,
+          withdrawal speed, bonus terms and customer service before it&apos;s
+          allowed to appear here.{" "}
+          {country.regulator ? (
+            <>
+              We only list bookmakers with a valid {country.regulator} licence
+              (or an equivalent, respectable foreign licence), so you can bet
+              with confidence.{" "}
+            </>
+          ) : null}
+          Check out our{" "}
+          <Link href="/leagues" className="font-medium text-primary hover:underline">
+            football predictions
+          </Link>{" "}
+          once you&apos;ve picked a bookmaker, or browse{" "}
+          <Link href="/best-betting-sites" className="font-medium text-primary hover:underline">
+            other countries we cover
+          </Link>
+          .
+        </p>
+
         {sites.length === 0 ? (
           <div className="rounded-lg bg-surface p-8 text-center text-muted shadow-sm">
             <p>Betting site reviews for {country.name} are being updated. Check back soon.</p>
@@ -116,6 +145,46 @@ export default async function BettingSitesCountryPage({
             </div>
           </>
         )}
+
+        <section className="mt-14">
+          <h2 className="mb-5 text-xl font-bold text-foreground">
+            How Do We Pick The Top Betting Sites in {country.name}?
+          </h2>
+          <p className="max-w-3xl text-sm leading-relaxed text-muted">
+            We don&apos;t sell our rankings — they&apos;re earned. We check
+            each bookmaker&apos;s licence
+            {country.regulator ? <> against the {country.regulator}</> : null},
+            test registration and deposits on real mobile devices, and confirm
+            withdrawal speed and bonus terms before a bookmaker is allowed to
+            appear on this page.
+          </p>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <RatingCriterion
+              title="Licensing verification"
+              body={
+                country.regulator
+                  ? `We verify the claimed licence against the ${country.regulator} before a site can rank.`
+                  : "We verify the claimed licence against the relevant regulator before a site can rank."
+              }
+            />
+            <RatingCriterion
+              title="Local payment methods"
+              body={
+                country.topPaymentMethods?.length
+                  ? `We weight support for ${country.topPaymentMethods.join(", ")} heavily, since cashing out should feel local.`
+                  : "We weight support for local payment methods heavily, since cashing out should feel local."
+              }
+            />
+            <RatingCriterion
+              title="Mobile performance"
+              body="Testing is done on real phones over mobile data, not just desktop and office Wi-Fi."
+            />
+            <RatingCriterion
+              title="Bonuses & wagering requirements"
+              body="We check the terms, verify the wagering multiplier and look for market exclusions before rating a bonus."
+            />
+          </div>
+        </section>
 
         <section className="mt-14">
           <h2 className="mb-5 text-xl font-bold text-foreground">
@@ -169,6 +238,7 @@ function ComparisonTable({ sites }: { sites: BettingSite[] }) {
             <th className="px-4 py-3 font-medium">Min. Deposit</th>
             <th className="px-4 py-3 font-medium">Withdrawal Time</th>
             <th className="px-4 py-3 font-medium"></th>
+            <th className="px-4 py-3 font-medium"></th>
           </tr>
         </thead>
         <tbody>
@@ -187,14 +257,24 @@ function ComparisonTable({ sites }: { sites: BettingSite[] }) {
               <td className="px-4 py-3 text-foreground">{site.min_deposit || "—"}</td>
               <td className="px-4 py-3 text-foreground">{site.withdrawal_time || "—"}</td>
               <td className="px-4 py-3">
+                <a
+                  href={`#review-${site.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="whitespace-nowrap font-medium text-primary hover:underline"
+                >
+                  {site.name} Review
+                </a>
+              </td>
+              <td className="px-4 py-3">
                 {site.affiliate_link ? (
                   <a
                     href={site.affiliate_link}
                     target="_blank"
                     rel="noopener noreferrer nofollow sponsored"
-                    className="inline-block rounded-md bg-linear-to-r from-brand-start to-brand-end px-4 py-1.5 text-xs font-medium text-white hover:opacity-90"
+                    className="inline-block whitespace-nowrap rounded-md bg-linear-to-r from-brand-start to-brand-end px-4 py-1.5 text-xs font-medium text-white hover:opacity-90"
                   >
-                    Register
+                    Register on {site.name}
                   </a>
                 ) : null}
               </td>
@@ -238,7 +318,10 @@ function ReviewCard({ site }: { site: BettingSite }) {
   ].filter(Boolean) as { label: string; value: string }[];
 
   return (
-    <article className="overflow-hidden rounded-xl bg-surface shadow-sm">
+    <article
+      id={`review-${site.slug}`}
+      className="scroll-mt-28 overflow-hidden rounded-xl bg-surface shadow-sm"
+    >
       {site.tipster && (
         <JsonLd
           data={personSchema({
@@ -374,7 +457,7 @@ function ReviewCard({ site }: { site: BettingSite }) {
               rel="noopener noreferrer nofollow sponsored"
               className="inline-block rounded-md bg-linear-to-r from-brand-start to-brand-end px-5 py-2 text-sm font-medium text-white hover:opacity-90"
             >
-              Register with {site.name}
+              Register on {site.name}
             </a>
           </div>
         ) : null}

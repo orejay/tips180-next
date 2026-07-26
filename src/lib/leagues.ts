@@ -35,6 +35,7 @@ export type LeagueMatch = {
   ht_score: string | null;
   ft_score: string | null;
   league_tip: string | null;
+  odds: string | null;
 };
 
 /** Display order for the region groups the backend returns. */
