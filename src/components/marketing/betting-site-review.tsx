@@ -1,4 +1,4 @@
-import { Check, X, Star } from "lucide-react";
+import { Check, X, Star, ArrowUpRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { TipsterCard } from "@/components/marketing/tipster-badge";
@@ -156,9 +156,16 @@ export function BettingSiteReview({ site }: { site: BettingSite }) {
               href={site.affiliate_link}
               target="_blank"
               rel="noopener noreferrer nofollow sponsored"
-              className="inline-block rounded-md bg-linear-to-r from-brand-start to-brand-end px-5 py-2 text-sm font-medium text-white hover:opacity-90"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-linear-to-r from-brand-start to-brand-end py-2 pr-6 pl-2 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
             >
+              <span className="flex shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm">
+                <SiteLogo site={site} size={26} />
+              </span>
               Register on {site.name}
+              <ArrowUpRight
+                size={16}
+                className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </a>
           </div>
         ) : null}
