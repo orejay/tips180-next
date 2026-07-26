@@ -269,10 +269,10 @@ function ComparisonTable({
                     href={site.affiliate_link}
                     target="_blank"
                     rel="noopener noreferrer nofollow sponsored"
-                    className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-brand-start to-brand-end py-1.5 pr-3 pl-1.5 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-primary py-1.5 pr-3.5 pl-1.5 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-md"
                   >
-                    <span className="flex shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
-                      <SiteLogo site={site} size={18} />
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm">
+                      <SiteLogo site={site} size={20} />
                     </span>
                     Register on {site.name}
                     <ArrowUpRight

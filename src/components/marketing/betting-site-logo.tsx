@@ -21,7 +21,7 @@ export function SiteLogo({ site, size }: { site: BettingSite; size: number }) {
       alt={site.name}
       width={size}
       height={size}
-      className="shrink-0 rounded-full object-cover"
+      className="shrink-0 rounded-full object-contain"
     />
   );
 }

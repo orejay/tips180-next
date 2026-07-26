@@ -156,10 +156,10 @@ export function BettingSiteReview({ site }: { site: BettingSite }) {
               href={site.affiliate_link}
               target="_blank"
               rel="noopener noreferrer nofollow sponsored"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-linear-to-r from-brand-start to-brand-end py-2 pr-6 pl-2 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-primary py-2 pr-6 pl-2 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg"
             >
-              <span className="flex shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm">
-                <SiteLogo site={site} size={26} />
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white p-1.5 shadow-sm">
+                <SiteLogo site={site} size={24} />
               </span>
               Register on {site.name}
               <ArrowUpRight
