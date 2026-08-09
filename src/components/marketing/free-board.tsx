@@ -5,10 +5,12 @@ import Link from "next/link";
 import { Trophy, Store, ChevronRight, ArrowRight, Lock } from "lucide-react";
 import { formatDayMonth } from "@/lib/predictions";
 import { leagueLogo } from "@/lib/leagues";
+import { bookieLogo, type Booking } from "@/lib/bookings";
 import type { BoardRow } from "@/lib/tip-store";
 import type { TipTier } from "@/config/tip-store";
 import { LeagueBadge } from "@/components/marketing/league-badge";
 import { LeagueLogo } from "@/components/marketing/league-logo";
+import { BookingCodeCard } from "@/components/marketing/booking-code-card";
 
 export type BoardStore = {
   key: string;
@@ -73,7 +75,7 @@ export function FreeBoard({
   topLeagues,
   allStores,
   lastUpdated,
-  booking,
+  bookings,
   tipsterBadge,
 }: {
   stores: BoardStore[];
@@ -85,7 +87,9 @@ export function FreeBoard({
   }[];
   allStores: { title: string; slug: string }[];
   lastUpdated: ReactNode;
-  booking: ReactNode;
+  /** Today/yesterday/tomorrow booking codes — the one shown follows whichever
+   *  date pill is selected, matching the legacy site's behavior. */
+  bookings: { today: Booking | null; yesterday: Booking | null; tomorrow: Booking | null };
   tipsterBadge?: ReactNode;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -120,6 +124,16 @@ export function FreeBoard({
 
   const activeStore = stores.find((s) => s.key === selectedKey) ?? stores[0];
   const rows = activeStore.rows.filter((r) => r.date === selectedDate);
+
+  // Booking code follows the selected date pill — only today/yesterday/tomorrow
+  // have a bucket (matching the legacy site); any other date in the ±3 day
+  // picker shows no booking code.
+  const activeBooking = (() => {
+    if (selectedDate === toDateString(new Date())) return bookings.today;
+    if (selectedDate === toDateString(addDays(new Date(), -1))) return bookings.yesterday;
+    if (selectedDate === toDateString(addDays(new Date(), 1))) return bookings.tomorrow;
+    return null;
+  })();
 
   return (
     <section id="free-tips" ref={sectionRef} className="mx-auto w-full max-w-6xl px-4 py-12">
@@ -207,7 +221,14 @@ export function FreeBoard({
               <PredictionTable rows={rows} />
               {activeStore.key === "free" && (
                 <>
-                  <div className="mt-4">{booking}</div>
+                  {activeBooking && (
+                    <div className="mt-4">
+                      <BookingCodeCard
+                        booking={activeBooking}
+                        logo={bookieLogo(activeBooking.bookie)}
+                      />
+                    </div>
+                  )}
                   {tipsterBadge}
                 </>
               )}

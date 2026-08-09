@@ -2,8 +2,8 @@ import { getFreeExperts } from "@/lib/predictions";
 import { getAllLeagues, leagueSlug, type League } from "@/lib/leagues";
 import { tipCategories, getTipCategory } from "@/config/tip-store";
 import { getMarketBoardRows, type BoardRow } from "@/lib/tip-store";
+import { getFreexBookings } from "@/lib/bookings";
 import { LastUpdated } from "@/components/seo/last-updated";
-import { BookingCode } from "@/components/marketing/booking-code";
 import { TipsterBadge } from "@/components/marketing/tipster-badge";
 import { FreeBoard, type BoardStore } from "@/components/marketing/free-board";
 
@@ -51,11 +51,12 @@ const correctScore = getTipCategory("correctscore");
  * and inline store switching. Gated markets render an unlock panel client-side.
  */
 export async function FreeTips() {
-  const [tips, leagues, over1Rows, csRows] = await Promise.all([
+  const [tips, leagues, over1Rows, csRows, freexBookings] = await Promise.all([
     getFreeExperts(),
     getAllLeagues(),
     over1 ? getMarketBoardRows(over1) : Promise.resolve<BoardRow[]>([]),
     correctScore ? getMarketBoardRows(correctScore) : Promise.resolve<BoardRow[]>([]),
+    getFreexBookings(),
   ]);
   if (tips.length === 0) return null;
 
@@ -87,7 +88,7 @@ export async function FreeTips() {
       topLeagues={pickTopLeagues(leagues)}
       allStores={allStores}
       lastUpdated={<LastUpdated />}
-      booking={<BookingCode category="freex" />}
+      bookings={freexBookings}
       tipsterBadge={<TipsterBadge category="free-experts" />}
     />
   );

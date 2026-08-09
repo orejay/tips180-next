@@ -112,8 +112,10 @@ export async function getPlanBooking(category: string): Promise<PlanBooking | nu
 }
 
 /**
- * Fetch the booking code for a category ("freex", "upcoming", "league", ...).
- * Returns the most relevant single booking (today for freex) or null.
+ * Fetch the booking code for a category ("upcoming", "league", ...), keyed
+ * under its own name in the response. Returns null if nothing is posted.
+ * "freex" is handled separately by {@link getFreexBookings} — it carries
+ * three date buckets instead of a single booking.
  */
 export async function getBooking(category: string): Promise<Booking | null> {
   let data: Record<string, unknown> | null = null;
@@ -126,11 +128,35 @@ export async function getBooking(category: string): Promise<Booking | null> {
   }
   if (!data) return null;
 
-  if (category === "freex") {
-    const freex = data.freex as { today?: RawBooking } | "" | undefined;
-    return freex && typeof freex === "object" ? pick(freex.today ?? null) : null;
-  }
-  // Other categories expose the booking under their own key.
   const value = (data[category] ?? Object.values(data)[0]) as RawBooking;
   return pick(value);
+}
+
+/** Today/yesterday/tomorrow booking codes for the "Free Experts" board, so the
+ *  UI can show the one matching whichever date pill is selected — mirrors the
+ *  legacy behavior where switching the date pill also switched the booking. */
+export async function getFreexBookings(): Promise<{
+  today: Booking | null;
+  yesterday: Booking | null;
+  tomorrow: Booking | null;
+}> {
+  const empty = { today: null, yesterday: null, tomorrow: null };
+  let data: Record<string, unknown> | null = null;
+  try {
+    data = await api<Record<string, unknown>>("bookings/category/freex", {
+      next: { revalidate: 600, tags: ["bookings"] },
+    });
+  } catch {
+    return empty;
+  }
+  const freex = data?.freex as
+    | { today?: RawBooking; yesterday?: RawBooking; tomorrow?: RawBooking }
+    | ""
+    | undefined;
+  if (!freex || typeof freex !== "object") return empty;
+  return {
+    today: pick(freex.today ?? null),
+    yesterday: pick(freex.yesterday ?? null),
+    tomorrow: pick(freex.tomorrow ?? null),
+  };
 }
