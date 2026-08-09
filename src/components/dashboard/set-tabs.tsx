@@ -4,18 +4,20 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Pill switcher for dashboard plans that publish two independent prediction
- * sets (2/3 Odds, Experts ACCA). Both panels stay mounted (toggled via
- * `hidden`) so server-rendered content for the inactive set isn't lost.
+ * Pill switcher for dashboard plans that publish multiple independent panels
+ * (2/3 Odds, Experts ACCA, Smart Bet's Strategy tab). All panels stay mounted
+ * (toggled via `hidden`) so server-rendered content for inactive tabs isn't lost.
  */
 export function SetTabs({
   labels = ["Set 1", "Set 2"],
   panels,
+  defaultIndex = 0,
 }: {
-  labels?: [string, string];
-  panels: [React.ReactNode, React.ReactNode];
+  labels?: string[];
+  panels: React.ReactNode[];
+  defaultIndex?: number;
 }) {
-  const [tab, setTab] = useState<0 | 1>(0);
+  const [tab, setTab] = useState(defaultIndex);
 
   const tabClass = (active: boolean) =>
     cn(
@@ -27,7 +29,10 @@ export function SetTabs({
 
   return (
     <div>
-      <div role="tablist" className="mb-5 inline-flex gap-1 rounded-xl bg-stone-100 p-1 dark:bg-white/5">
+      <div
+        role="tablist"
+        className="mb-5 inline-flex flex-wrap gap-1 rounded-xl bg-stone-100 p-1 dark:bg-white/5"
+      >
         {labels.map((label, i) => (
           <button
             key={label}
@@ -35,14 +40,17 @@ export function SetTabs({
             role="tab"
             aria-selected={tab === i}
             className={tabClass(tab === i)}
-            onClick={() => setTab(i as 0 | 1)}
+            onClick={() => setTab(i)}
           >
             {label}
           </button>
         ))}
       </div>
-      <div role="tabpanel" hidden={tab !== 0}>{panels[0]}</div>
-      <div role="tabpanel" hidden={tab !== 1}>{panels[1]}</div>
+      {panels.map((panel, i) => (
+        <div key={i} role="tabpanel" hidden={tab !== i}>
+          {panel}
+        </div>
+      ))}
     </div>
   );
 }

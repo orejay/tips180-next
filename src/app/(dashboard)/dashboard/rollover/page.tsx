@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, isActive } from "@/lib/api-auth";
 import { getRolloverRows } from "@/lib/plan-tips";
@@ -19,7 +20,15 @@ export default async function RolloverPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-foreground">Rollover Bet</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
+        <h1 className="text-2xl font-bold text-foreground">Rollover Bet</h1>
+        <Link
+          href="/rollover-guarantee"
+          className="text-sm font-medium text-primary hover:underline"
+        >
+          20-tip money-back guarantee →
+        </Link>
+      </div>
       {locked || window === null ? (
         <PlanLocked plan="Rollover" />
       ) : (

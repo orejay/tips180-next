@@ -8,6 +8,7 @@ import { TipsTable } from "@/components/dashboard/tips-table";
 import { DayTabs } from "@/components/dashboard/day-tabs";
 import { SetTabs } from "@/components/dashboard/set-tabs";
 import { TipsterBadge } from "@/components/marketing/tipster-badge";
+import { SmartBetStrategy } from "@/components/dashboard/smart-bet-strategy";
 
 export const metadata: Metadata = { title: "Smart Bet Plan" };
 
@@ -30,7 +31,7 @@ async function SmartBetPanels() {
 
   return (
     <SetTabs
-      labels={["Smart Bet", "Smart Bet Plus"]}
+      labels={["Smart Bet", "Smart Bet Plus", "Strategy"]}
       panels={[
         <div key="smartbet">
           {window === null ? (
@@ -59,6 +60,7 @@ async function SmartBetPanels() {
             <PlanBooking category="smartbetplus" />
           </div>
         </div>,
+        <SmartBetStrategy key="strategy" />,
       ]}
     />
   );
