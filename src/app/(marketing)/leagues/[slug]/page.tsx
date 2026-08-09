@@ -13,7 +13,6 @@ import {
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import {
   findLeagueBySlug,
-  formatLeagueName,
   getLeagueMatches,
   getLeagueRegions,
   leagueLogo,
@@ -42,7 +41,7 @@ export async function generateMetadata({
   const league = await findLeagueBySlug(slug);
   if (!league) return { title: "League Not Found" };
 
-  const name = formatLeagueName(league.name);
+  const name = league.name;
   return {
     title: `${name} Predictions & Betting Tips`,
     description: `Today's ${name} predictions, expert betting tips, correct scores and accumulators from Tips180. Free football tips updated daily.`,
@@ -59,7 +58,7 @@ export default async function LeaguePage({
   const league = await findLeagueBySlug(slug);
   if (!league) notFound();
 
-  const name = formatLeagueName(league.name);
+  const name = league.name;
   const matches = await getLeagueMatches(league.short_name);
   const url = `${siteConfig.url}/leagues/${slug}`;
 

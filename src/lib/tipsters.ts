@@ -40,7 +40,7 @@ export async function getTipsterFor(
   try {
     const data = await api<Tipster | Record<string, never>>(
       `tipsters/for/${encodeURIComponent(category)}/${iso}`,
-      { next: { revalidate: 300 } },
+      { next: { revalidate: 300, tags: ["tipsters"] } },
     );
     return data && typeof data === "object" && "id" in data
       ? (data as Tipster)
@@ -55,7 +55,7 @@ export async function getTipster(id: number | string): Promise<Tipster | null> {
   try {
     const data = await api<Tipster | Record<string, never>>(
       `tipsters/${encodeURIComponent(String(id))}/profile`,
-      { next: { revalidate: 300 } },
+      { next: { revalidate: 300, tags: ["tipsters"] } },
     );
     return data && typeof data === "object" && "id" in data
       ? (data as Tipster)

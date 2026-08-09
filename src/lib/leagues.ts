@@ -58,10 +58,6 @@ export function leagueSlug(shortName: string): string {
   return shortName.toLowerCase().trim().replace(/[\s_]+/g, "-");
 }
 
-/** Backend stores league names in ALL CAPS; render them more readably. */
-export function formatLeagueName(name: string): string {
-  return name.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 /**
  * Crest logos for the ~100 leagues/competitions users actually recognise
@@ -187,7 +183,7 @@ export async function getLeagueRegions(): Promise<LeagueRegions> {
     // The comprehensive, logo-carrying league catalog (see the backend's
     // `league_catalog` table) — league list changes rarely, cache for an hour.
     return await api<LeagueRegions>("leagues/catalog", {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["leagues"] },
     });
   } catch {
     return {};
@@ -211,7 +207,7 @@ export async function getLeagueMatches(shortName: string): Promise<LeagueMatch[]
     // upper-cases this path segment and matches it against `Match.league`.
     const res = await api<{ matches: LeagueMatch[] }>(
       `leagues/${encodeURIComponent(shortName)}/matches`,
-      { next: { revalidate: 300 } },
+      { next: { revalidate: 300, tags: ["matches"] } },
     );
     return res.matches ?? [];
   } catch {

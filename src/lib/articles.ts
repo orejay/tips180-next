@@ -22,7 +22,7 @@ export async function getArticleMeta(slug: string): Promise<ArticleMeta | null> 
   try {
     const data = await api<ArticleMeta | Record<string, never>>(
       `articles/${encodeURIComponent(slug)}`,
-      { next: { revalidate: 3600 } },
+      { next: { revalidate: 3600, tags: ["articles"] } },
     );
     return data && typeof data === "object" && "slug" in data
       ? (data as ArticleMeta)

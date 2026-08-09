@@ -31,7 +31,7 @@ export type Feedback = {
 export async function getRecentWins(): Promise<CardMatch[]> {
   try {
     return await api<CardMatch[]>("tips/recent-win", {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["matches"] },
     });
   } catch {
     return [];
@@ -41,7 +41,7 @@ export async function getRecentWins(): Promise<CardMatch[]> {
 export async function getFreeExperts(): Promise<CardMatch[]> {
   try {
     return await api<CardMatch[]>("tips/free-experts", {
-      next: { revalidate: 300 },
+      next: { revalidate: 300, tags: ["matches"] },
     });
   } catch {
     return [];
@@ -51,7 +51,7 @@ export async function getFreeExperts(): Promise<CardMatch[]> {
 export async function getUpcomingMatches(): Promise<CardMatch[]> {
   try {
     return await api<CardMatch[]>("matches/upcoming", {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["matches"] },
     });
   } catch {
     return [];
@@ -61,7 +61,7 @@ export async function getUpcomingMatches(): Promise<CardMatch[]> {
 export async function getFeedbacks(): Promise<Feedback[]> {
   try {
     return await api<Feedback[]>("feedbacks", {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["feedbacks"] },
     });
   } catch {
     return [];

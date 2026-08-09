@@ -24,7 +24,7 @@ export const storeCategories: StoreCategory[] = [
   { name: "Potential Risk", href: "/tip-store/pr", tier: "free" },
   { name: "Correct Score", href: "/tip-store/correctscore", tier: "free" },
   { name: "Accumulator", href: "/tip-store/accumulator", tier: "free" },
-  { name: "BTS", href: "/tip-store/bts", tier: "key" },
+  { name: "BTTS (GG)", href: "/tip-store/bts", tier: "key" },
   { name: "Over/Under 2.5", href: "/tip-store/over2", tier: "key" },
   { name: "Single Combo", href: "/tip-store/singlecombo", tier: "key" },
   { name: "Weekend Tips", href: "/tip-store/weekendtip", tier: "key" },

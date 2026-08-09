@@ -1,10 +1,5 @@
 import { getFreeExperts } from "@/lib/predictions";
-import {
-  getAllLeagues,
-  leagueSlug,
-  formatLeagueName,
-  type League,
-} from "@/lib/leagues";
+import { getAllLeagues, leagueSlug, type League } from "@/lib/leagues";
 import { tipCategories, getTipCategory } from "@/config/tip-store";
 import { getMarketBoardRows, type BoardRow } from "@/lib/tip-store";
 import { LastUpdated } from "@/components/seo/last-updated";
@@ -37,7 +32,7 @@ function pickTopLeagues(
   if (top.length === 0) return TOP_LEAGUE_FALLBACK;
 
   return top.map((l) => ({
-    name: formatLeagueName(l.name),
+    name: l.name,
     href: `#league-${leagueSlug(l.short_name)}`,
     shortName: l.short_name,
     logo: l.logo,
@@ -80,7 +75,7 @@ export async function FreeTips() {
     { key: "over1", label: "Over 1.5", rows: over1Rows, locked: false, tier: "Free" },
     { key: "correctscore", label: "Correct Score", rows: csRows, locked: false, tier: "Free" },
     { key: "sure2", label: "Sure 2 Odds", rows: [], locked: true, tier: "Premium" },
-    { key: "bts", label: "BTS(GG)", rows: [], locked: true, tier: "Key" },
+    { key: "bts", label: "BTTS (GG)", rows: [], locked: true, tier: "Key" },
     { key: "weekendtip", label: "Weekend Tips", rows: [], locked: true, tier: "Key" },
   ];
 

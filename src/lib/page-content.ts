@@ -14,7 +14,7 @@ export type PageContent = Record<string, PageContentBlock>;
 export async function getPageContent(pageSlug: string): Promise<PageContent> {
   try {
     return await api<PageContent>(`page-content/${encodeURIComponent(pageSlug)}`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ["page-content"] },
     });
   } catch {
     return {};

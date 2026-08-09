@@ -112,7 +112,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     tint: "bg-amber-50 dark:bg-amber-950/30",
     stores: [
       { label: "Rollover Bet Tips", href: "/dashboard/rollover" },
-      { label: "Money-Back Guaranteed", href: "/dashboard/rollover" },
+      { label: "Money-Back Guaranteed", href: "/rollover-guarantee" },
     ],
   },
 ];

@@ -92,7 +92,7 @@ export async function getPlanBooking(category: string): Promise<PlanBooking | nu
   let data: Record<string, unknown> | null = null;
   try {
     data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["bookings"] },
     });
   } catch {
     return null;
@@ -119,7 +119,7 @@ export async function getBooking(category: string): Promise<Booking | null> {
   let data: Record<string, unknown> | null = null;
   try {
     data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["bookings"] },
     });
   } catch {
     return null;

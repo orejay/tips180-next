@@ -62,7 +62,7 @@ export async function getStoreTips(cat: TipCategory): Promise<StoreTipRow[] | nu
   } else {
     try {
       data = await api<RawMatch[]>(`tips/${cat.endpoint}`, {
-        next: { revalidate: 300 },
+        next: { revalidate: 300, tags: ["matches"] },
       });
     } catch {
       data = null;
@@ -136,7 +136,7 @@ export async function getMarketBoardRows(cat: TipCategory): Promise<BoardRow[]> 
   let data: RawMatch[] | null = null;
   try {
     data = await api<RawMatch[]>(`tips/${cat.endpoint}`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 300, tags: ["matches"] },
     });
   } catch {
     data = null;

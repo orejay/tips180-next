@@ -34,13 +34,18 @@ Rules:
   string in fixture order, inline Paystack entry-fee → `verifyPwEntryAction` [verify-
   paystack-pw + paystack-pw], `submitPredictionAction` → `/submit-prediction {round,set_id,
   prediction}`). Wired into `/dashboard/pw` (country from user profile ∈ 6 PW countries
-  else Nigeria). NOTE: country auto-geolocation NOT ported (legacy used a paid IP-geo API
-  with 8 keys) — uses profile country instead; fine.
+  else Nigeria; IP geo-detect below now also feeds this — see next bullet).
 - ✅ **Geo-located pricing**: `config/pricing.ts` (all 7 non-NGN tables extracted via
   script: usd/ghs/kes/ugx/xof/sll/zar + countryPricing map + `getPricingFor`).
   `components/marketing/plans-pricing.tsx` (client country selector, defaults NG so NGN
   SSRs for SEO) on our-plans; payment-client got a country selector + currency passed to
-  Paystack/Flutterwave. NOTE: legacy IP auto-detect not ported (manual selector instead).
+  Paystack/Flutterwave. IP auto-detect **is** ported (2026-06-21, commit `18a6c8d`):
+  `lib/geo.ts` (server-side ipinfo.io lookup, `GEO_API_KEYS` rotation on 429/network
+  error — legacy exposed keys client-side, this keeps them server-only) + `app/api/geo/
+  route.ts` returns ISO country to the client; `plans-pricing.tsx` + `payment-client.tsx`
+  call it on mount to override the NG default (server-detected for `/dashboard/pw`).
+  Fails soft to Nigeria when `GEO_API_KEYS` is unset — **that env var must be populated
+  in production** (`.env.example` documents it) or every visitor silently sees NGN.
 - ✅ **Booking codes**: `lib/bookings.ts` + `components/marketing/booking-code.tsx`
   (bookie logos in `public/icons/bookies`, `/bookings/<cat>`) on free-tips (freex) +
   home-predictions (upcoming).
@@ -276,7 +281,7 @@ Infra detail (still current): `lib/api-auth.ts` (`authFetch` adds Bearer from `t
    (50odds/w10) pick 1st-or-2nd-set tip/odds. All gate 307→login unauth. Note `50odds`
    dir name starts with a digit — fine for Next route segments.
 
-### ✅ Phase 7 — Payments (DONE — core; geo card-pricing deferred)
+### ✅ Phase 7 — Payments (DONE — incl. per-country card pricing, added 2026-06-21)
 Consolidated the legacy scattered routes (`/payment/{paystack,flutterwave,ghana,...}`)
 into ONE `(dashboard)/dashboard/payment` page. Plan+duration selector (config/plans.ts
 NGN) → card checkout. **Used the official INLINE scripts** (`js.paystack.co/v1/inline.js`
@@ -290,8 +295,11 @@ flutterwaveKey from `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY`/`NEXT_PUBLIC_FLUTTERWAVE_P
 (.env.example updated). Country flows = manual mobile-money/bank instructions (NOT SDK
 integrations) → `config/payment-methods.ts` + `components/payment/manual-payments.tsx`
 (native <details>). Gates 307→login. ⚠ CAN'T TEST real payments (no keys/txns) — built
-to provider+backend contract. ⚠ Per-country CARD pricing (legacy dollarData/ghanaData/
-kenyaData geo price tables) DEFERRED — card uses NGN; manual instructions cover countries.
+to provider+backend contract. Per-country CARD pricing (`payment-client.tsx`, commit
+`18a6c8d`): country selector defaults from `/api/geo` (see geo bullet above) →
+`getPricingFor(country)` drives both the displayed plan price AND the `currency` param
+passed into `PaystackPop.setup`/`FlutterwaveCheckout` — card checkout charges in the
+visitor's local currency, not hardcoded NGN.
 This also fills `/dashboard/payment` (Phase 6 hole). Build green (43 routes).
 
 ### ▶️ Remaining phases (in order)
@@ -346,6 +354,28 @@ predict-win` (public landing + FAQ), `(marketing)/ad` (CleverCore script, noinde
 `(dashboard)/dashboard/page.tsx` (redirect→profile). Sitemap extended (tips-store,
 tip-store/*, predict-win, how-to-pay). All nav links now 200. Build+lint green (66 routes).
 
+### ✅ UX polish batch (2026-08-09)
+Six small fixes from client feedback: (1) nav.ts "Betting Strategies" dropdown items
+were sentence-case, now Title Case to match siblings. (2) "BTS" → "BTTS (GG)" in
+`store-categories.ts`, `free-tips.tsx`, `tip-store.ts` marketLabel (nav.ts already
+spelled it out fully, untouched). (3) Dark mode is now the site-wide default — root
+`layout.tsx` ships `dark` in the initial `<html>` className AND the no-flash inline
+script now does `d = t !== 'light'` (was: dark only if stored OR system prefers-dark);
+system preference is ignored, `ThemeToggle`'s explicit localStorage write is still
+respected once a visitor toggles. (4) `formatLeagueName()` (title-cased every word,
+e.g. "UEFA Champions League" → "Uefa Champions League" — mangled admin-entered casing)
+was removed from every point that shows a league's **full name**: `free-tips.tsx`
+pickTopLeagues (homepage widget), `landing-leagues.tsx` LeagueCard heading, `/leagues`
+hub list, `/leagues/[slug]` H1+meta+FAQ — all now render `league.name` exactly as
+entered in the tips180-theta league catalog admin. Deleted the now-fully-dead
+`formatLeagueName` from `lib/leagues.ts`. Scope note: this does NOT touch
+`short_name`/slug usage anywhere — only full-name display points. (5) Landing-page
+top-league preview (`landing-leagues.tsx`) capped from 4 → 2 matches, matching
+`/leagues/[slug]`'s existing `FREE_MATCH_LIMIT = 2` — both now always cap at 2
+regardless of subscription (neither page currently gates by plan). (6) Recent Winning
+Tips table on the homepage (`home-predictions.tsx`) now shows odds (`row.ft_odds`, "@
+X.XX") under the WON/score badge — previously only the "upcoming" variant showed odds.
+
 — MIGRATION CORE COMPLETE (Phases 1–9).
 Since cleared (do NOT re-list as pending): PW live entry submission + geo card-pricing
 (see Parity gaps, 2026-06-20); legacy Home secondary sections (Phase 4 gap-fill); named
@@ -357,6 +387,47 @@ Note: the admin (tips180-theta) upgrade, Trendy Matches store, feedback/analytic
 /theta-v2 parallel deploy are OUT OF SCOPE for this skill (tips180-next migration only).
 
 See `references/legacy-route-map.md` for the full route → legacy-file mapping.
+
+## On-demand cache revalidation (webhook, added 2026-08-09)
+
+Admin writes in tips180-theta were only showing up on the public site after the
+per-fetcher ISR window elapsed (60s default, up to 1h for `page-content`/`articles`/
+`leagues`) — worst case ~2x that, since the first post-expiry request serves stale and
+triggers the background regen. Client wanted near-instant. Fixed with a fire-and-forget
+webhook, no admin (tips180-theta) changes needed — the backend is the single mutation
+point regardless of which admin UI hits it:
+
+- **Backend** (`tips-back-new/app/services/revalidate.py`): `notify_revalidate(*tags)` —
+  POSTs `{tags: [...]}` to `${FRONTEND_URL}/api/revalidate` with a `Bearer
+  ${REVALIDATE_SECRET}` header, 3s timeout, try/except swallows all errors (never blocks
+  or fails the admin request). No-ops if `REVALIDATE_SECRET` is unset. Wired into every
+  admin write that affects public content: `content.py` (announcements, bookings,
+  feedbacks, news, articles, page-content), `betting_sites.py`, `tipsters.py`
+  (tipster + tipster-assignment), `league_catalog.py` (create + seed), `matches.py`
+  (AddMatch), `predictions.py` (add-fees, add-prizes, add-predictions), and the
+  matching PATCH/DELETE routes in `edit/routes.py`. Env: `FRONTEND_URL` +
+  `REVALIDATE_SECRET` in `.env.example` (blank by default = disabled).
+- **Frontend** (`tips180-next/src/app/api/revalidate/route.ts`): validates the bearer
+  secret against `REVALIDATE_SECRET`, then calls `revalidateTag(tag, { expire: 0 })`
+  per tag — `{ expire: 0 }` because this Next version's `revalidateTag` signature
+  **requires** a second `profile` arg (`string | { expire?: number }` — no 1-arg
+  overload despite older docs examples); `expire: 0` means no stale-while-revalidate
+  window, so the very next request blocks until fresh instead of serving one more
+  stale copy. **Gotcha for future Next upgrades:** check
+  `node_modules/next/dist/server/web/spec-extension/revalidate.d.ts` if this breaks
+  again — this repo's Next version deviates from training-data defaults per AGENTS.md.
+- **Tag scheme** — every relevant `api()` fetch call across `lib/*.ts` now carries a
+  `next.tags` entry matching the backend resource: `announcements`, `bookings`,
+  `feedbacks` (testimonials), `news`, `articles`, `page-content`, `betting-sites`,
+  `tipsters`, `leagues` (league catalog), `matches` (shared by all Match-table-derived
+  fetchers — recent-win/free-experts/upcoming/tip-store/league-matches/predict-win
+  round+fee+prize/next-smartbet; intentionally coarse, over-invalidation here is
+  free). ISR `revalidate` windows were left as-is (safety net if the webhook is ever
+  misconfigured or down) — the webhook makes them irrelevant in the common case.
+- **To enable in production**: set the same random secret for `REVALIDATE_SECRET` in
+  both the backend `.env` and the frontend `.env.local`, and set `FRONTEND_URL` on the
+  backend to the real site origin. Until both are set, everything silently falls back
+  to the plain ISR windows (no behavior change, no errors).
 
 ## What this rewrite can / cannot achieve
 

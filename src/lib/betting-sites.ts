@@ -50,7 +50,7 @@ export async function getBettingSitesForCountry(slug: string): Promise<BettingSi
   try {
     const res = await api<{ sites: BettingSite[] }>(
       `betting-sites/country/${encodeURIComponent(slug)}`,
-      { next: { revalidate: 300 } },
+      { next: { revalidate: 300, tags: ["betting-sites"] } },
     );
     return res.sites ?? [];
   } catch {

@@ -29,7 +29,7 @@ export type NewsItem = {
 export async function getAnnouncement(): Promise<Announcement | null> {
   try {
     const data = await api<Announcement>("announcements", {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["announcements"] },
     });
     return data && data.id && data.active !== false ? data : null;
   } catch {
@@ -39,7 +39,9 @@ export async function getAnnouncement(): Promise<Announcement | null> {
 
 export async function getNextSmartBet(): Promise<NextSmartBet[]> {
   try {
-    return await api<NextSmartBet[]>("tips/next-smartbet", { next: { revalidate: 600 } });
+    return await api<NextSmartBet[]>("tips/next-smartbet", {
+      next: { revalidate: 600, tags: ["matches"] },
+    });
   } catch {
     return [];
   }
@@ -47,7 +49,9 @@ export async function getNextSmartBet(): Promise<NextSmartBet[]> {
 
 export async function getNews(): Promise<NewsItem[]> {
   try {
-    return await api<NewsItem[]>("news", { next: { revalidate: 1800 } });
+    return await api<NewsItem[]>("news", {
+      next: { revalidate: 1800, tags: ["news"] },
+    });
   } catch {
     return [];
   }

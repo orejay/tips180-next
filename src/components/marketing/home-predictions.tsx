@@ -108,10 +108,17 @@ function PredictionTable({
                   </td>
                   <td className="px-4 py-3 text-right align-middle whitespace-nowrap">
                     {isRecent ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
-                        <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                        {row.ftscore || "WON"}
-                      </span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success">
+                          <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                          {row.ftscore || "WON"}
+                        </span>
+                        {row.ft_odds ? (
+                          <span className="text-[11px] font-medium text-subtle">
+                            @ {row.ft_odds}
+                          </span>
+                        ) : null}
+                      </div>
                     ) : (
                       <span className="inline-flex items-center rounded-full bg-stone-800 px-2.5 py-1 text-xs font-bold text-white dark:bg-zinc-700">
                         {row.ft_odds || "—"}

@@ -65,13 +65,15 @@ export default function RootLayout({
     <html
       lang={siteConfig.locale}
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
       <head>
-        {/* Apply the stored/system theme before paint to avoid a flash. */}
+        {/* Apply the stored theme before paint to avoid a flash. Dark is the
+            site default for every visitor — system preference is ignored
+            unless the visitor has explicitly picked "light" via the toggle. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('theme');var d=t!=='light';document.documentElement.classList.toggle('dark',d);}catch(e){}})();`,
           }}
         />
       </head>

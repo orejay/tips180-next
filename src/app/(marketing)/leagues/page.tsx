@@ -4,7 +4,6 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
 import { siteConfig } from "@/config/site";
 import {
-  formatLeagueName,
   getLeagueRegions,
   leagueLogo,
   leagueSlug,
@@ -71,7 +70,7 @@ export default async function LeaguesPage() {
 }
 
 function LeagueLink({ league }: { league: League }) {
-  const name = formatLeagueName(league.name);
+  const name = league.name;
   return (
     <Link
       href={`/leagues/${leagueSlug(league.short_name)}`}

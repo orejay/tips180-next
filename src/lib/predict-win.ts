@@ -38,7 +38,7 @@ export function pwSymbol(country: string): string {
 export async function getCurrentRound(): Promise<PwRound | null> {
   try {
     const data = await api<PwRound>("predictions", {
-      next: { revalidate: 120 },
+      next: { revalidate: 120, tags: ["matches"] },
     });
     return data?.predictions?.length ? data : null;
   } catch {
@@ -49,7 +49,7 @@ export async function getCurrentRound(): Promise<PwRound | null> {
 export async function getPwFee(country: string): Promise<number | null> {
   try {
     const data = await api<{ fee?: number }>(`predictions/fees/${encodeURIComponent(country)}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["matches"] },
     });
     return typeof data?.fee === "number" ? data.fee : null;
   } catch {
@@ -60,7 +60,7 @@ export async function getPwFee(country: string): Promise<number | null> {
 export async function getPwPrize(country: string): Promise<number | null> {
   try {
     const data = await api<{ prize?: number }>(`predictions/prizes/${encodeURIComponent(country)}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ["matches"] },
     });
     return typeof data?.prize === "number" ? data.prize : null;
   } catch {

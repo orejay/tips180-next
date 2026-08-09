@@ -5,7 +5,6 @@ import {
   getLeagueMatches,
   leagueLogo,
   leagueSlug,
-  formatLeagueName,
   parseTeams,
   type League,
   type LeagueMatch,
@@ -55,8 +54,10 @@ function LeagueCard({
   matches: LeagueMatch[];
 }) {
   const slug = leagueSlug(league.short_name);
-  const name = formatLeagueName(league.name);
-  const rows = matches.slice(0, 4);
+  const name = league.name;
+  // Free preview on the landing page — always 2, matching the linked /leagues/[slug]
+  // page's FREE_MATCH_LIMIT, regardless of how many open matches exist.
+  const rows = matches.slice(0, 2);
 
   return (
     <div
