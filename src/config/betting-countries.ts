@@ -104,14 +104,32 @@ export const BETTING_COUNTRIES: BettingCountryConfig[] = [
     topPaymentMethods: ["EFT", "OZOW", "Vouchers", "Cards"],
   },
   {
-    // No regulatory data sourced for Zambia yet — fields left unset rather
-    // than guessed. Add them once researched.
     slug: "zambia",
     name: "Zambia",
     flagCode: "zm",
     currency: "ZMW",
     legalAge: "18",
+    regulator: "Betting Control and Licensing Board",
+    taxNote: "Up to 20% tax on winnings (free money won, excluding the original stake)",
   },
+];
+
+/**
+ * Region-level payment method summary for the "Payments Across Africa"
+ * section — coarser than the per-country `topPaymentMethods` above, editorial
+ * content sourced the same way. Ethiopia (Horn of Africa) has no Tips180
+ * country page yet, but the row is kept for continent-wide context.
+ */
+export type AfricaPaymentRegion = { region: string; methods: string };
+
+export const AFRICA_PAYMENT_REGIONS: AfricaPaymentRegion[] = [
+  { region: "West Africa", methods: "Bank Transfer, Paystack, Mobile Money in Ghana" },
+  {
+    region: "East Africa",
+    methods: "M-Pesa in Kenya and Tanzania, Airtel Money, MTN Mobile Money in Uganda",
+  },
+  { region: "Southern Africa", methods: "EFT, OZOW, vouchers, and cards in South Africa" },
+  { region: "Horn of Africa", methods: "CBE Birr, Telebirr in Ethiopia" },
 ];
 
 export function findBettingCountryConfig(slug: string): BettingCountryConfig | undefined {
