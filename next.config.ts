@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
       // Legacy per-provider / per-country checkout routes were consolidated
       // into a single dashboard payment page.
       { source: "/payment/:slug", destination: "/dashboard/payment", permanent: true },
+      { source: "/payment", destination: "/dashboard/payment", permanent: true },
     ];
   },
 };
