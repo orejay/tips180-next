@@ -7,9 +7,9 @@ export const metadata: Metadata = { title: "Login" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ registered?: string; reset?: string }>;
+  searchParams: Promise<{ registered?: string; reset?: string; from?: string }>;
 }) {
-  const { registered, reset } = await searchParams;
+  const { registered, reset, from } = await searchParams;
   const notice = registered
     ? "Account created — please sign in."
     : reset
@@ -18,7 +18,7 @@ export default async function LoginPage({
 
   return (
     <AuthShell image="/images/signin.svg">
-      <LoginForm notice={notice} />
+      <LoginForm notice={notice} from={from} />
     </AuthShell>
   );
 }

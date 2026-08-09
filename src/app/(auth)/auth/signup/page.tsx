@@ -4,10 +4,15 @@ import { SignupForm } from "@/components/auth/signup-form";
 
 export const metadata: Metadata = { title: "Sign Up" };
 
-export default function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
   return (
     <AuthShell image="/images/signup.svg">
-      <SignupForm />
+      <SignupForm next={next} />
     </AuthShell>
   );
 }

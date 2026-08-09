@@ -12,7 +12,7 @@ export function proxy(req: NextRequest) {
   const token = req.cookies.get(TOKEN_COOKIE)?.value;
   if (!token) {
     const url = new URL("/auth/login", req.url);
-    url.searchParams.set("from", req.nextUrl.pathname);
+    url.searchParams.set("from", req.nextUrl.pathname + req.nextUrl.search);
     return NextResponse.redirect(url);
   }
   return NextResponse.next();

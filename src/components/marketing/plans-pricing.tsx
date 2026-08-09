@@ -31,6 +31,7 @@ export function PlansPricing({
   highlightPlan?: string;
 } = {}) {
   const [country, setCountry] = useState(initialCountry ?? "NG");
+  const [loggedIn, setLoggedIn] = useState(false);
   const { plans, currency } = getPricingFor(country);
 
   useEffect(() => {
@@ -40,6 +41,12 @@ export function PlansPricing({
       .then((d: { country?: string | null }) => setCountry(toPricingCountry(d.country)))
       .catch(() => {});
   }, [initialCountry]);
+
+  // Signed-in visitors go straight to checkout instead of signup.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading external (cookie) state
+    setLoggedIn(/(?:^|;\s*)tips180_user=/.test(document.cookie));
+  }, []);
 
   useEffect(() => {
     if (!highlightPlan) return;
@@ -69,6 +76,7 @@ export function PlansPricing({
             plan={plan}
             idx={idx}
             highlighted={highlightPlan === plan.slug}
+            loggedIn={loggedIn}
           />
         ))}
       </div>
@@ -147,16 +155,23 @@ export function PlanCard({
   plan,
   idx,
   highlighted = false,
+  loggedIn = false,
 }: {
   plan: Plan;
   idx: number;
   highlighted?: boolean;
+  loggedIn?: boolean;
 }) {
   const [durIdx, setDurIdx] = useState(0);
   const accent = ACCENTS[idx % ACCENTS.length];
   const Icon = accent.icon;
   const price = plan.prices[Math.min(durIdx, plan.prices.length - 1)];
   const isFeatured = highlighted || plan.slug === "premium";
+  const duration = plan.durations[Math.min(durIdx, plan.durations.length - 1)];
+  const paymentHref = `/dashboard/payment?plan=${plan.slug}&duration=${encodeURIComponent(duration)}`;
+  const ctaHref = loggedIn
+    ? paymentHref
+    : `/auth/signup?next=${encodeURIComponent(paymentHref)}`;
 
   return (
     <div
@@ -263,9 +278,10 @@ export function PlanCard({
 
           <div className="flex-1" />
 
-          {/* CTA */}
+          {/* CTA — signed-in visitors go straight to checkout with this plan
+              preselected; signed-out visitors sign up first, then land there. */}
           <Link
-            href="/auth/signup"
+            href={ctaHref}
             className={cn(
               "block w-full rounded-xl py-3 text-center text-sm font-bold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg active:scale-[0.98]",
               `bg-linear-to-r ${accent.cta}`,

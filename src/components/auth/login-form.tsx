@@ -7,8 +7,9 @@ import { AuthField, FormMessage, PasswordField, SubmitButton } from "./auth-ui";
 
 const initial: AuthState = {};
 
-export function LoginForm({ notice }: { notice?: string | null }) {
+export function LoginForm({ notice, from }: { notice?: string | null; from?: string }) {
   const [state, formAction, pending] = useActionState(loginAction, initial);
+  const signupHref = from ? `/auth/signup?next=${encodeURIComponent(from)}` : "/auth/signup";
 
   return (
     <div>
@@ -21,6 +22,7 @@ export function LoginForm({ notice }: { notice?: string | null }) {
       )}
 
       <form action={formAction} className="space-y-4">
+        {from && <input type="hidden" name="from" value={from} />}
         <AuthField label="Email Address" name="email" type="email" />
         <PasswordField />
         <FormMessage state={state} />
@@ -34,7 +36,7 @@ export function LoginForm({ notice }: { notice?: string | null }) {
       </div>
       <p className="mt-6 text-center text-sm text-muted">
         Don&apos;t have an account?{" "}
-        <Link href="/auth/signup" className="font-semibold text-primary underline">
+        <Link href={signupHref} className="font-semibold text-primary underline">
           Sign Up
         </Link>
       </p>

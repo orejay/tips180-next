@@ -10,15 +10,17 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 const initial: AuthState = {};
 const countryOptions = countries.map((c) => ({ value: c.label, label: c.label }));
 
-export function SignupForm() {
+export function SignupForm({ next }: { next?: string } = {}) {
   const [state, formAction, pending] = useActionState(signupAction, initial);
   const [country, setCountry] = useState("");
+  const loginHref = next ? `/auth/login?from=${encodeURIComponent(next)}` : "/auth/login";
 
   return (
     <div>
       <h1 className="mb-8 text-3xl font-bold text-foreground">Create Account</h1>
 
       <form action={formAction} className="space-y-4">
+        {next && <input type="hidden" name="next" value={next} />}
         <AuthField label="Full Name" name="fname" />
         <AuthField label="Email Address" name="email" type="email" />
         <AuthField label="Phone Number" name="phone" type="tel" />
@@ -48,7 +50,7 @@ export function SignupForm() {
 
       <p className="mt-6 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/auth/login" className="font-semibold text-primary underline">
+        <Link href={loginHref} className="font-semibold text-primary underline">
           Sign In
         </Link>
       </p>

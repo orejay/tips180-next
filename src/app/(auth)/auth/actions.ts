@@ -24,9 +24,15 @@ async function postJson(path: string, body: unknown): Promise<PostResult> {
   return { ok: res.ok, status: res.status, json };
 }
 
+/** Only ever redirect to a same-site path (never an absolute URL) — avoids an open redirect via a crafted `from`/`next` param. */
+function safeRedirectTarget(path: string, fallback: string): string {
+  return path.startsWith("/") && !path.startsWith("//") ? path : fallback;
+}
+
 export async function loginAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const from = String(formData.get("from") ?? "");
   if (!email || !password) return { error: "Enter your email and password." };
 
   let authed = false;
@@ -41,7 +47,7 @@ export async function loginAction(_prev: AuthState, formData: FormData): Promise
   }
 
   if (!authed) return { error: "Email or password is invalid." };
-  redirect("/dashboard/profile");
+  redirect(safeRedirectTarget(from, "/dashboard/profile"));
 }
 
 export async function signupAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
@@ -52,6 +58,7 @@ export async function signupAction(_prev: AuthState, formData: FormData): Promis
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
   const ref_code = String(formData.get("ref_code") ?? "").trim();
+  const next = String(formData.get("next") ?? "");
 
   if (!fname || !email || !phone || !country) return { error: "Please fill in all required fields." };
   if (password.length < 6) return { error: "Password must be at least 6 characters." };
@@ -76,7 +83,12 @@ export async function signupAction(_prev: AuthState, formData: FormData): Promis
   }
 
   if (!created) return { error: "Could not create your account. Please try again." };
-  redirect("/auth/login?registered=1");
+  const safeNext = next ? safeRedirectTarget(next, "") : "";
+  redirect(
+    safeNext
+      ? `/auth/login?registered=1&from=${encodeURIComponent(safeNext)}`
+      : "/auth/login?registered=1",
+  );
 }
 
 export async function forgotAction(_prev: AuthState, formData: FormData): Promise<AuthState> {

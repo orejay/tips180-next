@@ -36,11 +36,37 @@ function newTxRef(): string {
 
 type Status = { kind: "idle" | "working" | "ok" | "error"; message?: string };
 
-export function PaymentClient({ email, name }: { email: string; name: string }) {
+export function PaymentClient({
+  email,
+  name,
+  initialPlan,
+  initialDuration,
+}: {
+  email: string;
+  name: string;
+  /** Plan slug (e.g. "premium") to preselect, passed from a plan card's "Get <plan>" CTA. */
+  initialPlan?: string;
+  /** Duration label (e.g. "1 month") to preselect alongside `initialPlan`. */
+  initialDuration?: string;
+}) {
   const router = useRouter();
   const [country, setCountry] = useState("NG");
-  const [planIdx, setPlanIdx] = useState(0);
-  const [durationIdx, setDurationIdx] = useState(0);
+
+  // Resolve the requested plan/duration (from a plan card's "Get <plan>" CTA)
+  // against a given country's plan list — slugs are stable across countries but
+  // array order/length can differ. Falls back to the first plan when there's
+  // no request, matching the original default.
+  function resolveSelection(list: ReturnType<typeof getPricingFor>["plans"]) {
+    const pIdx = initialPlan ? list.findIndex((p) => p.slug === initialPlan) : -1;
+    if (pIdx === -1) return { planIdx: 0, durationIdx: 0 };
+    const dIdx = initialDuration ? list[pIdx].durations.indexOf(initialDuration) : -1;
+    return { planIdx: pIdx, durationIdx: dIdx === -1 ? 0 : dIdx };
+  }
+
+  const [planIdx, setPlanIdx] = useState(() => resolveSelection(getPricingFor("NG").plans).planIdx);
+  const [durationIdx, setDurationIdx] = useState(
+    () => resolveSelection(getPricingFor("NG").plans).durationIdx,
+  );
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const { plans, currency } = getPricingFor(country);
@@ -51,8 +77,9 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
 
   function changeCountry(code: string) {
     setCountry(code);
-    setPlanIdx(0);
-    setDurationIdx(0);
+    const selection = resolveSelection(getPricingFor(code).plans);
+    setPlanIdx(selection.planIdx);
+    setDurationIdx(selection.durationIdx);
   }
 
   // Default the country from IP geolocation on mount.
@@ -61,6 +88,7 @@ export function PaymentClient({ email, name }: { email: string; name: string }) 
       .then((r) => r.json())
       .then((d: { country?: string | null }) => changeCountry(toPricingCountry(d.country)))
       .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only, changeCountry is stable in practice
   }, []);
 
   async function finalize(provider: "paystack" | "flutter", reference: string) {
