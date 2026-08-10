@@ -1,7 +1,8 @@
 "use server";
 
 import { siteConfig } from "@/config/site";
-import { getToken } from "@/lib/session";
+import { getToken, setSession, toSessionUser } from "@/lib/session";
+import { getCurrentUser } from "@/lib/api-auth";
 
 export type PaymentResult = { ok: boolean; message: string };
 
@@ -52,6 +53,15 @@ export async function verifyAndUpgradeAction(input: {
     });
     if (!upgradeRes.ok) {
       return { ok: false, message: "Payment confirmed but the upgrade failed. Please contact support with your reference." };
+    }
+
+    // Refresh the readable session cookie with the new plan so the header and
+    // any plan-gated UI reflect the upgrade immediately — it's only ever set
+    // at login otherwise, so without this a just-upgraded user would keep
+    // seeing their old plan everywhere until they logged out and back in.
+    const user = await getCurrentUser();
+    if (user) {
+      await setSession(token, toSessionUser(user));
     }
 
     return { ok: true, message: "Payment complete — your plan has been activated!" };
