@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/config/site";
 import { breadcrumbSchema, personSchema } from "@/lib/schema";
 import { getTipster, tipsterImageUrl } from "@/lib/tipsters";
+import { TipsterAvatar } from "@/components/marketing/tipster-avatar";
 
 type Params = { id: string };
 
@@ -84,23 +85,12 @@ export default async function TipsterProfilePage({
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-          {avatar ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={avatar}
-              alt={tipster.name}
-              className="h-28 w-28 shrink-0 rounded-full object-cover ring-4 ring-white/30"
-            />
-          ) : (
-            <span className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-white/15 text-3xl font-bold backdrop-blur">
-              {tipster.name
-                .split(/\s+/)
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((p) => p[0]?.toUpperCase() ?? "")
-                .join("")}
-            </span>
-          )}
+          <TipsterAvatar
+            src={avatar}
+            name={tipster.name}
+            className="h-28 w-28 shrink-0 rounded-full object-cover ring-4 ring-white/30"
+            initialsClassName="h-28 w-28 bg-none bg-white/15 text-3xl backdrop-blur"
+          />
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
               Tips180 Tipster

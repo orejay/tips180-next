@@ -65,6 +65,18 @@ export async function getTipster(id: number | string): Promise<Tipster | null> {
   }
 }
 
+/** "John Okafor" -> "JO" — fallback avatar shown when a tipster has no photo
+ *  (or it fails to load). Shared by the badge, profile page, and any other
+ *  spot that renders a tipster avatar. */
+export function tipsterInitials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
 /**
  * Resolve a backend-relative avatar (`/uploads/photos/..`) to an absolute URL.
  * The host is hardcoded on purpose (never point avatars at localhost/staging),

@@ -1,5 +1,6 @@
 import { ArrowUpRight, BadgeCheck, TrendingUp, Trophy } from "lucide-react";
 import { getTipsterFor, tipsterImageUrl, type Tipster } from "@/lib/tipsters";
+import { TipsterAvatar } from "@/components/marketing/tipster-avatar";
 
 /**
  * Server component: the tipster attached to `category` for `date` (default today),
@@ -16,15 +17,6 @@ export async function TipsterBadge({
   const tipster = await getTipsterFor(category, date);
   if (!tipster) return null;
   return <TipsterCard tipster={tipster} />;
-}
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("");
 }
 
 export function TipsterCard({ tipster }: { tipster: Tipster }) {
@@ -46,18 +38,12 @@ export function TipsterCard({ tipster }: { tipster: Tipster }) {
     >
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
         {/* Avatar */}
-        {avatar ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatar}
-            alt={tipster.name}
-            className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-teal-500/30"
-          />
-        ) : (
-          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-teal-500 to-blue-600 text-lg font-bold text-white">
-            {initials(tipster.name)}
-          </span>
-        )}
+        <TipsterAvatar
+          src={avatar}
+          name={tipster.name}
+          className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-teal-500/30"
+          initialsClassName="h-16 w-16 text-lg"
+        />
 
         {/* Identity */}
         <div className="min-w-0 flex-1">
