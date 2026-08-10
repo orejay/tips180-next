@@ -59,6 +59,11 @@ function pick(raw: RawBooking): Booking | null {
 /** A plan booking plus its total odds (shown on the dashboard plan pages). */
 export type PlanBooking = { booking: Booking; totalOdds: string | null };
 
+/** Like {@link PlanBooking}, but the booking code may be absent even when a
+ *  total odds figure is posted (odds2/odds3 sets) — the two are entered
+ *  independently by the admin. */
+export type OddsBooking = { booking: Booking | null; totalOdds: string | null };
+
 /** Local YYYY-MM-DD, to match today's booking entry in the array shapes. */
 function todayString(): string {
   const d = new Date();
@@ -109,6 +114,44 @@ export async function getPlanBooking(category: string): Promise<PlanBooking | nu
     if (booking) return { booking, totalOdds };
   }
   return null;
+}
+
+/**
+ * Total odds + booking code for a 2/3 Odds set. Unlike other plan categories,
+ * `bookings/category/odds2|odds3` nests both sets under one parent key, and
+ * the "total odds" value is NOT a sum of per-tip odds computed here — it's the
+ * cumulative figure the admin types once into the *first* open match's
+ * `sure2/3-1st/2nd-set-odds` field for that set (backend:
+ * `content.py`'s `odds2`/`odds3` branch reads it straight off `match.sure21stsetodds`
+ * etc.), exactly like the legacy StoreTable. So this is read verbatim off the
+ * response, never derived from the per-match tip rows in `plan-tips.ts`.
+ */
+export async function getOddsBooking(
+  kind: "odds2" | "odds3",
+  set: 1 | 2,
+): Promise<OddsBooking | null> {
+  let data: Record<string, unknown> | null = null;
+  try {
+    data = await api<Record<string, unknown>>(`bookings/category/${kind}`, {
+      next: { revalidate: 300, tags: ["bookings", "matches"] },
+    });
+  } catch {
+    return null;
+  }
+  const wrapper = data?.[kind] as Record<string, unknown> | undefined;
+  if (!wrapper) return null;
+
+  const setPrefix = kind === "odds2" ? "odds2" : "odds3";
+  const setKey = `${setPrefix}${set === 1 ? "1" : "2"}`;
+  const rawOdds = wrapper[`${setKey}_odds`];
+  const n = parseFloat(String(rawOdds));
+  const totalOdds = Number.isFinite(n) && n > 1 ? String(rawOdds) : null;
+
+  const bookingsRaw = wrapper[setKey];
+  const booking = Array.isArray(bookingsRaw) ? pickBooking(bookingsRaw) : null;
+  if (!booking && !totalOdds) return null;
+
+  return { booking, totalOdds };
 }
 
 /**

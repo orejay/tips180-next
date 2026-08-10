@@ -284,14 +284,9 @@ export async function getOddsSet(
       league: m.league,
       name: m.name,
       tip: kind === "sure2" ? m.sure2tip : m.sure3tip,
-      odds:
-        kind === "sure2"
-          ? set === 1
-            ? m.sure21stsetodds
-            : m.sure22ndsetodds
-          : set === 1
-            ? m.sure31stsetodds
-            : m.sure32ndsetodds,
+      // No per-tip odds column here — sure2*setodds/sure3*setodds is the set's
+      // single cumulative total (entered once, on the first open match), shown
+      // via getOddsBooking()/OddsSetTotal below, not per row.
     });
   }
   return buckets;
