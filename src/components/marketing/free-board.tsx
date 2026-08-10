@@ -97,6 +97,36 @@ export function FreeBoard({
   const [selectedKey, setSelectedKey] = useState<string>(
     stores[0]?.key ?? "free",
   );
+
+  // The board is server-rendered/ISR for SEO and has no access to the visitor's
+  // session, so gated pills (BTTS, Weekend Tips, 2 Odds) always ship `locked:
+  // true`. Re-check each one client-side against the real session cookie so a
+  // signed-in subscriber sees their unlocked tips instead of a paywall for a
+  // plan they already have.
+  const [unlocked, setUnlocked] = useState<Record<string, BoardRow[]>>({});
+  useEffect(() => {
+    const lockedKeys = stores.filter((s) => s.locked).map((s) => s.key);
+    if (lockedKeys.length === 0) return;
+    let cancelled = false;
+    lockedKeys.forEach((key) => {
+      fetch(`/store-preview?cat=${encodeURIComponent(key)}`)
+        .then((r) => r.json())
+        .then((d: { rows: BoardRow[] | null }) => {
+          if (!cancelled && Array.isArray(d.rows)) {
+            setUnlocked((prev) => ({ ...prev, [key]: d.rows as BoardRow[] }));
+          }
+        })
+        .catch(() => {});
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- stores is stable per mount
+  }, []);
+
+  const effectiveStores = stores.map((s) =>
+    s.locked && unlocked[s.key] ? { ...s, locked: false, rows: unlocked[s.key] } : s,
+  );
   // Always starts on today's date so server and client render identically —
   // a ?date= param (from the header's day links) is picked up client-side
   // after mount instead, to avoid a hydration mismatch against the static/ISR
@@ -122,7 +152,7 @@ export function FreeBoard({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- days is stable per mount; only run once
   }, []);
 
-  const activeStore = stores.find((s) => s.key === selectedKey) ?? stores[0];
+  const activeStore = effectiveStores.find((s) => s.key === selectedKey) ?? effectiveStores[0];
   const rows = activeStore.rows.filter((r) => r.date === selectedDate);
 
   // Booking code follows the selected date pill — only today/yesterday/tomorrow
@@ -186,7 +216,7 @@ export function FreeBoard({
 
           {/* Store pills */}
           <div className="mb-5 flex flex-wrap justify-center gap-2">
-            {stores.map((s) => {
+            {effectiveStores.map((s) => {
               const active = s.key === selectedKey;
               return (
                 <button
