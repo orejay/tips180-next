@@ -4,11 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LastUpdated } from "@/components/seo/last-updated";
 import { siteConfig } from "@/config/site";
-import {
-  breadcrumbSchema,
-  faqSchema,
-  sportsEventSchema,
-} from "@/lib/schema";
+import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import {
   findLeagueBySlug,
@@ -16,9 +12,6 @@ import {
   getLeagueRegions,
   leagueLogo,
   leagueSlug,
-  parseTeams,
-  toIsoDate,
-  type LeagueMatch,
 } from "@/lib/leagues";
 import { LeagueLogo } from "@/components/marketing/league-logo";
 import { BookingCode } from "@/components/marketing/booking-code";
@@ -86,7 +79,6 @@ export default async function LeaguePage({
         ])}
       />
       <JsonLd data={faqSchema(faqs)} />
-      <MatchesSchema matches={matches} competition={name} url={url} />
 
       <div className="bg-linear-to-r from-brand-start to-brand-end px-4 py-12 text-center text-white lg:py-16">
         <div className="flex items-center justify-center gap-3">
@@ -137,34 +129,4 @@ export default async function LeaguePage({
       </div>
     </div>
   );
-}
-
-/** Emits SportsEvent JSON-LD for matches whose names parse into two teams. */
-function MatchesSchema({
-  matches,
-  competition,
-  url,
-}: {
-  matches: LeagueMatch[];
-  competition: string;
-  url: string;
-}) {
-  const events = matches
-    .map((match) => {
-      const teams = parseTeams(match.name);
-      const startDate = toIsoDate(match.date);
-      if (!teams || !startDate) return null;
-      return sportsEventSchema({
-        homeTeam: teams.home,
-        awayTeam: teams.away,
-        competition,
-        startDate,
-        url,
-      });
-    })
-    .filter((e): e is NonNullable<typeof e> => e !== null)
-    .slice(0, 20);
-
-  if (events.length === 0) return null;
-  return <JsonLd data={{ "@context": "https://schema.org", "@graph": events }} />;
 }

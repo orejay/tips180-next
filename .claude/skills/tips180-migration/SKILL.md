@@ -197,6 +197,21 @@ slug. Schema: BreadcrumbList + FAQPage + SportsEvent (@graph, teams parsed from
 "Home vs Away", dd/mm/YYYY→ISO). `sitemap.ts` now async, emits all ~313 league URLs.
 Verified: `/leagues/mor` renders table + 5 SportsEvent in HTML. Build green (22 routes).
 
+**⚠ SportsEvent schema REMOVED (2026-08-10):** Search Console flagged 8 Events
+structured-data issues site-wide, critically "missing field location" on every
+entry. Root cause: `LeagueMatch` (backend) has no venue/stadium field, and `League`
+has no country — only coarse regions ("Europe"/"America"/...) — so `location` could
+never be populated with a real value; `offers` (ticket price) is equally unfake-able
+since we don't sell event tickets. Rather than fabricate location/offers to silence
+Search Console (risks a structured-data spam penalty, and Event rich results are for
+real attendable/ticketed events, not betting-tip commentary), removed
+`sportsEventSchema()` from `lib/schema.ts` and the `MatchesSchema` emitter from
+`leagues/[slug]/page.tsx` entirely. BreadcrumbList + FAQPage schema on league pages
+is untouched. **Do not re-add SportsEvent/Event schema for match predictions unless
+the backend starts returning real venue data** — `parseTeams`/`toIsoDate` in
+`lib/leagues.ts` still exist (used elsewhere) but are no longer wired to any schema
+builder.
+
 ### ✅ Phase 4 — Home (DONE — FULL build; gap-filled later)
 Home was later completed to the full legacy composition: Hero → `free-tips.tsx` (public
 `/free-experts`, real tips, #1 SEO keyword) → `home-predictions.tsx` (recent/upcoming) →

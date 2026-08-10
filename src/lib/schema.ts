@@ -148,30 +148,3 @@ export function bettingSiteListSchema(
     })),
   };
 }
-
-/** A single football match prediction. Drives rich event cards + AI citations. */
-export function sportsEventSchema(event: {
-  homeTeam: string;
-  awayTeam: string;
-  competition: string;
-  startDate: string;
-  url: string;
-  venue?: string;
-}) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "SportsEvent",
-    name: `${event.homeTeam} vs ${event.awayTeam}`,
-    sport: "Soccer",
-    startDate: event.startDate,
-    url: event.url,
-    ...(event.venue && {
-      location: { "@type": "Place", name: event.venue },
-    }),
-    competitor: [
-      { "@type": "SportsTeam", name: event.homeTeam },
-      { "@type": "SportsTeam", name: event.awayTeam },
-    ],
-    superEvent: { "@type": "SportsOrganization", name: event.competition },
-  };
-}

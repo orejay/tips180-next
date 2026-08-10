@@ -215,7 +215,7 @@ export async function getLeagueMatches(shortName: string): Promise<LeagueMatch[]
   }
 }
 
-/** Split a "Home vs Away" match name into team names, for SportsEvent schema. */
+/** Split a "Home vs Away" match name into team names. */
 export function parseTeams(name: string): { home: string; away: string } | null {
   const m = name.split(/\s+(?:vs?\.?|v|-|–)\s+/i);
   if (m.length === 2 && m[0].trim() && m[1].trim()) {
