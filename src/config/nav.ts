@@ -68,8 +68,8 @@ export const subNav: SubnavGroup[] = [
     items: [
       { name: "Best Football Betting Strategies", href: "/betting-strategies" },
       { name: "How to Bet on Football Matches", href: "/how-to-bet" },
-      { name: "Punters' Guide", href: "/dashboard/puntersguide" },
-      { name: "Betting Glossary / Acronyms", href: "/dashboard/glossary" },
+      { name: "Punters' Guide", href: "/punters-guide" },
+      { name: "Betting Glossary / Acronyms", href: "/betting-glossary" },
       {
         name: "Mistakes to Avoid When Following Football Tips",
         href: "/betting-mistakes",

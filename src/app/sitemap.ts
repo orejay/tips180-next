@@ -33,6 +33,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/betting-mistakes", changeFrequency: "monthly", priority: 0.7 },
     { path: "/how-to-bet", changeFrequency: "monthly", priority: 0.7 },
     { path: "/betting-strategies", changeFrequency: "monthly", priority: 0.7 },
+    { path: "/punters-guide", changeFrequency: "monthly", priority: 0.6 },
+    { path: "/betting-glossary", changeFrequency: "monthly", priority: 0.6 },
     { path: "/rollover-guarantee", changeFrequency: "yearly", priority: 0.5 },
     { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },
     { path: "/terms-and-condition", changeFrequency: "yearly", priority: 0.3 },
