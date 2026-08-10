@@ -18,11 +18,11 @@
 ## League hub pages
 
 Each league has a dedicated predictions page at `/leagues/{slug}` (e.g. `/leagues/epl`,
-`/leagues/la-liga`) with current fixtures, expert tips and SportsEvent + FAQ schema.
+`/leagues/la-liga`) with current fixtures, expert tips and FAQ schema.
 
 ## Notes
 
 - Primary audience: Nigeria and Africa (en-NG).
 - Predictions and the accuracy record refresh daily; league hubs use ISR.
 - Structured data in raw HTML: WebSite, Organization, BreadcrumbList, FAQPage,
-  SportsEvent (per match), plus Person/Article builders for authored analysis.
+  plus Person/Article builders for authored analysis.

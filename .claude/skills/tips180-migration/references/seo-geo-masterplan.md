@@ -16,7 +16,8 @@ E-E-A-T scrutiny. Trust signals matter more than in most verticals.
 - No `/llms.txt`. ✅ added (`public/llms.txt`).
 - `lang="en"` (generic). ✅ now `en-NG`.
 - Schema was WebSite+Organization only, injected client-side via react-helmet →
-  invisible in raw HTML. ✅ now server-rendered; expand to SportsEvent/FAQ/Person.
+  invisible in raw HTML. ✅ now server-rendered; expand to FAQ/Person. (SportsEvent
+  was tried and reverted — see Section 4 note.)
 
 ## Section 1 — Technical (build into the rewrite)
 
@@ -55,7 +56,11 @@ Mirror exact query wording in titles/H1s. Use tip-type entities ("1X2",
 
 ## Section 4 — Schema (builders in src/lib/schema.ts)
 
-- `SportsEvent` on every match page (teams, competition, date, venue). ✅ builder ready.
+- `SportsEvent` on every match page — ❌ REVERTED 2026-08-10. Backend has no venue
+  or country data, so `location` (required for Event rich results) could never be
+  real; fabricating it risked a structured-data spam penalty. Removed from
+  `lib/schema.ts` and `leagues/[slug]/page.tsx`. Do not re-add unless the backend
+  starts returning real venue/location data for matches.
 - `Article` + `Person` (author) with `sameAs` → LinkedIn/X. Core YMYL signal. (add Person)
 - `FAQPage` + `BreadcrumbList` + `WebSite` (with SearchAction). ✅ builders ready.
 - `/llms.txt` markdown TOC of best pages. ✅ (keep updated as pages land).
@@ -72,13 +77,15 @@ partnerships, Reddit presence (Perplexity cites Reddit 46.7%), Wikipedia mention
   clean Article + author schema cited higher.
 - **Perplexity:** Reddit-heavy, strong recency bias (timestamp daily predictions),
   exact keyword match in titles, Q&A format (lead with direct answers).
-- **Google AI Overviews:** SportsEvent+FAQ schema, multi-modal, visible
-  "Last updated" timestamps (pages <3 months old cited 3×).
+- **Google AI Overviews:** FAQ schema, multi-modal, visible "Last updated"
+  timestamps (pages <3 months old cited 3×). (SportsEvent reverted — see Section 4.)
 
 ## 12-month roadmap (engineering-relevant slices)
 
 - M1–2: technical fixes (✅ much done in foundation) + base schema + title tags + AI baseline audit.
-- M2–4: SSR (done), tipster profiles + author schema, accuracy archive, 6 league hubs, SportsEvent sitewide, first data study.
+- M2–4: SSR (done), tipster profiles + author schema, accuracy archive, 6 league
+  hubs, first data study. (SportsEvent sitewide dropped from scope — reverted, see
+  Section 4.)
 - M4–6: World Cup 2026 cluster, WC hub, `/llms.txt` (✅), dynamic sitemap.
 - M6–9: multi-modal content, expand FAQs, hreflang for Kenya/Ghana.
 - M9–12: CWV/competitive polish, YouTube SEO, quarterly data studies.

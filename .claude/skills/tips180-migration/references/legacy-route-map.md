@@ -19,7 +19,7 @@ Legacy files live in `c:\Users\Abdullahi\Downloads\ore\dashboard\src`.
 | `/pw-terms` | pages/PwTandC.js | `(marketing)/pw-terms` | ✅ |
 | `/our-plans` | pages/nav/OurPlans.js | `(marketing)/our-plans` | ✅ geo-priced (country selector + per-country tables) |
 | `/leagues` | pages/nav/Leagues.js | `(marketing)/leagues` | ✅ |
-| `/leagues/:name` | pages/League.js | `(marketing)/leagues/[slug]` | ✅ public predictions + SportsEvent/FAQ schema |
+| `/leagues/:name` | pages/League.js | `(marketing)/leagues/[slug]` | ✅ public predictions + FAQ schema (SportsEvent reverted 2026-08-10, see SKILL.md) |
 | `/predict-win` | pages/nav/PredictWin.js | `(marketing)/predict-win` | ✅ public landing + FAQ |
 | `/tips-store`, `/tipsstore` | pages/nav/TipStore.js | `(marketing)/tips-store` | ✅ category grid |
 | `/tip-store/:name` | pages/StorePage.js | `(marketing)/tip-store/[name]` | ✅ 16 cats; public tiers render live tips, gated show upsell |
