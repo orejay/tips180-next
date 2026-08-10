@@ -199,6 +199,15 @@ body {
   animation: plan-card-in 0.4s ease both;
 }
 
+/* Scrollable-but-scrollbar-less containers (e.g. the homepage FAQ overflow). */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/new Edge */
+}
+
 @media (prefers-reduced-motion: reduce) {
   .plan-card-in {
     animation: none;

@@ -12,6 +12,13 @@ const items = homeFaqs.map((faq, i) => ({
   icon: ICON_NAMES[i % ICON_NAMES.length],
 }));
 
+/** Roughly how many closed FAQ rows fit before the list scrolls — a fixed
+ *  height (not a hard item cap) keeps the section bounded as more questions
+ *  are added in config/faq.ts, while still letting all of them be reached in
+ *  one continuous scroll instead of a second, visually separate box. */
+const VISIBLE_ROWS = 10;
+const ROW_HEIGHT_PX = 61; // measured closed-row height (px-5 py-4 content + gap-3)
+
 export function HomeFaq() {
   return (
     <section
@@ -31,7 +38,17 @@ export function HomeFaq() {
           </p>
         </div>
 
-        <FaqAccordion items={items} />
+        {/* -mx-3 px-3: setting overflow-y forces the browser to clip
+            overflow-x too (per spec), which would cut off the open card's
+            scale(1.015)/shadow bleed. The padding gives that room; the
+            matching negative margin keeps the visible edges aligned with
+            the heading above. */}
+        <div
+          className="scrollbar-hide -mx-3 overflow-y-auto px-3"
+          style={{ maxHeight: VISIBLE_ROWS * ROW_HEIGHT_PX }}
+        >
+          <FaqAccordion items={items} />
+        </div>
       </div>
     </section>
   );
