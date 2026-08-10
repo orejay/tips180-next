@@ -17,16 +17,8 @@ import { flagImageUrl } from "@/config/betting-countries";
 import { logoutAction } from "@/app/(auth)/auth/actions";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { applyLanguage, readStoredLanguage } from "@/lib/i18n";
+import { readSessionUser, type SessionUser } from "@/lib/session-client";
 import { cn } from "@/lib/utils";
-
-type HeaderUser = { name: string; email: string; plan: string; subscribed: boolean };
-
-function readUserCookie(): HeaderUser | null {
-  const match = document.cookie.match(/(?:^|;\s*)tips180_user=([^;]+)/);
-  if (!match) return null;
-  try { return JSON.parse(decodeURIComponent(match[1])) as HeaderUser; }
-  catch { return null; }
-}
 
 /** A language's flag image, or the Globe icon for entries with no single flag. */
 function LangFlag({ flagCode, size = 15 }: { flagCode: string | null; size?: number }) {
@@ -45,7 +37,7 @@ function LangFlag({ flagCode, size = 15 }: { flagCode: string | null; size?: num
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const [user, setUser] = useState<HeaderUser | null>(null);
+  const [user, setUser] = useState<SessionUser | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -60,7 +52,7 @@ export function SiteHeader() {
   // after mount to stay hydration-safe; re-reads on navigation (e.g. post-login).
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading external (cookie/localStorage) state
-    setUser(readUserCookie());
+    setUser(readSessionUser());
     setLang(readStoredLanguage());
   }, [pathname]);
 

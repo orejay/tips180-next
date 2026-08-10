@@ -10,6 +10,7 @@ import {
   type LeagueMatch,
 } from "@/lib/leagues";
 import { LeagueLogo } from "@/components/marketing/league-logo";
+import { BookingCode } from "@/components/marketing/booking-code";
 
 /** Cap on how many `is_top` leagues render tips inline (keeps the grid & the
  *  homepage's server-side fan-out of match fetches bounded). */
@@ -37,11 +38,18 @@ export async function LandingLeagues() {
   return (
     <section
       id="top-leagues"
-      className="mx-auto grid w-full max-w-6xl scroll-mt-28 grid-cols-1 gap-5 px-4 py-8 lg:grid-cols-2"
+      className="mx-auto w-full max-w-6xl scroll-mt-28 px-4 py-8"
     >
-      {cards.map(({ league, matches }) => (
-        <LeagueCard key={league.short_name} league={league} matches={matches} />
-      ))}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        {cards.map(({ league, matches }) => (
+          <LeagueCard key={league.short_name} league={league} matches={matches} />
+        ))}
+      </div>
+      {/* One shared "League Tips" booking code for the whole widget — the
+          backend posts a single code for this category, not one per league. */}
+      <div className="mt-5">
+        <BookingCode category="league" />
+      </div>
     </section>
   );
 }
