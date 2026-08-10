@@ -15,6 +15,7 @@ import {
 import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
 import type { Plan } from "@/config/plans";
 import { cn } from "@/lib/utils";
+import { detectCountryClient } from "@/lib/geo-client";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 
 /**
@@ -36,10 +37,7 @@ export function PlansPricing({
 
   useEffect(() => {
     if (initialCountry) return;
-    fetch("/api/geo")
-      .then((r) => r.json())
-      .then((d: { country?: string | null }) => setCountry(toPricingCountry(d.country)))
-      .catch(() => {});
+    detectCountryClient().then((iso) => setCountry(toPricingCountry(iso)));
   }, [initialCountry]);
 
   // Signed-in visitors go straight to checkout instead of signup.

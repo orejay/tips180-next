@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { authFetch, getCurrentUser } from "@/lib/api-auth";
-import { detectCountry } from "@/lib/geo";
-import { PredictGame } from "@/components/dashboard/predict-game";
+import { PredictGameWithGeo } from "@/components/dashboard/predict-game-geo";
 import {
   getCurrentRound,
   getPwFee,
@@ -21,15 +20,11 @@ export default async function PredictWinPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/auth/login?from=/dashboard/pw");
 
-  // Detect country by IP; fall back to the user's profile country, then Nigeria.
+  // Country starts from the user's profile (SSR default); IP-based detection
+  // then runs client-side in <PredictGameWithGeo>, like everywhere else geo
+  // is used, and swaps in the right fee/prize/paid-status once resolved.
   // Predict & Win only runs in these six markets.
-  const PW_ISO: Record<string, string> = {
-    NG: "Nigeria", GH: "Ghana", KE: "Kenya", TZ: "Tanzania", CM: "Cameroon", UG: "Uganda",
-  };
-  const iso = await detectCountry();
-  const country =
-    (iso && PW_ISO[iso.toUpperCase()]) ||
-    (PW_COUNTRIES.some((c) => c.label === user.country) ? user.country : "Nigeria");
+  const country = PW_COUNTRIES.some((c) => c.label === user.country) ? user.country : "Nigeria";
 
   const [round, entries] = await Promise.all([
     getCurrentRound(),
@@ -49,15 +44,11 @@ export default async function PredictWinPage() {
         You&apos;ve already entered round {round.round}. Good luck!
       </p>
     ) : (
-      <PredictGame
+      <PredictGameWithGeo
         round={round}
         email={user.email}
         name={user.name}
-        country={country}
-        symbol={pwSymbol(country)}
-        fee={fee}
-        prize={prize}
-        paid={paid}
+        initial={{ country, symbol: pwSymbol(country), fee, prize, paid }}
       />
     );
   }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
+import { detectCountryClient } from "@/lib/geo-client";
 import { verifyAndUpgradeAction } from "@/app/(dashboard)/dashboard/payment/actions";
 import { ManualPayments } from "@/components/payment/manual-payments";
 import { SearchableSelect } from "@/components/ui/searchable-select";
@@ -84,10 +85,7 @@ export function PaymentClient({
 
   // Default the country from IP geolocation on mount.
   useEffect(() => {
-    fetch("/api/geo")
-      .then((r) => r.json())
-      .then((d: { country?: string | null }) => changeCountry(toPricingCountry(d.country)))
-      .catch(() => {});
+    detectCountryClient().then((iso) => changeCountry(toPricingCountry(iso)));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only, changeCountry is stable in practice
   }, []);
 
