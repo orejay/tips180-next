@@ -27,15 +27,11 @@ export default async function Odds50Page() {
           panels={[
             <div key="1">
               <TipsTable rows={sets.set1} />
-              <div className="mt-4">
-                <PlanBooking category="odds501" />
-              </div>
+              <PlanBooking category="odds501" />
             </div>,
             <div key="2">
               <TipsTable rows={sets.set2} />
-              <div className="mt-4">
-                <PlanBooking category="odds502" />
-              </div>
+              <PlanBooking category="odds502" />
             </div>,
           ]}
         />

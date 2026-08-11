@@ -54,15 +54,11 @@ async function AccaSets() {
       panels={[
         <div key="1">
           <DayWindowTabs window={set1} />
-          <div className="mt-4">
-            <PlanBooking category="expertsacca1" />
-          </div>
+          <PlanBooking category="expertsacca1" />
         </div>,
         <div key="2">
           <DayWindowTabs window={set2} />
-          <div className="mt-4">
-            <PlanBooking category="expertsacca2" />
-          </div>
+          <PlanBooking category="expertsacca2" />
         </div>,
       ]}
     />

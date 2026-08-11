@@ -56,12 +56,10 @@ function pick(raw: RawBooking): Booking | null {
   return raw;
 }
 
-/** A plan booking plus its total odds (shown on the dashboard plan pages). */
-export type PlanBooking = { booking: Booking; totalOdds: string | null };
-
-/** Like {@link PlanBooking}, but the booking code may be absent even when a
- *  total odds figure is posted (odds2/odds3 sets) — the two are entered
- *  independently by the admin. */
+/** A plan booking plus its total odds. The booking code may be absent even
+ *  when a total odds figure is posted (e.g. odds2/odds3, 50 Odds, Weekend 10,
+ *  Smart Bet Plus all enter the total odds on the first open match rather
+ *  than alongside a booking code) — the two are posted independently. */
 export type OddsBooking = { booking: Booking | null; totalOdds: string | null };
 
 /** Local YYYY-MM-DD, to match today's booking entry in the array shapes. */
@@ -91,9 +89,15 @@ function pickBooking(value: unknown): Booking | null {
  * Booking code + total odds for a dashboard plan category, e.g. "expertsacca1",
  * "odds501", "w102", "smartbet", "rollover". The endpoint is public; the booking
  * lives under a category-specific key and the total odds under `odds`,
- * `today_odds`, or `accumulator_odds`. Returns null when nothing is posted.
+ * `today_odds`, or `accumulator_odds`. For "odds501"/"odds502"/"w101"/"w102"/
+ * "smartbetplus" the backend posts the total odds onto the first open match
+ * independently of any booking code (mirrors odds2/odds3, see
+ * {@link getOddsBooking}) — the empty-booking branch there omits the booking
+ * key's value entirely rather than nulling it, so a missing booking must not
+ * suppress an otherwise-present total odds figure. Returns null only when
+ * neither is posted.
  */
-export async function getPlanBooking(category: string): Promise<PlanBooking | null> {
+export async function getPlanBooking(category: string): Promise<OddsBooking | null> {
   let data: Record<string, unknown> | null = null;
   try {
     data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
@@ -108,12 +112,14 @@ export async function getPlanBooking(category: string): Promise<PlanBooking | nu
   const n = parseFloat(String(rawOdds));
   const totalOdds = Number.isFinite(n) && n > 1 ? String(rawOdds) : null;
 
+  let booking: Booking | null = null;
   for (const [key, value] of Object.entries(data)) {
     if (key === "odds" || key.endsWith("_odds")) continue;
-    const booking = pickBooking(value);
-    if (booking) return { booking, totalOdds };
+    booking = pickBooking(value);
+    if (booking) break;
   }
-  return null;
+  if (!booking && !totalOdds) return null;
+  return { booking, totalOdds };
 }
 
 /**
@@ -173,6 +179,29 @@ export async function getBooking(category: string): Promise<Booking | null> {
 
   const value = (data[category] ?? Object.values(data)[0]) as RawBooking;
   return pick(value);
+}
+
+/**
+ * Like {@link getBooking}, but for logo-only display (no code text shown) —
+ * accepts a booking even when its `code` is blank, since the admin can post
+ * a bookie + link for a category (e.g. "league") without ever filling in a
+ * code. {@link getBooking}'s `code`-required check would otherwise hide the
+ * logo entirely whenever the code field is empty.
+ */
+export async function getBookingForLogo(category: string): Promise<Booking | null> {
+  let data: Record<string, unknown> | null = null;
+  try {
+    data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
+      next: { revalidate: 600, tags: ["bookings"] },
+    });
+  } catch {
+    return null;
+  }
+  if (!data) return null;
+
+  const value = (data[category] ?? Object.values(data)[0]) as RawBooking;
+  if (!value || typeof value !== "object" || !value.bookie) return null;
+  return value;
 }
 
 /** Today/yesterday/tomorrow booking codes for the "Free Experts" board, so the

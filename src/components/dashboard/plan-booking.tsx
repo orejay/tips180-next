@@ -1,20 +1,15 @@
-import { getPlanBooking, bookieLogo } from "@/lib/bookings";
-import { BookingCodeCard } from "@/components/marketing/booking-code-card";
+import { getPlanBooking } from "@/lib/bookings";
+import { TotalOddsBanner } from "@/components/dashboard/total-odds-banner";
 
 /**
- * Booking-code banner for a dashboard plan set (e.g. "expertsacca1", "odds501",
- * "w102", "smartbet", "rollover"). Fetches the loadable code + total odds on the
- * server and renders nothing when no code is posted for the set.
+ * Booking-code + total-odds banner for a dashboard plan set (e.g.
+ * "expertsacca1", "odds501", "w102", "smartbet", "rollover"). Fetches on the
+ * server and renders nothing when neither a code nor a total odds figure is
+ * posted for the set.
  */
 export async function PlanBooking({ category }: { category: string }) {
   const result = await getPlanBooking(category);
   if (!result) return null;
 
-  return (
-    <BookingCodeCard
-      booking={result.booking}
-      logo={bookieLogo(result.booking.bookie)}
-      totalOdds={result.totalOdds}
-    />
-  );
+  return <TotalOddsBanner totalOdds={result.totalOdds} booking={result.booking} />;
 }

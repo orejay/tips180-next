@@ -112,6 +112,27 @@ export async function getSmartBetPlusRows(): Promise<TipRow[] | null> {
   }));
 }
 
+/**
+ * Product of each row's own odds (e.g. rollover's cumulative odds are the
+ * running product of every match's `rolloverodds`, not a figure trusted
+ * verbatim from the backend — the backend's own `today_odds`/`tomorrow_odds`/
+ * `yesterday_odds` aggregate can drift from what's actually shown in the
+ * table, since it's computed from a separate query over all rollover matches
+ * for the date rather than the exact row set rendered here). Returns null
+ * when no row has a valid numeric odds value.
+ */
+export function productOdds(rows: TipRow[]): string | null {
+  let product = 1;
+  let count = 0;
+  for (const row of rows) {
+    const n = parseFloat(row.odds ?? "");
+    if (!Number.isFinite(n) || n <= 0) continue;
+    product *= n;
+    count++;
+  }
+  return count > 0 ? product.toFixed(2) : null;
+}
+
 // --- Rollover (rollsubscriptstatus) ---
 export async function getRolloverRows(): Promise<DayWindow | null> {
   const data = await authFetch<AccaWindow>("tips/rollover");

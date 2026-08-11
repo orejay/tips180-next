@@ -49,16 +49,12 @@ async function SmartBetPanels() {
               ]}
             />
           )}
-          <div className="mt-4">
-            <PlanBooking category="smartbet" />
-          </div>
+          <PlanBooking category="smartbet" />
           <TipsterBadge category="smartbet" />
         </div>,
         <div key="smartbetplus">
           <TipsTable rows={plusRows ?? []} />
-          <div className="mt-4">
-            <PlanBooking category="smartbetplus" />
-          </div>
+          <PlanBooking category="smartbetplus" />
         </div>,
         <SmartBetStrategy key="strategy" />,
       ]}

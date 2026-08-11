@@ -27,15 +27,11 @@ export default async function Weekend10Page() {
           panels={[
             <div key="1">
               <TipsTable rows={sets.set1} />
-              <div className="mt-4">
-                <PlanBooking category="w101" />
-              </div>
+              <PlanBooking category="w101" />
             </div>,
             <div key="2">
               <TipsTable rows={sets.set2} />
-              <div className="mt-4">
-                <PlanBooking category="w102" />
-              </div>
+              <PlanBooking category="w102" />
             </div>,
           ]}
         />
