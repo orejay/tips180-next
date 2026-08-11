@@ -1,4 +1,4 @@
-import { getBooking, bookieLogo } from "@/lib/bookings";
+import { getBooking, getBookingForLogo, bookieLogo } from "@/lib/bookings";
 import { BookingCodeCard } from "@/components/marketing/booking-code-card";
 
 /**
@@ -6,9 +6,18 @@ import { BookingCodeCard } from "@/components/marketing/booking-code-card";
  * loadable betting code for a category on the server and hands it to a client
  * card for the copy interaction. Renders nothing if there's no code.
  */
-export async function BookingCode({ category }: { category: string }) {
-  const booking = await getBooking(category);
+export async function BookingCode({
+  category,
+  hideCode = false,
+}: {
+  category: string;
+  /** Omit the "Booking code" block — just the bookie logo/CTA link. */
+  hideCode?: boolean;
+}) {
+  const booking = await (hideCode ? getBookingForLogo(category) : getBooking(category));
   if (!booking) return null;
 
-  return <BookingCodeCard booking={booking} logo={bookieLogo(booking.bookie)} />;
+  return (
+    <BookingCodeCard booking={booking} logo={bookieLogo(booking.bookie)} hideCode={hideCode} />
+  );
 }

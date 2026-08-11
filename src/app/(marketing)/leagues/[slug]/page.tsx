@@ -103,7 +103,7 @@ export default async function LeaguePage({
               <LastUpdated />
             </div>
             <LeaguePredictions allMatches={matches} leagueName={name} />
-            <BookingCode category="league" />
+            <BookingCode category="league" hideCode />
           </>
         ) : (
           <div className="rounded-lg bg-surface p-8 text-center text-muted shadow-sm">

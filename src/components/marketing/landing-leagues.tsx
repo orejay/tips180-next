@@ -47,9 +47,7 @@ export async function LandingLeagues() {
       </div>
       {/* One shared "League Tips" booking code for the whole widget — the
           backend posts a single code for this category, not one per league. */}
-      <div className="mt-5">
-        <BookingCode category="league" />
-      </div>
+      <BookingCode category="league" hideCode />
     </section>
   );
 }

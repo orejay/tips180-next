@@ -15,10 +15,13 @@ export function BookingCodeCard({
   booking,
   logo,
   totalOdds,
+  hideCode = false,
 }: {
   booking: Booking;
   logo: string | null;
   totalOdds?: string | null;
+  /** Omit the "Booking code" block — just the bookie logo/CTA link. */
+  hideCode?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -31,6 +34,23 @@ export function BookingCodeCard({
       // Clipboard may be unavailable (insecure context) — fail silently.
     }
   };
+
+  // Logo-only mode skips the padded/bordered card entirely — that box was
+  // sized for a two-column code+CTA layout, and left alone with just the CTA
+  // it reads as an oversized, isolated block floating under the table.
+  if (hideCode) {
+    if (!booking.link) return null;
+    return (
+      <div className="mt-3 flex items-center gap-3">
+        {totalOdds && (
+          <span className="text-sm font-medium text-subtle">
+            Total odds <span className="font-mono font-bold text-foreground">{totalOdds}</span>
+          </span>
+        )}
+        <CtaLink booking={booking} logo={logo} />
+      </div>
+    );
+  }
 
   return (
     <div className="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm dark:border-white/8 dark:bg-[#18181b] sm:p-5">
