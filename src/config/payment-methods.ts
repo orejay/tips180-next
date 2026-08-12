@@ -59,13 +59,13 @@ export const manualPayments: CountryPayment[] = [
     code: "KE",
     name: "Kenya",
     confirmOn: "+234 814 600 0171",
-    methods: [{ label: "M-Pesa", lines: ["Pay to +254 1409 365 21"] }],
+    methods: [{ label: "M-Pesa", lines: ["Contact support for the current pay number"] }],
   },
   {
     code: "TZ",
     name: "Tanzania",
     confirmOn: "+234 814 600 0171",
-    methods: [{ label: "M-Pesa", lines: ["Pay to +254 1409 365 21"] }],
+    methods: [{ label: "M-Pesa", lines: ["Contact support for the current pay number"] }],
   },
   {
     code: "UG",
@@ -89,6 +89,6 @@ export const manualPayments: CountryPayment[] = [
     code: "SL",
     name: "Sierra Leone",
     confirmOn: "+232 760 600 00",
-    methods: [{ label: "Mobile Money", lines: ["Pay to +232 760 600 00 or +232 781 093 88"] }],
+    methods: [{ label: "Mobile Money", lines: ["Contact support for the current pay number"] }],
   },
 ];
