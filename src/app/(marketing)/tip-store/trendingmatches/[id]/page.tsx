@@ -10,6 +10,7 @@ import { getStoreTips, type StoreTipRow } from "@/lib/tip-store";
 import { formatDayMonth } from "@/lib/predictions";
 import { parseTeams } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/marketing/league-badge";
+import { TipsterBadge } from "@/components/marketing/tipster-badge";
 
 type Params = { id: string };
 
@@ -182,7 +183,9 @@ export default async function TrendingMatchPage({
                       {row.label}
                     </dt>
                     {row.value ? (
-                      <dd className="text-sm font-medium text-foreground">{row.value}</dd>
+                      <dd className="whitespace-pre-line text-sm font-medium text-foreground">
+                        {row.value}
+                      </dd>
                     ) : (
                       <dd className="grid grid-cols-2 gap-3 text-sm">
                         <div>
@@ -201,6 +204,8 @@ export default async function TrendingMatchPage({
             </div>
           )}
         </div>
+
+        <TipsterBadge category="trendingmatches" date={match.date} />
 
         <div className="mt-8 text-center">
           <Link
