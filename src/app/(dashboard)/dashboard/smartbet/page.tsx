@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser, isActive } from "@/lib/api-auth";
 import { getSmartBetRows, getSmartBetPlusRows } from "@/lib/plan-tips";
+import { getDayBookingWindow } from "@/lib/bookings";
 import { PlanLocked } from "@/components/dashboard/plan-locked";
 import { PlanBooking } from "@/components/dashboard/plan-booking";
+import { TotalOddsBanner } from "@/components/dashboard/total-odds-banner";
 import { TipsTable } from "@/components/dashboard/tips-table";
 import { DayTabs } from "@/components/dashboard/day-tabs";
 import { SetTabs } from "@/components/dashboard/set-tabs";
@@ -27,7 +29,11 @@ export default async function SmartBetPage() {
 }
 
 async function SmartBetPanels() {
-  const [window, plusRows] = await Promise.all([getSmartBetRows(), getSmartBetPlusRows()]);
+  const [window, plusRows, bookingWindow] = await Promise.all([
+    getSmartBetRows(),
+    getSmartBetPlusRows(),
+    getDayBookingWindow("smartbet"),
+  ]);
 
   return (
     <SetTabs
@@ -43,13 +49,30 @@ async function SmartBetPanels() {
               labels={["Yesterday", "Today", "Tomorrow"]}
               defaultIndex={1}
               panels={[
-                <TipsTable key="yesterday" rows={window.yesterday} />,
-                <TipsTable key="today" rows={window.today} />,
-                <TipsTable key="tomorrow" rows={window.tomorrow} />,
+                <div key="yesterday">
+                  <TipsTable rows={window.yesterday} hideDateOnMobile />
+                  <TotalOddsBanner
+                    totalOdds={bookingWindow.yesterday?.totalOdds ?? null}
+                    booking={bookingWindow.yesterday?.booking ?? null}
+                  />
+                </div>,
+                <div key="today">
+                  <TipsTable rows={window.today} hideDateOnMobile />
+                  <TotalOddsBanner
+                    totalOdds={bookingWindow.today?.totalOdds ?? null}
+                    booking={bookingWindow.today?.booking ?? null}
+                  />
+                </div>,
+                <div key="tomorrow">
+                  <TipsTable rows={window.tomorrow} hideDateOnMobile />
+                  <TotalOddsBanner
+                    totalOdds={bookingWindow.tomorrow?.totalOdds ?? null}
+                    booking={bookingWindow.tomorrow?.booking ?? null}
+                  />
+                </div>,
               ]}
             />
           )}
-          <PlanBooking category="smartbet" />
           <TipsterBadge category="smartbet" />
         </div>,
         <div key="smartbetplus">

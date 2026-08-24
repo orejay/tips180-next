@@ -67,11 +67,21 @@ export type BankerTip = {
   analysis: string;
 };
 
-/** Backend dates arrive as ISO or a date string; render day/month, else pass through. */
+/**
+ * Backend dates arrive as ISO ("YYYY-MM-DD...") or a full date string (e.g.
+ * "Sat, 22 Aug 2026 00:00:00 GMT"); always render as day/month.
+ */
 function fmt(date: string): string {
-  const iso = date?.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!date) return "";
+  const iso = date.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (iso) return `${iso[3]}/${iso[2]}`;
-  return date ?? "";
+  const parsed = new Date(date);
+  if (!Number.isNaN(parsed.getTime())) {
+    const day = String(parsed.getDate()).padStart(2, "0");
+    const month = String(parsed.getMonth() + 1).padStart(2, "0");
+    return `${day}/${month}`;
+  }
+  return date;
 }
 
 /** A Yesterday/Today/Tomorrow window of rows, as returned by the accaformat endpoints. */

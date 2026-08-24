@@ -15,7 +15,16 @@ export type TipRow = {
  * Generic tips table for the dashboard plan pages. Columns auto-hide when no row
  * provides that field, so it works for plans with/without odds or scores.
  */
-export function TipsTable({ rows }: { rows: TipRow[] }) {
+export function TipsTable({
+  rows,
+  hideDateOnMobile,
+}: {
+  rows: TipRow[];
+  /** Set when this table sits inside a Yesterday/Today/Tomorrow pill switcher
+   *  (`DayTabs`) — the pill already says which day it is, so the per-row date
+   *  is redundant and just eats space on small screens. */
+  hideDateOnMobile?: boolean;
+}) {
   if (rows.length === 0) {
     return (
       <p className="rounded-lg border border-border py-10 text-center text-muted">
@@ -27,13 +36,14 @@ export function TipsTable({ rows }: { rows: TipRow[] }) {
   const showOdds = rows.some((r) => r.odds);
   const showScore = rows.some((r) => r.score);
   const showLeague = rows.some((r) => r.league);
+  const dateClass = hideDateOnMobile ? "hidden sm:table-cell" : "";
 
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
       <table className="w-full text-left text-sm">
         <thead>
           <tr className="border-b border-border text-muted">
-            <th className="px-3 py-3 font-medium">Date</th>
+            <th className={`px-3 py-3 font-medium ${dateClass}`}>Date</th>
             {showLeague && <th className="px-3 py-3 text-center font-medium">League</th>}
             <th className="px-3 py-3 font-medium">Match</th>
             <th className="px-3 py-3 font-medium">Tip</th>
@@ -44,7 +54,9 @@ export function TipsTable({ rows }: { rows: TipRow[] }) {
         <tbody>
           {rows.map((row) => (
             <tr key={row.id} className="border-b border-border last:border-0">
-              <td className="px-3 py-3 whitespace-nowrap text-muted">{row.date || "—"}</td>
+              <td className={`px-3 py-3 whitespace-nowrap text-muted ${dateClass}`}>
+                {row.date || "—"}
+              </td>
               {showLeague && (
                 <td className="px-3 py-3 text-center text-muted">
                   {row.league ? <LeagueBadge league={row.league} /> : "—"}

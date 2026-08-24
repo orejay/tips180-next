@@ -64,7 +64,13 @@ export type OddsBooking = { booking: Booking | null; totalOdds: string | null };
 
 /** Local YYYY-MM-DD, to match today's booking entry in the array shapes. */
 function todayString(): string {
+  return dateStringOffset(0);
+}
+
+/** Local YYYY-MM-DD, `offsetDays` from today. */
+function dateStringOffset(offsetDays: number): string {
   const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${d.getFullYear()}-${m}-${day}`;
@@ -120,6 +126,60 @@ export async function getPlanBooking(category: string): Promise<OddsBooking | nu
   }
   if (!booking && !totalOdds) return null;
   return { booking, totalOdds };
+}
+
+export type DayBookingWindow = {
+  yesterday: OddsBooking | null;
+  today: OddsBooking | null;
+  tomorrow: OddsBooking | null;
+};
+
+/**
+ * Yesterday/Today/Tomorrow booking code + total odds for a day-tabbed plan
+ * category ("smartbet", "rollover", "expertsacca1", "expertsacca2"). Unlike
+ * {@link getPlanBooking}, the backend for these categories returns EVERY
+ * booking ever posted under the category (not date-filtered) alongside
+ * separate `yesterday_odds`/`today_odds`/`tomorrow_odds` figures — each
+ * booking carries its own `date`, so bucket by that instead of
+ * {@link getPlanBooking}'s "today's entry, else first", which showed the
+ * same booking code/bookie on every day tab regardless of which was selected.
+ */
+export async function getDayBookingWindow(category: string): Promise<DayBookingWindow> {
+  const empty: DayBookingWindow = { yesterday: null, today: null, tomorrow: null };
+  let data: Record<string, unknown> | null = null;
+  try {
+    data = await api<Record<string, unknown>>(`bookings/category/${category}`, {
+      next: { revalidate: 300, tags: ["bookings"] },
+    });
+  } catch {
+    return empty;
+  }
+  if (!data || typeof data !== "object") return empty;
+
+  const bookingsRaw = data[category];
+  const bookings = Array.isArray(bookingsRaw)
+    ? bookingsRaw.filter(
+        (b): b is Booking => !!b && typeof b === "object" && !!(b as Booking).code,
+      )
+    : [];
+
+  const oddsFor = (key: string): string | null => {
+    const raw = data![key];
+    const n = parseFloat(String(raw));
+    return Number.isFinite(n) && n > 1 ? String(raw) : null;
+  };
+
+  const bucket = (date: string, oddsKey: string): OddsBooking | null => {
+    const booking = bookings.find((b) => b.date === date) ?? null;
+    const totalOdds = oddsFor(oddsKey);
+    return booking || totalOdds ? { booking, totalOdds } : null;
+  };
+
+  return {
+    yesterday: bucket(dateStringOffset(-1), "yesterday_odds"),
+    today: bucket(dateStringOffset(0), "today_odds"),
+    tomorrow: bucket(dateStringOffset(1), "tomorrow_odds"),
+  };
 }
 
 /**

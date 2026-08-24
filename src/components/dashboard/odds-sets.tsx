@@ -19,11 +19,11 @@ function FiveDayWindowTabs({ window }: { window: FiveDayWindow }) {
       labels={["2 Days Ago", "Yesterday", "Today", "Tomorrow", "In 2 Days"]}
       defaultIndex={2}
       panels={[
-        <TipsTable key="dayBeforeYesterday" rows={window.dayBeforeYesterday} />,
-        <TipsTable key="yesterday" rows={window.yesterday} />,
-        <TipsTable key="today" rows={window.today} />,
-        <TipsTable key="tomorrow" rows={window.tomorrow} />,
-        <TipsTable key="dayAfterTomorrow" rows={window.dayAfterTomorrow} />,
+        <TipsTable key="dayBeforeYesterday" rows={window.dayBeforeYesterday} hideDateOnMobile />,
+        <TipsTable key="yesterday" rows={window.yesterday} hideDateOnMobile />,
+        <TipsTable key="today" rows={window.today} hideDateOnMobile />,
+        <TipsTable key="tomorrow" rows={window.tomorrow} hideDateOnMobile />,
+        <TipsTable key="dayAfterTomorrow" rows={window.dayAfterTomorrow} hideDateOnMobile />,
       ]}
     />
   );

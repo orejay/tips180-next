@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser, isActive } from "@/lib/api-auth";
 import { getExpertsAccaRows, type DayWindow } from "@/lib/plan-tips";
+import { getDayBookingWindow, type DayBookingWindow } from "@/lib/bookings";
 import { PlanLocked } from "@/components/dashboard/plan-locked";
-import { PlanBooking } from "@/components/dashboard/plan-booking";
+import { TotalOddsBanner } from "@/components/dashboard/total-odds-banner";
 import { TipsTable } from "@/components/dashboard/tips-table";
 import { SetTabs } from "@/components/dashboard/set-tabs";
 import { DayTabs } from "@/components/dashboard/day-tabs";
@@ -33,32 +34,58 @@ export default async function AccaPage() {
   );
 }
 
-function DayWindowTabs({ window }: { window: DayWindow }) {
+function DayWindowTabs({
+  window,
+  bookingWindow,
+}: {
+  window: DayWindow;
+  bookingWindow: DayBookingWindow;
+}) {
   return (
     <DayTabs
       labels={["Yesterday", "Today", "Tomorrow"]}
       defaultIndex={1}
       panels={[
-        <TipsTable key="yesterday" rows={window.yesterday} />,
-        <TipsTable key="today" rows={window.today} />,
-        <TipsTable key="tomorrow" rows={window.tomorrow} />,
+        <div key="yesterday">
+          <TipsTable rows={window.yesterday} hideDateOnMobile />
+          <TotalOddsBanner
+            totalOdds={bookingWindow.yesterday?.totalOdds ?? null}
+            booking={bookingWindow.yesterday?.booking ?? null}
+          />
+        </div>,
+        <div key="today">
+          <TipsTable rows={window.today} hideDateOnMobile />
+          <TotalOddsBanner
+            totalOdds={bookingWindow.today?.totalOdds ?? null}
+            booking={bookingWindow.today?.booking ?? null}
+          />
+        </div>,
+        <div key="tomorrow">
+          <TipsTable rows={window.tomorrow} hideDateOnMobile />
+          <TotalOddsBanner
+            totalOdds={bookingWindow.tomorrow?.totalOdds ?? null}
+            booking={bookingWindow.tomorrow?.booking ?? null}
+          />
+        </div>,
       ]}
     />
   );
 }
 
 async function AccaSets() {
-  const { set1, set2 } = await getExpertsAccaRows();
+  const [{ set1, set2 }, bookingWindow1, bookingWindow2] = await Promise.all([
+    getExpertsAccaRows(),
+    getDayBookingWindow("expertsacca1"),
+    getDayBookingWindow("expertsacca2"),
+  ]);
   return (
     <SetTabs
       panels={[
         <div key="1">
-          <DayWindowTabs window={set1} />
-          <PlanBooking category="expertsacca1" />
+          <DayWindowTabs window={set1} bookingWindow={bookingWindow1} />
         </div>,
         <div key="2">
-          <DayWindowTabs window={set2} />
-          <PlanBooking category="expertsacca2" />
+          <DayWindowTabs window={set2} bookingWindow={bookingWindow2} />
         </div>,
       ]}
     />

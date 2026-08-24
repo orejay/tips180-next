@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser, isActive } from "@/lib/api-auth";
 import { getRolloverRows, productOdds, type DayWindow } from "@/lib/plan-tips";
-import { getPlanBooking } from "@/lib/bookings";
+import { getDayBookingWindow } from "@/lib/bookings";
 import { PlanLocked } from "@/components/dashboard/plan-locked";
 import { TotalOddsBanner } from "@/components/dashboard/total-odds-banner";
 import { TipsTable } from "@/components/dashboard/tips-table";
@@ -36,11 +36,13 @@ export default async function RolloverPage() {
  * trusted off the backend's `today_odds`/`tomorrow_odds`/`yesterday_odds`
  * aggregate, which is computed from a separate all-rollover-matches query and
  * can drift from the exact rows shown in a given day's table. The booking
- * code itself still comes from the backend (it's independent of any match).
+ * code DOES come from the backend, but it's posted per-day (each booking row
+ * carries its own date) — {@link getDayBookingWindow} buckets those so
+ * yesterday/today/tomorrow each show their own code instead of one code
+ * repeated across all three tabs.
  */
 async function RolloverContent({ window }: { window: DayWindow }) {
-  const planBooking = await getPlanBooking("rollover");
-  const booking = planBooking?.booking ?? null;
+  const bookingWindow = await getDayBookingWindow("rollover");
 
   return (
     <>
@@ -49,16 +51,25 @@ async function RolloverContent({ window }: { window: DayWindow }) {
         defaultIndex={1}
         panels={[
           <div key="yesterday">
-            <TipsTable rows={window.yesterday} />
-            <TotalOddsBanner totalOdds={productOdds(window.yesterday)} booking={booking} />
+            <TipsTable rows={window.yesterday} hideDateOnMobile />
+            <TotalOddsBanner
+              totalOdds={productOdds(window.yesterday)}
+              booking={bookingWindow.yesterday?.booking ?? null}
+            />
           </div>,
           <div key="today">
-            <TipsTable rows={window.today} />
-            <TotalOddsBanner totalOdds={productOdds(window.today)} booking={booking} />
+            <TipsTable rows={window.today} hideDateOnMobile />
+            <TotalOddsBanner
+              totalOdds={productOdds(window.today)}
+              booking={bookingWindow.today?.booking ?? null}
+            />
           </div>,
           <div key="tomorrow">
-            <TipsTable rows={window.tomorrow} />
-            <TotalOddsBanner totalOdds={productOdds(window.tomorrow)} booking={booking} />
+            <TipsTable rows={window.tomorrow} hideDateOnMobile />
+            <TotalOddsBanner
+              totalOdds={productOdds(window.tomorrow)}
+              booking={bookingWindow.tomorrow?.booking ?? null}
+            />
           </div>,
         ]}
       />
