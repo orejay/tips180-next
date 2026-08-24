@@ -63,6 +63,16 @@ export function SiteHeader() {
     setMobileGroup(null);
   }, [pathname]);
 
+  // Lock page scroll behind the full-screen mobile menu while it's open.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileOpen]);
+
   const openGroup = useCallback((label: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpenMenu(label);
@@ -366,9 +376,9 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* ── Mobile menu ─────────────────────────────────────── */}
+      {/* ── Mobile menu — full-screen overlay ───────────────── */}
       {mobileOpen && (
-        <div className="border-t border-stone-200 bg-white dark:border-zinc-800 dark:bg-black lg:hidden">
+        <div className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-stone-200 bg-white dark:border-zinc-800 dark:bg-black lg:hidden">
           {/* Section tabs — underline style */}
           <div className="flex gap-6 border-b border-stone-200 px-5 dark:border-zinc-800">
             {sectionTabs.map((tab) => {
@@ -398,7 +408,7 @@ export function SiteHeader() {
           </div>
 
           {/* Subnav accordion */}
-          <div className="max-h-[62vh] overflow-y-auto">
+          <div>
             {resolvedSubNav.map((group) => (
               <div key={group.label} className="border-b border-stone-100 dark:border-zinc-800/60">
                 <div className="flex w-full items-center justify-between">
