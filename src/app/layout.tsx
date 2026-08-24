@@ -4,6 +4,7 @@ import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Analytics } from "@/components/analytics/analytics";
+import { CleverCoreAd } from "@/components/analytics/clever-core-ad";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { GoogleTranslate } from "@/components/i18n/google-translate";
@@ -86,6 +87,7 @@ export default function RootLayout({
         {children}
         <SiteFooter />
         <Analytics />
+        <CleverCoreAd />
       </body>
     </html>
   );
