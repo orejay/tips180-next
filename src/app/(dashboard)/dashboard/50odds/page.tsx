@@ -27,11 +27,11 @@ export default async function Odds50Page() {
           panels={[
             <div key="1">
               <TipsTable rows={sets.set1} />
-              <PlanBooking category="odds501" />
+              {sets.set1.length > 0 && <PlanBooking category="odds501" />}
             </div>,
             <div key="2">
               <TipsTable rows={sets.set2} />
-              <PlanBooking category="odds502" />
+              {sets.set2.length > 0 && <PlanBooking category="odds502" />}
             </div>,
           ]}
         />

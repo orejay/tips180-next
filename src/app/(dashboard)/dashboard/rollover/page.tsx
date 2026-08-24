@@ -54,21 +54,21 @@ async function RolloverContent({ window }: { window: DayWindow }) {
             <TipsTable rows={window.yesterday} hideDateOnMobile />
             <TotalOddsBanner
               totalOdds={productOdds(window.yesterday)}
-              booking={bookingWindow.yesterday?.booking ?? null}
+              booking={window.yesterday.length > 0 ? (bookingWindow.yesterday?.booking ?? null) : null}
             />
           </div>,
           <div key="today">
             <TipsTable rows={window.today} hideDateOnMobile />
             <TotalOddsBanner
               totalOdds={productOdds(window.today)}
-              booking={bookingWindow.today?.booking ?? null}
+              booking={window.today.length > 0 ? (bookingWindow.today?.booking ?? null) : null}
             />
           </div>,
           <div key="tomorrow">
             <TipsTable rows={window.tomorrow} hideDateOnMobile />
             <TotalOddsBanner
               totalOdds={productOdds(window.tomorrow)}
-              booking={bookingWindow.tomorrow?.booking ?? null}
+              booking={window.tomorrow.length > 0 ? (bookingWindow.tomorrow?.booking ?? null) : null}
             />
           </div>,
         ]}

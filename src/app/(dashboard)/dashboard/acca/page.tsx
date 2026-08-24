@@ -49,22 +49,22 @@ function DayWindowTabs({
         <div key="yesterday">
           <TipsTable rows={window.yesterday} hideDateOnMobile />
           <TotalOddsBanner
-            totalOdds={bookingWindow.yesterday?.totalOdds ?? null}
-            booking={bookingWindow.yesterday?.booking ?? null}
+            totalOdds={window.yesterday.length > 0 ? (bookingWindow.yesterday?.totalOdds ?? null) : null}
+            booking={window.yesterday.length > 0 ? (bookingWindow.yesterday?.booking ?? null) : null}
           />
         </div>,
         <div key="today">
           <TipsTable rows={window.today} hideDateOnMobile />
           <TotalOddsBanner
-            totalOdds={bookingWindow.today?.totalOdds ?? null}
-            booking={bookingWindow.today?.booking ?? null}
+            totalOdds={window.today.length > 0 ? (bookingWindow.today?.totalOdds ?? null) : null}
+            booking={window.today.length > 0 ? (bookingWindow.today?.booking ?? null) : null}
           />
         </div>,
         <div key="tomorrow">
           <TipsTable rows={window.tomorrow} hideDateOnMobile />
           <TotalOddsBanner
-            totalOdds={bookingWindow.tomorrow?.totalOdds ?? null}
-            booking={bookingWindow.tomorrow?.booking ?? null}
+            totalOdds={window.tomorrow.length > 0 ? (bookingWindow.tomorrow?.totalOdds ?? null) : null}
+            booking={window.tomorrow.length > 0 ? (bookingWindow.tomorrow?.booking ?? null) : null}
           />
         </div>,
       ]}

@@ -43,23 +43,38 @@ function FiveDayWindowTabs({
       panels={[
         <div key="dayBeforeYesterday">
           <TipsTable rows={window.dayBeforeYesterday} hideDateOnMobile />
-          <TotalOddsBanner totalOdds={totalOdds} booking={bookingWindow.dayBeforeYesterday} />
+          <TotalOddsBanner
+            totalOdds={window.dayBeforeYesterday.length > 0 ? totalOdds : null}
+            booking={window.dayBeforeYesterday.length > 0 ? bookingWindow.dayBeforeYesterday : null}
+          />
         </div>,
         <div key="yesterday">
           <TipsTable rows={window.yesterday} hideDateOnMobile />
-          <TotalOddsBanner totalOdds={totalOdds} booking={bookingWindow.yesterday} />
+          <TotalOddsBanner
+            totalOdds={window.yesterday.length > 0 ? totalOdds : null}
+            booking={window.yesterday.length > 0 ? bookingWindow.yesterday : null}
+          />
         </div>,
         <div key="today">
           <TipsTable rows={window.today} hideDateOnMobile />
-          <TotalOddsBanner totalOdds={totalOdds} booking={bookingWindow.today} />
+          <TotalOddsBanner
+            totalOdds={window.today.length > 0 ? totalOdds : null}
+            booking={window.today.length > 0 ? bookingWindow.today : null}
+          />
         </div>,
         <div key="tomorrow">
           <TipsTable rows={window.tomorrow} hideDateOnMobile />
-          <TotalOddsBanner totalOdds={totalOdds} booking={bookingWindow.tomorrow} />
+          <TotalOddsBanner
+            totalOdds={window.tomorrow.length > 0 ? totalOdds : null}
+            booking={window.tomorrow.length > 0 ? bookingWindow.tomorrow : null}
+          />
         </div>,
         <div key="dayAfterTomorrow">
           <TipsTable rows={window.dayAfterTomorrow} hideDateOnMobile />
-          <TotalOddsBanner totalOdds={totalOdds} booking={bookingWindow.dayAfterTomorrow} />
+          <TotalOddsBanner
+            totalOdds={window.dayAfterTomorrow.length > 0 ? totalOdds : null}
+            booking={window.dayAfterTomorrow.length > 0 ? bookingWindow.dayAfterTomorrow : null}
+          />
         </div>,
       ]}
     />

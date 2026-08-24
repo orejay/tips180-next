@@ -251,7 +251,7 @@ export function FreeBoard({
               <PredictionTable rows={rows} />
               {activeStore.key === "free" && (
                 <>
-                  {activeBooking && (
+                  {rows.length > 0 && activeBooking && (
                     <div className="mt-4">
                       <BookingCodeCard
                         booking={activeBooking}
