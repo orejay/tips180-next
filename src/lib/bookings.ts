@@ -98,7 +98,7 @@ function pickBooking(value: unknown): Booking | null {
  * `today_odds`, or `accumulator_odds`. For "odds501"/"odds502"/"w101"/"w102"/
  * "smartbetplus" the backend posts the total odds onto the first open match
  * independently of any booking code (mirrors odds2/odds3, see
- * {@link getOddsBooking}) — the empty-booking branch there omits the booking
+ * {@link getOddsBookingWindow}) — the empty-booking branch there omits the booking
  * key's value entirely rather than nulling it, so a missing booking must not
  * suppress an otherwise-present total odds figure. Returns null only when
  * neither is posted.
@@ -182,42 +182,73 @@ export async function getDayBookingWindow(category: string): Promise<DayBookingW
   };
 }
 
+export type FiveDayBookingWindow = {
+  totalOdds: string | null;
+  dayBeforeYesterday: Booking | null;
+  yesterday: Booking | null;
+  today: Booking | null;
+  tomorrow: Booking | null;
+  dayAfterTomorrow: Booking | null;
+};
+
 /**
- * Total odds + booking code for a 2/3 Odds set. Unlike other plan categories,
- * `bookings/category/odds2|odds3` nests both sets under one parent key, and
- * the "total odds" value is NOT a sum of per-tip odds computed here — it's the
- * cumulative figure the admin types once into the *first* open match's
- * `sure2/3-1st/2nd-set-odds` field for that set (backend:
- * `content.py`'s `odds2`/`odds3` branch reads it straight off `match.sure21stsetodds`
- * etc.), exactly like the legacy StoreTable. So this is read verbatim off the
- * response, never derived from the per-match tip rows in `plan-tips.ts`.
+ * Booking codes (per day-tab) + total odds for a 2/3 Odds set. Unlike other
+ * plan categories, `bookings/category/odds2|odds3` nests both sets under one
+ * parent key. The "total odds" value is NOT a sum of per-tip odds computed
+ * here — it's the cumulative figure the admin types once into the *first*
+ * open match's `sure2/3-1st/2nd-set-odds` field for that set (backend:
+ * `content.py`'s `odds2`/`odds3` branch reads it straight off
+ * `match.sure21stsetodds` etc.), exactly like the legacy StoreTable, so it's
+ * the same figure across every day tab. The booking array, though, is EVERY
+ * booking ever posted for the set (not date-filtered) — each entry carries
+ * its own date — so (like {@link getDayBookingWindow}) it's bucketed by date
+ * to match `FiveDayWindowTabs`'s 5 day tabs, instead of always picking
+ * "today's entry, else first" (which showed the same code on every tab).
  */
-export async function getOddsBooking(
+export async function getOddsBookingWindow(
   kind: "odds2" | "odds3",
   set: 1 | 2,
-): Promise<OddsBooking | null> {
+): Promise<FiveDayBookingWindow> {
+  const empty: FiveDayBookingWindow = {
+    totalOdds: null,
+    dayBeforeYesterday: null,
+    yesterday: null,
+    today: null,
+    tomorrow: null,
+    dayAfterTomorrow: null,
+  };
   let data: Record<string, unknown> | null = null;
   try {
     data = await api<Record<string, unknown>>(`bookings/category/${kind}`, {
       next: { revalidate: 300, tags: ["bookings", "matches"] },
     });
   } catch {
-    return null;
+    return empty;
   }
   const wrapper = data?.[kind] as Record<string, unknown> | undefined;
-  if (!wrapper) return null;
+  if (!wrapper) return empty;
 
-  const setPrefix = kind === "odds2" ? "odds2" : "odds3";
-  const setKey = `${setPrefix}${set === 1 ? "1" : "2"}`;
+  const setKey = `${kind}${set === 1 ? "1" : "2"}`;
   const rawOdds = wrapper[`${setKey}_odds`];
   const n = parseFloat(String(rawOdds));
   const totalOdds = Number.isFinite(n) && n > 1 ? String(rawOdds) : null;
 
   const bookingsRaw = wrapper[setKey];
-  const booking = Array.isArray(bookingsRaw) ? pickBooking(bookingsRaw) : null;
-  if (!booking && !totalOdds) return null;
+  const bookings = Array.isArray(bookingsRaw)
+    ? bookingsRaw.filter(
+        (b): b is Booking => !!b && typeof b === "object" && !!(b as Booking).code,
+      )
+    : [];
+  const bookingFor = (date: string) => bookings.find((b) => b.date === date) ?? null;
 
-  return { booking, totalOdds };
+  return {
+    totalOdds,
+    dayBeforeYesterday: bookingFor(dateStringOffset(-2)),
+    yesterday: bookingFor(dateStringOffset(-1)),
+    today: bookingFor(dateStringOffset(0)),
+    tomorrow: bookingFor(dateStringOffset(1)),
+    dayAfterTomorrow: bookingFor(dateStringOffset(2)),
+  };
 }
 
 /**
