@@ -121,7 +121,8 @@ export function SiteHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-white/80 backdrop-blur-xl dark:border-zinc-800/70 dark:bg-black/80">
+    <header className="sticky top-0 z-50">
+      <div className="border-b border-stone-200/70 bg-white/80 backdrop-blur-xl dark:border-zinc-800/70 dark:bg-black/80">
       {/* ── Row 1: Brand bar ───────────────────────────────── */}
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-8 px-4 lg:px-8">
 
@@ -374,6 +375,7 @@ export function SiteHeader() {
             </Link>
           </div>
         </div>
+      </div>
       </div>
 
       {/* ── Mobile menu — full-screen overlay ───────────────── */}
