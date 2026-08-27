@@ -27,6 +27,34 @@ export const CONFIRM_FIELDS = [
   "Registered email address or User ID",
 ];
 
+export type OtherPayment = {
+  label: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+  confirmText: string;
+};
+
+/** Global, non-country-specific options (ported from the legacy "PAYPAL"/"CRYPTO" tabs). */
+export const otherPayments: OtherPayment[] = [
+  {
+    label: "PayPal",
+    description: "Click the button below to view the PayPal payment details.",
+    ctaLabel: "Pay with PayPal",
+    ctaHref: "https://www.paypal.me/ojett904?locale.x=en_CA",
+    confirmText:
+      "After paying, share your payment proof on WhatsApp to +234 814 600 0171 or email paypal@tips180.com. Your account will be upgraded within 24 hours.",
+  },
+  {
+    label: "Crypto",
+    description: "Contact us via WhatsApp or email for details on how to pay with crypto.",
+    ctaLabel: "Message us on WhatsApp",
+    ctaHref: "https://wa.link/j1td8w",
+    confirmText:
+      "Or email crypto@tips180.com. Your account will be upgraded before the close of business day.",
+  },
+];
+
 export const manualPayments: CountryPayment[] = [
   {
     code: "NG",
@@ -89,6 +117,24 @@ export const manualPayments: CountryPayment[] = [
     code: "SL",
     name: "Sierra Leone",
     confirmOn: "+232 760 600 00",
-    methods: [{ label: "Mobile Money", lines: ["Contact support for the current pay number"] }],
+    methods: [{ label: "Orange Money", lines: ["Pay to +232 781 093 88"] }],
+  },
+  {
+    code: "LR",
+    name: "Liberia",
+    confirmOn: "+232 760 600 00",
+    methods: [{ label: "Orange Money", lines: ["Pay to +232 781 093 88"] }],
+  },
+  {
+    code: "CI",
+    name: "Cote D'Ivoire",
+    confirmOn: "+232 760 600 00",
+    methods: [{ label: "Orange Money", lines: ["Pay to +232 781 093 88"] }],
+  },
+  {
+    code: "GM",
+    name: "Gambia",
+    confirmOn: "+232 760 600 00",
+    methods: [{ label: "Orange Money", lines: ["Pay to +232 781 093 88"] }],
   },
 ];

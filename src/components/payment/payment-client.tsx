@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
-import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
+import { getPricingFor } from "@/config/pricing";
+import { countries } from "@/config/countries";
 import { detectCountryClient } from "@/lib/geo-client";
 import { verifyAndUpgradeAction } from "@/app/(dashboard)/dashboard/payment/actions";
 import { ManualPayments } from "@/components/payment/manual-payments";
@@ -74,7 +75,10 @@ export function PaymentClient({
   const plan = plans[Math.min(planIdx, plans.length - 1)];
   const price = plan.prices[Math.min(durationIdx, plan.prices.length - 1)];
   const duration = plan.durations[Math.min(durationIdx, plan.durations.length - 1)];
-  const cardEnabled = Boolean(siteConfig.paystackKey || siteConfig.flutterwaveKey);
+  // Paystack only accepts Nigerian cards/NGN — the legacy site routed every
+  // other country to Flutterwave (which does accept international cards).
+  const isNigeria = country === "NG";
+  const cardEnabled = isNigeria ? Boolean(siteConfig.paystackKey) : Boolean(siteConfig.flutterwaveKey);
 
   function changeCountry(code: string) {
     setCountry(code);
@@ -83,9 +87,12 @@ export function PaymentClient({
     setDurationIdx(selection.durationIdx);
   }
 
-  // Default the country from IP geolocation on mount.
+  // Default the country from IP geolocation on mount. On failure, leave the
+  // dropdown unselected ("") rather than falsely pinning it to "United
+  // States" — `getPricingFor("")` still resolves to the USD table, so
+  // pricing/Flutterwave are correct even with nothing shown as selected.
   useEffect(() => {
-    detectCountryClient().then((iso) => changeCountry(toPricingCountry(iso)));
+    detectCountryClient().then((iso) => changeCountry(iso ?? ""));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only, changeCountry is stable in practice
   }, []);
 
@@ -152,9 +159,10 @@ export function PaymentClient({
       <section>
         <h2 className="mb-3 text-lg font-semibold text-foreground">1. Your country</h2>
         <SearchableSelect
-          options={pricingOptions}
+          options={countries}
           value={country}
           onChange={changeCountry}
+          placeholder="Select your country"
           className="w-64"
         />
         <p className="mt-1 text-xs text-subtle">Prices in {currency}.</p>
@@ -213,7 +221,7 @@ export function PaymentClient({
 
           {cardEnabled ? (
             <div className="flex flex-wrap gap-3">
-              {siteConfig.paystackKey && (
+              {isNigeria && siteConfig.paystackKey && (
                 <button
                   type="button"
                   onClick={payWithPaystack}
@@ -223,20 +231,22 @@ export function PaymentClient({
                   Pay with Card (Paystack)
                 </button>
               )}
-              {siteConfig.flutterwaveKey && (
+              {!isNigeria && siteConfig.flutterwaveKey && (
                 <button
                   type="button"
                   onClick={payWithFlutterwave}
                   disabled={status.kind === "working"}
-                  className="rounded-md border border-border px-6 py-2.5 font-medium text-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-60"
+                  className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
                 >
-                  Pay with Flutterwave
+                  Pay with Card (Flutterwave)
                 </button>
               )}
             </div>
           ) : (
             <p className="text-sm text-muted">
-              Card payment is not configured. Use a manual payment method below.
+              {isNigeria
+                ? "Card payment is not configured. Use a manual payment method below."
+                : "Card payment for your country is not configured. Use PayPal, Crypto, or a manual payment method below."}
             </p>
           )}
 
@@ -253,8 +263,8 @@ export function PaymentClient({
         </div>
       </section>
 
-      {/* Manual instructions */}
-      <ManualPayments />
+      {/* Manual instructions — reuses the country picked in step 1 above */}
+      <ManualPayments country={country} />
 
       <p className="text-xs text-subtle">
         Tips180 does not refund money paid for subscriptions and is not liable for

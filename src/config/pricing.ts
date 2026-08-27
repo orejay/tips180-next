@@ -1312,19 +1312,28 @@ export const countryPricing: CountryPricing[] = [
 /** Options for the country selector (value = country code). */
 export const pricingOptions = countryPricing.map((c) => ({ value: c.code, label: c.label }));
 
-/** Resolve a country code to its plans + currency; defaults to Nigeria/NGN. */
+/**
+ * Resolve ANY country code (a raw ISO from the full world dropdown, or an
+ * already-bucketed pricing code) to its plans + currency. Always routes
+ * through `toPricingCountry` so a country with no dedicated table (e.g.
+ * France) falls back to the "OT"/USD table instead of silently defaulting to
+ * Nigeria/NGN, matching the legacy `dollarData` fallback.
+ */
 export function getPricingFor(code: string): { plans: Plan[]; currency: string; label: string } {
-  const match = countryPricing.find((c) => c.code === code) ?? countryPricing[0];
+  const bucket = toPricingCountry(code);
+  const match = countryPricing.find((c) => c.code === bucket)!;
   return { plans: pricingTables[match.table] ?? plans, currency: match.currency, label: match.label };
 }
 
 /**
- * Map a detected ISO country code to a pricing-selector option. Countries with a
- * dedicated table use it; Ethiopia/Rwanda share Kenya pricing (as in the legacy);
- * everything else falls back to "OT" (USD).
+ * Map a detected/selected ISO country code to a pricing-selector bucket.
+ * Countries with a dedicated table use it; Ethiopia/Rwanda share Kenya
+ * pricing (as in the legacy); everything else — including a failed/unavailable
+ * IP lookup — falls back to "OT" (USD), matching the legacy site's
+ * `dollarData`/`US` fallback exactly.
  */
 export function toPricingCountry(iso: string | null | undefined): string {
-  if (!iso) return "NG";
+  if (!iso) return "OT";
   const code = iso.toUpperCase();
   if (code === "ET" || code === "RW") return "KE";
   return pricingOptions.some((o) => o.value === code) ? code : "OT";

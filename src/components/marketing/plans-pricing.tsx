@@ -12,7 +12,8 @@ import {
   Star,
   Check,
 } from "lucide-react";
-import { getPricingFor, pricingOptions, toPricingCountry } from "@/config/pricing";
+import { getPricingFor } from "@/config/pricing";
+import { countries } from "@/config/countries";
 import type { Plan } from "@/config/plans";
 import { cn } from "@/lib/utils";
 import { detectCountryClient } from "@/lib/geo-client";
@@ -35,9 +36,13 @@ export function PlansPricing({
   const [loggedIn, setLoggedIn] = useState(false);
   const { plans, currency } = getPricingFor(country);
 
+  // Geo-detect on mount. On failure, leave the dropdown unselected ("") rather
+  // than falsely pinning it to "United States" — `getPricingFor("")` still
+  // resolves to the USD table via `toPricingCountry`, so pricing is correct
+  // even though no specific country is shown as selected.
   useEffect(() => {
     if (initialCountry) return;
-    detectCountryClient().then((iso) => setCountry(toPricingCountry(iso)));
+    detectCountryClient().then((iso) => setCountry(iso ?? ""));
   }, [initialCountry]);
 
   // Signed-in visitors go straight to checkout instead of signup.
@@ -59,9 +64,10 @@ export function PlansPricing({
       <div className="mb-8 flex flex-col items-center gap-2">
         <span className="text-sm font-medium text-muted">Showing prices for</span>
         <SearchableSelect
-          options={pricingOptions}
+          options={countries}
           value={country}
           onChange={setCountry}
+          placeholder="Select your country"
           className="w-64"
         />
         <p className="text-xs text-subtle">Prices shown in {currency}.</p>
