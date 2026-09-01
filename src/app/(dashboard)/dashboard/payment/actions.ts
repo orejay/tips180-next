@@ -69,3 +69,46 @@ export async function verifyAndUpgradeAction(input: {
     return { ok: false, message: "Network error. If you were charged, contact support." };
   }
 }
+
+/**
+ * Subscribe to a plan by spending wallet points ("Tcoin") instead of paying by
+ * card — mirrors the legacy `/postendpoints/points-upgrade` flow. The backend
+ * deducts `price` from the user's wallet balance and rejects if insufficient.
+ */
+export async function subscribeWithPointsAction(input: {
+  plan: string;
+  duration: string;
+  price: number;
+}): Promise<PaymentResult> {
+  const { plan, duration, price } = input;
+  const token = await getToken();
+  if (!token) return { ok: false, message: "Your session has expired. Please sign in again." };
+
+  try {
+    const res = await fetch(`${siteConfig.apiUrl}/subscriptions/points`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ plan, duration, price }),
+      cache: "no-store",
+    });
+    const json = (await res.json().catch(() => null)) as
+      | { upgrade?: boolean; msg?: string }
+      | null;
+
+    if (!res.ok || !json?.upgrade) {
+      return { ok: false, message: json?.msg ?? "Unable to upgrade with points. Please try again." };
+    }
+
+    const user = await getCurrentUser();
+    if (user) {
+      await setSession(token, toSessionUser(user));
+    }
+
+    return { ok: true, message: "Payment complete — your plan has been activated!" };
+  } catch {
+    return { ok: false, message: "Network error. If you were charged, contact support." };
+  }
+}

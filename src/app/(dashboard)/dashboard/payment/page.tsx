@@ -21,6 +21,7 @@ export default async function PaymentPage({
       <PaymentClient
         email={user.email}
         name={user.name}
+        balance={user.balance}
         initialPlan={plan}
         initialDuration={duration}
       />

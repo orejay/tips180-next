@@ -28,6 +28,7 @@ export default async function ProfilePage() {
         refCode={user.ref_code}
         refPoints={user.ref_points}
         loyaltyPoints={user.loyalty_points}
+        balance={user.balance}
       />
       <AccountPlans user={user} />
       <ProfileTabs info={info} />

@@ -14,6 +14,7 @@ export function ProfileHero({
   refCode,
   refPoints,
   loyaltyPoints,
+  balance,
 }: {
   name: string;
   email: string;
@@ -21,6 +22,7 @@ export function ProfileHero({
   refCode: string;
   refPoints: number;
   loyaltyPoints: number;
+  balance: number;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -59,6 +61,7 @@ export function ProfileHero({
         </div>
 
         <div className="flex flex-wrap gap-6">
+          <Stat label="Wallet Balance" value={`${balance ?? 0} Tcoin`} />
           <Stat label="Referral Points" value={String(refPoints ?? 0)} />
           <Stat label="Loyalty Points" value={String(loyaltyPoints ?? 0)} />
         </div>

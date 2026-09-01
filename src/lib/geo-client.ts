@@ -13,6 +13,11 @@
 
 const GEO_URL = process.env.NEXT_PUBLIC_GEO_API_URL ?? "https://ipinfo.io";
 
+// Legacy cached the detected country in localStorage (`userCountry`) so a
+// visitor's repeat page loads didn't re-hit ipinfo and burn through the
+// rotating token pool. Mirrored here under the same key.
+const CACHE_KEY = "userCountry";
+
 function geoKeys(): string[] {
   return (process.env.NEXT_PUBLIC_GEO_API_KEYS ?? "")
     .split(",")
@@ -20,8 +25,18 @@ function geoKeys(): string[] {
     .filter(Boolean);
 }
 
-/** The visitor's ISO country code, or null if detection is unavailable/fails. */
+/**
+ * The visitor's ISO country code, or null if detection is unavailable/fails.
+ * Cached in localStorage after the first successful lookup for the session.
+ */
 export async function detectCountryClient(): Promise<string | null> {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) return cached;
+  } catch {
+    // localStorage unavailable (private mode, SSR edge cases) — fall through to a live lookup.
+  }
+
   const keys = geoKeys();
   if (keys.length === 0) return null;
 
@@ -30,7 +45,13 @@ export async function detectCountryClient(): Promise<string | null> {
       const res = await fetch(`${GEO_URL}/country?token=${key}`);
       if (res.ok) {
         const code = (await res.text()).trim().toUpperCase();
-        return /^[A-Z]{2}$/.test(code) ? code : null;
+        if (!/^[A-Z]{2}$/.test(code)) return null;
+        try {
+          localStorage.setItem(CACHE_KEY, code);
+        } catch {
+          // ignore write failures
+        }
+        return code;
       }
       if (res.status === 429) continue; // rate-limited — try the next token
       return null;

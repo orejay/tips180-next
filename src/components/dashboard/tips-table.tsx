@@ -7,6 +7,7 @@ export type TipRow = {
   league?: string;
   name: string;
   tip?: string;
+  confidence?: string;
   odds?: string;
   score?: string;
 };
@@ -34,6 +35,7 @@ export function TipsTable({
   }
 
   const showOdds = rows.some((r) => r.odds);
+  const showConfidence = rows.some((r) => r.confidence);
   const showScore = rows.some((r) => r.score);
   const showLeague = rows.some((r) => r.league);
   const dateClass = hideDateOnMobile ? "hidden sm:table-cell" : "";
@@ -47,6 +49,7 @@ export function TipsTable({
             {showLeague && <th className="px-3 py-3 text-center font-medium">League</th>}
             <th className="px-3 py-3 font-medium">Match</th>
             <th className="px-3 py-3 font-medium">Tip</th>
+            {showConfidence && <th className="px-3 py-3 font-medium">Confidence</th>}
             {showOdds && <th className="px-3 py-3 font-medium">Odds</th>}
             {showScore && <th className="px-3 py-3 font-medium">Score</th>}
           </tr>
@@ -68,6 +71,9 @@ export function TipsTable({
                   {row.tip || "—"}
                 </span>
               </td>
+              {showConfidence && (
+                <td className="px-3 py-3 text-foreground">{row.confidence || "—"}</td>
+              )}
               {showOdds && <td className="px-3 py-3 text-foreground">{row.odds || "—"}</td>}
               {showScore && <td className="px-3 py-3 text-foreground">{row.score || "—"}</td>}
             </tr>

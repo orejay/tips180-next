@@ -54,6 +54,8 @@ export type DashboardUser = {
   ref_code: string;
   ref_points: number;
   loyalty_points: number;
+  /** Wallet ("Tcoin") balance — the points balance spendable via `subscribeWithPointsAction`. */
+  balance: number;
   rsubscriptstatus: string;
   isubscriptstatus: string;
   smart_exp: string;

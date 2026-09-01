@@ -20,6 +20,7 @@ type AccaMatch = {
   expertsacca1odds?: string;
   expertsacca2tip?: string;
   expertsacca2odds?: string;
+  confidence?: string;
   ftscore?: string;
 };
 
@@ -42,6 +43,7 @@ type SpecMatch = {
   weekend10_2nd?: boolean;
   weekend10_2nd_tip?: string;
   weekend10_2nd_odds?: string;
+  confidence?: string;
   ftscore?: string;
 };
 
@@ -176,6 +178,7 @@ export async function getSure50Rows(): Promise<{ set1: TipRow[]; set2: TipRow[] 
         league: m.league,
         name: m.name,
         tip: m.sure50_1st_tip,
+        confidence: m.confidence,
         odds: m.sure50_1st_odds,
         score: m.ftscore,
       })),
@@ -187,6 +190,7 @@ export async function getSure50Rows(): Promise<{ set1: TipRow[]; set2: TipRow[] 
         league: m.league,
         name: m.name,
         tip: m.sure50_2nd_tip,
+        confidence: m.confidence,
         odds: m.sure50_2nd_odds,
         score: m.ftscore,
       })),
@@ -206,6 +210,7 @@ export async function getWeekend10Rows(): Promise<{ set1: TipRow[]; set2: TipRow
         league: m.league,
         name: m.name,
         tip: m.weekend10_1st_tip,
+        confidence: m.confidence,
         odds: m.weekend10_1st_odds,
         score: m.ftscore,
       })),
@@ -217,6 +222,7 @@ export async function getWeekend10Rows(): Promise<{ set1: TipRow[]; set2: TipRow
         league: m.league,
         name: m.name,
         tip: m.weekend10_2nd_tip,
+        confidence: m.confidence,
         odds: m.weekend10_2nd_odds,
         score: m.ftscore,
       })),
@@ -236,6 +242,7 @@ export async function getExpertsAccaRows(): Promise<{ set1: DayWindow; set2: Day
       league: m.league,
       name: m.name,
       tip: n === 1 ? m.expertsacca1tip : m.expertsacca2tip,
+      confidence: m.confidence,
       odds: n === 1 ? m.expertsacca1odds : m.expertsacca2odds,
       score: m.ftscore,
     });

@@ -6,9 +6,13 @@ import { siteConfig } from "@/config/site";
 import { getPricingFor } from "@/config/pricing";
 import { countries } from "@/config/countries";
 import { detectCountryClient } from "@/lib/geo-client";
-import { verifyAndUpgradeAction } from "@/app/(dashboard)/dashboard/payment/actions";
+import {
+  verifyAndUpgradeAction,
+  subscribeWithPointsAction,
+} from "@/app/(dashboard)/dashboard/payment/actions";
 import { ManualPayments } from "@/components/payment/manual-payments";
 import { SearchableSelect } from "@/components/ui/searchable-select";
+import { pointsPlans } from "@/config/points-plans";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
@@ -41,11 +45,14 @@ type Status = { kind: "idle" | "working" | "ok" | "error"; message?: string };
 export function PaymentClient({
   email,
   name,
+  balance,
   initialPlan,
   initialDuration,
 }: {
   email: string;
   name: string;
+  /** Wallet ("Tcoin") points balance, spendable via the "Pay with Points" section. */
+  balance: number;
   /** Plan slug (e.g. "premium") to preselect, passed from a plan card's "Get <plan>" CTA. */
   initialPlan?: string;
   /** Duration label (e.g. "1 month") to preselect alongside `initialPlan`. */
@@ -263,6 +270,9 @@ export function PaymentClient({
         </div>
       </section>
 
+      {/* Pay with wallet points ("Tcoin") — an alternative to card/manual payment */}
+      <PointsPayment balance={balance} />
+
       {/* Manual instructions — reuses the country picked in step 1 above */}
       <ManualPayments country={country} />
 
@@ -271,5 +281,94 @@ export function PaymentClient({
         any money lost or gained. Content is intended for persons aged 18+.
       </p>
     </div>
+  );
+}
+
+/** Subscribe by spending wallet points ("Tcoin") — a self-contained plan/duration picker,
+ *  since points pricing/durations don't match the card-payment plan list one-to-one. */
+function PointsPayment({ balance }: { balance: number }) {
+  const router = useRouter();
+  const [planIdx, setPlanIdx] = useState(0);
+  const [durationIdx, setDurationIdx] = useState(0);
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+
+  const plan = pointsPlans[planIdx];
+  const duration = plan.durations[Math.min(durationIdx, plan.durations.length - 1)];
+  const price = plan.prices[Math.min(durationIdx, plan.prices.length - 1)];
+  const canAfford = balance >= price.value;
+
+  async function pay() {
+    setStatus({ kind: "working", message: "Processing…" });
+    const result = await subscribeWithPointsAction({ plan: plan.slug, duration, price: price.value });
+    setStatus({ kind: result.ok ? "ok" : "error", message: result.message });
+    if (result.ok) {
+      router.refresh();
+      setTimeout(() => router.push("/dashboard/profile"), 2500);
+    }
+  }
+
+  return (
+    <section>
+      <h2 className="mb-3 text-lg font-semibold text-foreground">Pay with Points</h2>
+      <div className="rounded-lg border border-border p-5">
+        <p className="mb-4 text-sm text-muted">
+          Your wallet balance: <span className="font-semibold text-foreground">{balance} Tcoin</span>
+        </p>
+
+        <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {pointsPlans.map((p, i) => (
+            <button
+              key={p.slug}
+              type="button"
+              onClick={() => { setPlanIdx(i); setDurationIdx(0); }}
+              className={`rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
+                i === planIdx
+                  ? "border-blue-600 bg-blue-50 dark:bg-primary-soft text-primary"
+                  : "border-border text-foreground hover:border-blue-400"
+              }`}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          {plan.durations.map((d, i) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setDurationIdx(i)}
+              className={`rounded-md border px-4 py-2 text-sm transition-colors ${
+                i === durationIdx
+                  ? "border-blue-600 bg-primary text-white"
+                  : "border-border text-foreground hover:border-blue-400"
+              }`}
+            >
+              {d} — {plan.prices[Math.min(i, plan.prices.length - 1)].title}
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={pay}
+          disabled={!canAfford || status.kind === "working"}
+          className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+        >
+          {canAfford ? `Pay ${price.title}` : "Insufficient Points Balance"}
+        </button>
+
+        {status.message && (
+          <p
+            className={`mt-4 text-sm font-medium ${
+              status.kind === "ok" ? "text-green-600" : status.kind === "error" ? "text-red-600" : "text-muted"
+            }`}
+            role="status"
+          >
+            {status.message}
+          </p>
+        )}
+      </div>
+    </section>
   );
 }
