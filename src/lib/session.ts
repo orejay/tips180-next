@@ -59,6 +59,18 @@ export async function setSession(token: string, user: SessionUser): Promise<void
   });
 }
 
+export async function rotateToken(token: string): Promise<void> {
+  const store = await cookies();
+  const secure = process.env.NODE_ENV === "production";
+  store.set(TOKEN_COOKIE, token, {
+    httpOnly: true,
+    secure,
+    sameSite: "lax",
+    path: "/",
+    maxAge: MAX_AGE,
+  });
+}
+
 export async function clearSession(): Promise<void> {
   const store = await cookies();
   store.delete(TOKEN_COOKIE);

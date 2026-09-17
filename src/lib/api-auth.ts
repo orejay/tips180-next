@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { siteConfig } from "@/config/site";
-import { getToken } from "@/lib/session";
+import { getToken, rotateToken } from "@/lib/session";
 
 /**
  * Authenticated, server-side API access for the dashboard. Reads the httpOnly
@@ -72,9 +72,14 @@ export type DashboardUser = {
  * request via React `cache` so the layout and page don't double-fetch.
  */
 export const getCurrentUser = cache(async (): Promise<DashboardUser | null> => {
-  const data = await authFetch<{ auth: boolean; user_data: DashboardUser }>(
+  const data = await authFetch<{ auth: boolean; new_token?: string; user_data: DashboardUser }>(
     "users/check-auth",
   );
+  if (data?.new_token) {
+    try {
+      await rotateToken(data.new_token);
+    } catch {}
+  }
   return data?.user_data ?? null;
 });
 
