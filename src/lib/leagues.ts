@@ -36,6 +36,8 @@ export type LeagueMatch = {
   ft_score: string | null;
   /** Full-time odds for `ft_tip` (same field the backend exposes as `ft_odds` elsewhere). */
   league_tip: string | null;
+  /** The admin's "League Tips" toggle — marks the free/home-page preview picks. */
+  league_match: boolean;
 };
 
 /** Display order for the region groups the backend returns. */

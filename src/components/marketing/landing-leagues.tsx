@@ -29,7 +29,7 @@ export async function LandingLeagues() {
     await Promise.all(
       topLeagues.map(async (league) => ({
         league,
-        matches: await getLeagueMatches(league.short_name),
+        matches: (await getLeagueMatches(league.short_name)).filter((m) => m.league_match),
       })),
     )
   ).filter((c) => c.matches.length > 0);
@@ -61,8 +61,6 @@ function LeagueCard({
 }) {
   const slug = leagueSlug(league.short_name);
   const name = league.name;
-  // Free preview on the landing page — always 2, matching the linked /leagues/[slug]
-  // page's FREE_MATCH_LIMIT, regardless of how many open matches exist.
   const rows = matches.slice(0, 2);
 
   return (

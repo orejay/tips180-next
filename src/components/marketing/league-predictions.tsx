@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
 import type { LeagueMatch } from "@/lib/leagues";
 
-// Free visitors see the first 2 matches; Premium subscribers see them all.
+// Free visitors see only the admin's "League Tips" picks (`league_match`);
+// Premium subscribers see every open match in the league.
 const FREE_MATCH_LIMIT = 2;
 
 /**
@@ -43,7 +44,8 @@ export function LeaguePredictions({
       .catch(() => setStatus("locked"));
   }, []);
 
-  const visible = status === "unlocked" ? allMatches : allMatches.slice(0, FREE_MATCH_LIMIT);
+  const freeMatches = allMatches.filter((m) => m.league_match).slice(0, FREE_MATCH_LIMIT);
+  const visible = status === "unlocked" ? allMatches : freeMatches;
   const hiddenCount = allMatches.length - visible.length;
 
   return (
