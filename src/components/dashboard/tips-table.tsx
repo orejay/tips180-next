@@ -49,8 +49,8 @@ export function TipsTable({
             {showLeague && <th className="px-3 py-3 text-center font-medium">League</th>}
             <th className="px-3 py-3 font-medium">Match</th>
             <th className="px-3 py-3 font-medium">Tip</th>
-            {showConfidence && <th className="px-3 py-3 font-medium">Confidence</th>}
             {showOdds && <th className="px-3 py-3 font-medium">Odds</th>}
+            {showConfidence && <th className="px-3 py-3 font-medium">Confidence</th>}
             {showScore && <th className="px-3 py-3 font-medium">Score</th>}
           </tr>
         </thead>
@@ -71,10 +71,10 @@ export function TipsTable({
                   {row.tip || "—"}
                 </span>
               </td>
+              {showOdds && <td className="px-3 py-3 text-foreground">{row.odds || "—"}</td>}
               {showConfidence && (
                 <td className="px-3 py-3 text-foreground">{row.confidence || "—"}</td>
               )}
-              {showOdds && <td className="px-3 py-3 text-foreground">{row.odds || "—"}</td>}
               {showScore && <td className="px-3 py-3 text-foreground">{row.score || "—"}</td>}
             </tr>
           ))}
