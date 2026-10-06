@@ -8,12 +8,12 @@ export const metadata: Metadata = { title: "Make Payment" };
 export default async function PaymentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string; duration?: string }>;
+  searchParams: Promise<{ plan?: string; duration?: string; session_id?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/auth/login?from=/dashboard/payment");
 
-  const { plan, duration } = await searchParams;
+  const { plan, duration, session_id } = await searchParams;
 
   return (
     <div>
@@ -24,6 +24,7 @@ export default async function PaymentPage({
         balance={user.balance}
         initialPlan={plan}
         initialDuration={duration}
+        minisendSessionId={session_id}
       />
     </div>
   );

@@ -27,6 +27,13 @@ export const CONFIRM_FIELDS = [
   "Registered email address or User ID",
 ];
 
+/** Steps shown to users whose plan activates automatically (M-Pesa via Minisend). */
+export const VIEW_TIPS_STEPS = [
+  "Log in",
+  'Click on your "My Profile"',
+  'Click on "My Store" to check the stores that you have access to',
+];
+
 export type OtherPayment = {
   label: string;
   description: string;
@@ -43,7 +50,7 @@ export const otherPayments: OtherPayment[] = [
     ctaLabel: "Pay with PayPal",
     ctaHref: "https://www.paypal.me/ojett904?locale.x=en_CA",
     confirmText:
-      "After paying, share your payment proof on WhatsApp to +234 814 600 0171 or email paypal@tips180.com. Your account will be upgraded within 24 hours.",
+      "After paying, share your payment proof on WhatsApp to +234 813 1149 662 or +234 814 600 0171 or email paypal@tips180.com. Your account will be upgraded within 24 hours.",
   },
   {
     label: "Crypto",
@@ -59,7 +66,7 @@ export const manualPayments: CountryPayment[] = [
   {
     code: "NG",
     name: "Nigeria",
-    confirmOn: "+234 813 1149 662",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [
       {
         label: "Bank Transfer / USSD / Deposit",
@@ -80,37 +87,37 @@ export const manualPayments: CountryPayment[] = [
   {
     code: "GH",
     name: "Ghana",
-    confirmOn: "+234 814 600 0171",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [{ label: "MTN Mobile Money", lines: ["Pay to +233 249 447 682"] }],
   },
   {
     code: "KE",
     name: "Kenya",
-    confirmOn: "+234 814 600 0171",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [{ label: "M-Pesa", lines: ["Contact support for the current pay number"] }],
   },
   {
     code: "TZ",
     name: "Tanzania",
-    confirmOn: "+234 814 600 0171",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [{ label: "M-Pesa", lines: ["Contact support for the current pay number"] }],
   },
   {
     code: "UG",
     name: "Uganda",
-    confirmOn: "+234 814 600 0171",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [{ label: "MTN Mobile Money", lines: ["Contact support for the current pay number"] }],
   },
   {
     code: "CM",
     name: "Cameroon",
-    confirmOn: "+234 814 600 0171",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [{ label: "MTN Mobile Money", lines: ["Pay to +237 676 988 731"] }],
   },
   {
     code: "BJ",
     name: "Benin Republic",
-    confirmOn: "+234 814 600 0171",
+    confirmOn: "+234 813 1149 662 or +234 814 600 0171",
     methods: [{ label: "MTN Mobile Money", lines: ["Pay to +229 466 199 56"] }],
   },
   {

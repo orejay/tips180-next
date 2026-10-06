@@ -54,14 +54,16 @@ export function SiteFooter() {
                   </a>
                 </li>
               ))}
-              <li>
-                <a
-                  href={`tel:${footerNav.contact.phone.tel}`}
-                  className="font-semibold text-foreground transition-colors hover:text-primary dark:text-white dark:hover:text-brand-start"
-                >
-                  {footerNav.contact.phone.display}
-                </a>
-              </li>
+              {footerNav.contact.phones.map((phone) => (
+                <li key={phone.tel}>
+                  <a
+                    href={`tel:${phone.tel}`}
+                    className="font-semibold text-foreground transition-colors hover:text-primary dark:text-white dark:hover:text-brand-start"
+                  >
+                    {phone.display}
+                  </a>
+                </li>
+              ))}
             </ul>
           </FooterColumn>
         </div>

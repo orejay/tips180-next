@@ -210,7 +210,10 @@ export const footerNav = {
   ] satisfies SocialLink[],
   contact: {
     emails: ["hello@tips180.com", "advert@tips180.com"],
-    phone: { display: "+234 813 1149 662", tel: "+2348131149662" },
+    phones: [
+      { display: "+234 813 1149 662", tel: "+2348131149662" },
+      { display: "+234 814 600 0171", tel: "+2348146000171" },
+    ],
   },
 } as const;
 

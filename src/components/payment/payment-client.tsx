@@ -11,6 +11,8 @@ import {
   subscribeWithPointsAction,
 } from "@/app/(dashboard)/dashboard/payment/actions";
 import { ManualPayments } from "@/components/payment/manual-payments";
+import { MinisendPayment } from "@/components/payment/minisend-payment";
+import { minisendMpesaAvailable } from "@/config/minisend";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { pointsPlans } from "@/config/points-plans";
 
@@ -48,6 +50,7 @@ export function PaymentClient({
   balance,
   initialPlan,
   initialDuration,
+  minisendSessionId,
 }: {
   email: string;
   name: string;
@@ -57,6 +60,7 @@ export function PaymentClient({
   initialPlan?: string;
   /** Duration label (e.g. "1 month") to preselect alongside `initialPlan`. */
   initialDuration?: string;
+  minisendSessionId?: string;
 }) {
   const router = useRouter();
   const [country, setCountry] = useState("NG");
@@ -85,7 +89,10 @@ export function PaymentClient({
   // Paystack only accepts Nigerian cards/NGN — the legacy site routed every
   // other country to Flutterwave (which does accept international cards).
   const isNigeria = country === "NG";
-  const cardEnabled = isNigeria ? Boolean(siteConfig.paystackKey) : Boolean(siteConfig.flutterwaveKey);
+  const mpesaCountry = minisendMpesaAvailable(country);
+  const cardEnabled =
+    !mpesaCountry &&
+    (isNigeria ? Boolean(siteConfig.paystackKey) : Boolean(siteConfig.flutterwaveKey));
 
   function changeCountry(code: string) {
     setCountry(code);
@@ -249,7 +256,7 @@ export function PaymentClient({
                 </button>
               )}
             </div>
-          ) : (
+          ) : mpesaCountry ? null : (
             <p className="text-sm text-muted">
               {isNigeria
                 ? "Card payment is not configured. Use a manual payment method below."
@@ -269,6 +276,14 @@ export function PaymentClient({
           )}
         </div>
       </section>
+
+      <MinisendPayment
+        country={country}
+        planSlug={plan.slug}
+        planName={plan.name}
+        duration={duration}
+        returnedSessionId={minisendSessionId}
+      />
 
       {/* Pay with wallet points ("Tcoin") — an alternative to card/manual payment */}
       <PointsPayment balance={balance} />
