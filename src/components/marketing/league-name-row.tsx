@@ -1,17 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { leagueSlug } from "@/lib/leagues";
-
-let leagueNamesPromise: Promise<Record<string, string>> | null = null;
-function getLeagueNames(): Promise<Record<string, string>> {
-  if (!leagueNamesPromise) {
-    leagueNamesPromise = fetch("/league-names")
-      .then((r) => (r.ok ? r.json() : {}))
-      .catch(() => ({}));
-  }
-  return leagueNamesPromise;
-}
+import { useLeagueCatalog } from "@/components/marketing/league-catalog-context";
 
 export function LeagueNameRow({
   league,
@@ -22,16 +12,7 @@ export function LeagueNameRow({
   colSpan: number;
   className?: string;
 }) {
-  const [names, setNames] = useState<Record<string, string>>({});
-  useEffect(() => {
-    let cancelled = false;
-    getLeagueNames().then((map) => {
-      if (!cancelled) setNames(map);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { names } = useLeagueCatalog();
 
   if (!league) return null;
   const name = names[leagueSlug(league)] ?? league;

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { leagueLogo, leagueSlug } from "@/lib/leagues";
+import { useLeagueCatalog } from "@/components/marketing/league-catalog-context";
 import { LeagueLogo } from "@/components/marketing/league-logo";
 
 /** Brand-ish badge colours for recognised leagues without a crest; others fall back. */
@@ -13,37 +13,13 @@ const LEAGUE_COLORS: Record<string, string> = {
 };
 
 /**
- * `leagueSlug -> logo` for every catalog league with an admin-uploaded crest
- * (see `/league-logos`), fetched once and shared across every `LeagueBadge`
- * instance on the page — these tables can render dozens of rows/badges.
- */
-let catalogLogosPromise: Promise<Record<string, string>> | null = null;
-function getCatalogLogos(): Promise<Record<string, string>> {
-  if (!catalogLogosPromise) {
-    catalogLogosPromise = fetch("/league-logos")
-      .then((r) => (r.ok ? r.json() : {}))
-      .catch(() => ({}));
-  }
-  return catalogLogosPromise;
-}
-
-/**
  * League indicator shown in every tips table's League column. Checks the
  * live catalog crest first (admin-uploaded, via `/league-logos`), then the
  * static curated set (see `LEAGUE_LOGOS`) — only leagues in neither fall back
  * to the plain colour-coded text pill.
  */
 export function LeagueBadge({ league }: { league: string }) {
-  const [catalogLogos, setCatalogLogos] = useState<Record<string, string>>({});
-  useEffect(() => {
-    let cancelled = false;
-    getCatalogLogos().then((map) => {
-      if (!cancelled) setCatalogLogos(map);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { logos: catalogLogos } = useLeagueCatalog();
 
   const logo = catalogLogos[leagueSlug(league)] ?? leagueLogo(league);
 

@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { GoogleTranslate } from "@/components/i18n/google-translate";
 import { TranslateNavGuard } from "@/components/i18n/translate-nav-guard";
+import { getAllLeagues, leagueSlug } from "@/lib/leagues";
+import { LeagueCatalogProvider } from "@/components/marketing/league-catalog-context";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const geistSans = Geist({
@@ -59,9 +61,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const leagues = await getAllLeagues();
+  const catalog = { logos: {} as Record<string, string>, names: {} as Record<string, string> };
+  for (const league of leagues) {
+    const slug = leagueSlug(league.short_name);
+    catalog.names[slug] = league.name;
+    if (league.logo) catalog.logos[slug] = league.logo;
+  }
+
   return (
     <html
       lang={siteConfig.locale}
@@ -83,9 +93,11 @@ export default function RootLayout({
         <JsonLd data={organizationSchema()} />
         <GoogleTranslate />
         <TranslateNavGuard />
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <LeagueCatalogProvider value={catalog}>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </LeagueCatalogProvider>
         <Analytics />
         <CleverCoreAd />
       </body>
