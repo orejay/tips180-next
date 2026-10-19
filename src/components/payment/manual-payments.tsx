@@ -79,7 +79,7 @@ export function ManualPayments({ country: controlledCountry }: { country?: strin
       ) : match ? (
         <>
           <h2 className="mb-3 text-lg font-semibold text-foreground">
-            Pay manually — {match.name}
+            Pay with {match.buttonLabel ?? match.methods[0].label} — {match.name}
           </h2>
           <div className="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm dark:border-white/8 dark:bg-[#18181b]">
             <div className="space-y-4 px-4 py-4 text-sm text-muted">

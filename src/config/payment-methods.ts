@@ -17,6 +17,7 @@ export type CountryPayment = {
   /** WhatsApp number to send proof of payment to. */
   confirmOn: string;
   methods: ManualMethod[];
+  buttonLabel?: string;
 };
 
 /** Fields every confirmation message should include. */
@@ -106,7 +107,34 @@ export const manualPayments: CountryPayment[] = [
     code: "UG",
     name: "Uganda",
     confirmOn: "+234 813 1149 662 or +234 814 600 0171",
-    methods: [{ label: "MTN Mobile Money", lines: ["Contact support for the current pay number"] }],
+    buttonLabel: "MTN Mobile Money (Ghana)",
+    methods: [
+      {
+        label: "Pay using USSD code",
+        lines: [
+          "Dial *165*1#",
+          "Select Option 2 (Outside Uganda)",
+          "Select Option 1 (Africa Mobile Networks)",
+          "Then enter the recipient's number (+233 249 447 682)",
+          "Then enter the right available options (amount, etc.)",
+          "First Name: Edward",
+          "Last Name: Asare",
+          "Country: Ghana",
+          "Country Code: +233",
+          "MTN Mobile Number: +233 249 447 682",
+        ],
+      },
+      {
+        label: "Pay using Eversend / Mukuru app",
+        lines: [
+          "First Name: Edward",
+          "Last Name: Asare",
+          "Country: Ghana",
+          "Country Code: +233",
+          "MTN Mobile Number: +233 249 447 682",
+        ],
+      },
+    ],
   },
   {
     code: "CM",

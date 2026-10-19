@@ -8,6 +8,7 @@ import { PredictionTabs } from "@/components/marketing/prediction-tabs";
 import { BookingCode } from "@/components/marketing/booking-code";
 import { TipsterBadge } from "@/components/marketing/tipster-badge";
 import { LeagueBadge } from "@/components/marketing/league-badge";
+import { LeagueNameRow } from "@/components/marketing/league-name-row";
 import { cn } from "@/lib/utils";
 
 /** Row height beyond which Recent Winning Tips scrolls instead of growing the page. */
@@ -85,10 +86,9 @@ function PredictionTable({
                 <th className="px-4 py-3 text-right font-semibold">{lastHeading}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-50 dark:divide-white/5">
-              {rows.map((row) => (
+            {rows.map((row) => (
+              <tbody key={row.id} className="border-b border-stone-50 last:border-0 dark:border-white/5">
                 <tr
-                  key={row.id}
                   className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
                 >
                   <td className="px-4 py-3 text-center align-middle">
@@ -126,8 +126,9 @@ function PredictionTable({
                     )}
                   </td>
                 </tr>
-              ))}
-            </tbody>
+                <LeagueNameRow league={row.league} colSpan={4} />
+              </tbody>
+            ))}
           </table>
         </div>
       </div>

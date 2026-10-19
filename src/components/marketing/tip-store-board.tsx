@@ -7,6 +7,7 @@ import { CalendarDays, ChevronRight, FileText, Percent } from "lucide-react";
 import type { StoreTipRow } from "@/lib/tip-store";
 import { cn } from "@/lib/utils";
 import { LeagueBadge } from "@/components/marketing/league-badge";
+import { LeagueNameRow } from "@/components/marketing/league-name-row";
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_LABELS = [
@@ -128,14 +129,13 @@ function PredictionTable({
               <th className="px-4 py-3 text-right font-semibold">Result</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-50 dark:divide-white/5">
-            {rows.map((row) => {
+          {rows.map((row) => {
               const detailsHref = row.analysis || row.percentage != null
                 ? `/tip-store/trendingmatches/${row.id}`
                 : null;
               return (
+                <tbody key={row.id} className="border-b border-stone-50 last:border-0 dark:border-white/5">
                 <tr
-                  key={row.id}
                   onClick={detailsHref ? () => router.push(detailsHref) : undefined}
                   className={cn(
                     "transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5",
@@ -196,9 +196,10 @@ function PredictionTable({
                     </div>
                   </td>
                 </tr>
+                <LeagueNameRow league={row.league} colSpan={3 + Number(showOdds) + Number(showHt) + 1} />
+                </tbody>
               );
             })}
-          </tbody>
         </table>
       </div>
     </div>

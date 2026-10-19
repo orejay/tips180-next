@@ -9,6 +9,7 @@ import { bookieLogo, type Booking } from "@/lib/bookings";
 import type { BoardRow } from "@/lib/tip-store";
 import type { TipTier } from "@/config/tip-store";
 import { LeagueBadge } from "@/components/marketing/league-badge";
+import { LeagueNameRow } from "@/components/marketing/league-name-row";
 import { LeagueLogo } from "@/components/marketing/league-logo";
 import { BookingCodeCard } from "@/components/marketing/booking-code-card";
 
@@ -411,10 +412,9 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
               <th className="px-4 py-3 text-right font-semibold">Score</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-50 dark:divide-white/5">
-            {rows.map((row) => (
+          {rows.map((row) => (
+          <tbody key={row.id} className="border-b border-stone-50 last:border-0 dark:border-white/5">
               <tr
-                key={row.id}
                 className="transition-colors hover:bg-stone-50/70 dark:hover:bg-white/5"
               >
                 <td className="px-4 py-3 text-center align-middle">
@@ -445,8 +445,9 @@ function PredictionTable({ rows }: { rows: BoardRow[] }) {
                   </span>
                 </td>
               </tr>
-            ))}
+              <LeagueNameRow league={row.league} colSpan={5} />
           </tbody>
+        ))}
         </table>
       </div>
     </div>

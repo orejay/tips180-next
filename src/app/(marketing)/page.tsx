@@ -4,6 +4,7 @@ import { faqSchema } from "@/lib/schema";
 import { homeFaqs } from "@/config/faq";
 import { Hero } from "@/components/marketing/hero";
 import { AnnouncementBanner } from "@/components/marketing/announcement-banner";
+import { MpesaAnnouncement } from "@/components/marketing/mpesa-announcement";
 import { FreeTips } from "@/components/marketing/free-tips";
 import { LoyaltyAd } from "@/components/marketing/loyalty-ad";
 import { SmartBetLanding } from "@/components/marketing/smartbet-landing";
@@ -30,6 +31,7 @@ export default function HomePage() {
       <JsonLd data={faqSchema(homeFaqs)} />
       <Hero />
       <AnnouncementBanner />
+      <MpesaAnnouncement />
       <FreeTips />
       <LoyaltyAd />
       <SmartBetLanding />

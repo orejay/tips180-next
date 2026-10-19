@@ -1,4 +1,6 @@
+import { Fragment } from "react";
 import { LeagueBadge } from "@/components/marketing/league-badge";
+import { LeagueNameRow } from "@/components/marketing/league-name-row";
 
 /** A normalised prediction row used across all plan pages. */
 export type TipRow = {
@@ -38,6 +40,7 @@ export function TipsTable({
   const showConfidence = rows.some((r) => r.confidence);
   const showScore = rows.some((r) => r.score);
   const showLeague = rows.some((r) => r.league);
+  const colCount = 3 + Number(showLeague) + Number(showOdds) + Number(showConfidence) + Number(showScore);
   const dateClass = hideDateOnMobile ? "hidden sm:table-cell" : "";
 
   return (
@@ -56,7 +59,8 @@ export function TipsTable({
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} className="border-b border-border last:border-0">
+            <Fragment key={row.id}>
+            <tr className={row.league ? "" : "border-b border-border last:border-0"}>
               <td className={`px-3 py-3 whitespace-nowrap text-muted ${dateClass}`}>
                 {row.date || "—"}
               </td>
@@ -77,6 +81,8 @@ export function TipsTable({
               )}
               {showScore && <td className="px-3 py-3 text-foreground">{row.score || "—"}</td>}
             </tr>
+            {row.league && <LeagueNameRow league={row.league} colSpan={colCount} className="border-b border-border last:border-0" />}
+            </Fragment>
           ))}
         </tbody>
       </table>

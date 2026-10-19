@@ -14,6 +14,7 @@ import { ManualPayments } from "@/components/payment/manual-payments";
 import { MinisendPayment } from "@/components/payment/minisend-payment";
 import { minisendMpesaAvailable } from "@/config/minisend";
 import { SearchableSelect } from "@/components/ui/searchable-select";
+import { manualPayments } from "@/config/payment-methods";
 import { pointsPlans } from "@/config/points-plans";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -89,6 +90,12 @@ export function PaymentClient({
   // Paystack only accepts Nigerian cards/NGN — the legacy site routed every
   // other country to Flutterwave (which does accept international cards).
   const isNigeria = country === "NG";
+  const manualMatch = manualPayments.find((c) => c.code === country);
+  const manualLabel = manualMatch
+    ? (manualMatch.buttonLabel ?? (isNigeria ? "Bank Transfer" : manualMatch.methods[0].label))
+    : "Bank Transfer";
+  const jumpTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const mpesaCountry = minisendMpesaAvailable(country);
   const cardEnabled =
     !mpesaCountry &&
@@ -233,36 +240,44 @@ export function PaymentClient({
             <span className="font-bold text-primary">{price.label}</span>
           </p>
 
-          {cardEnabled ? (
-            <div className="flex flex-wrap gap-3">
-              {isNigeria && siteConfig.paystackKey && (
-                <button
-                  type="button"
-                  onClick={payWithPaystack}
-                  disabled={status.kind === "working"}
-                  className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-                >
-                  Pay with Card (Paystack)
-                </button>
-              )}
-              {!isNigeria && siteConfig.flutterwaveKey && (
-                <button
-                  type="button"
-                  onClick={payWithFlutterwave}
-                  disabled={status.kind === "working"}
-                  className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-                >
-                  Pay with Card (Flutterwave)
-                </button>
-              )}
-            </div>
-          ) : mpesaCountry ? null : (
-            <p className="text-sm text-muted">
-              {isNigeria
-                ? "Card payment is not configured. Use a manual payment method below."
-                : "Card payment for your country is not configured. Use PayPal, Crypto, or a manual payment method below."}
-            </p>
-          )}
+          <div className="flex flex-wrap gap-3">
+            {cardEnabled && isNigeria && siteConfig.paystackKey && (
+              <button
+                type="button"
+                onClick={payWithPaystack}
+                disabled={status.kind === "working"}
+                className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+              >
+                Pay with Paystack
+              </button>
+            )}
+            {cardEnabled && !isNigeria && siteConfig.flutterwaveKey && (
+              <button
+                type="button"
+                onClick={payWithFlutterwave}
+                disabled={status.kind === "working"}
+                className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+              >
+                Pay with Flutterwave
+              </button>
+            )}
+            {!mpesaCountry && (
+              <button
+                type="button"
+                onClick={() => jumpTo("manual-payment")}
+                className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90"
+              >
+                Pay with {manualLabel}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => jumpTo("points-payment")}
+              className="rounded-md bg-linear-to-r from-brand-start to-brand-end px-6 py-2.5 font-medium text-white transition-opacity hover:opacity-90"
+            >
+              Pay with Tips180 Points
+            </button>
+          </div>
 
           {status.message && (
             <p
@@ -285,11 +300,13 @@ export function PaymentClient({
         returnedSessionId={minisendSessionId}
       />
 
+      {/* Manual instructions — reuses the country picked in step 1 above */}
+      <div id="manual-payment" className="scroll-mt-24">
+        <ManualPayments country={country} />
+      </div>
+
       {/* Pay with wallet points ("Tcoin") — an alternative to card/manual payment */}
       <PointsPayment balance={balance} />
-
-      {/* Manual instructions — reuses the country picked in step 1 above */}
-      <ManualPayments country={country} />
 
       <p className="text-xs text-subtle">
         Tips180 does not refund money paid for subscriptions and is not liable for
@@ -323,7 +340,7 @@ function PointsPayment({ balance }: { balance: number }) {
   }
 
   return (
-    <section>
+    <section id="points-payment" className="scroll-mt-24">
       <h2 className="mb-3 text-lg font-semibold text-foreground">Pay with Points</h2>
       <div className="rounded-lg border border-border p-5">
         <p className="mb-4 text-sm text-muted">
