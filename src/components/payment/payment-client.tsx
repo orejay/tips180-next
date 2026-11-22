@@ -52,6 +52,7 @@ export function PaymentClient({
   initialPlan,
   initialDuration,
   minisendSessionId,
+  kycReturned,
 }: {
   email: string;
   name: string;
@@ -62,6 +63,7 @@ export function PaymentClient({
   /** Duration label (e.g. "1 month") to preselect alongside `initialPlan`. */
   initialDuration?: string;
   minisendSessionId?: string;
+  kycReturned?: boolean;
 }) {
   const router = useRouter();
   const [country, setCountry] = useState("NG");
@@ -298,6 +300,7 @@ export function PaymentClient({
         planName={plan.name}
         duration={duration}
         returnedSessionId={minisendSessionId}
+        kycReturned={kycReturned}
       />
 
       {/* Manual instructions — reuses the country picked in step 1 above */}

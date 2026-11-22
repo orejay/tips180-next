@@ -1,32 +1,18 @@
 "use server";
 
-import { siteConfig } from "@/config/site";
 import { minisendMpesaAvailable, minisendStablecoinAvailable } from "@/config/minisend";
 import { getToken, setSession, toSessionUser } from "@/lib/session";
 import { getCurrentUser } from "@/lib/api-auth";
+import { backendFetch } from "@/lib/backend-fetch";
 import { mintPriceToken, priceSigningConfigured, resolvePrice } from "@/lib/price-token";
 
 export type StartResult =
   | { ok: true; orderId: string; amountKes: number; phone: string }
-  | { ok: false; message: string };
+  | { ok: false; message: string; kycRequired?: boolean; kycUnavailable?: boolean };
 
 export type StatusResult =
   | { ok: true; status: string; credited: boolean; needsReview: boolean; failureReason?: string }
   | { ok: false; message: string };
-
-async function backend(path: string, init: RequestInit) {
-  const token = await getToken();
-  if (!token) return null;
-  return fetch(`${siteConfig.apiUrl}/${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...init.headers,
-    },
-    cache: "no-store",
-  });
-}
 
 function signedPrice(plan: string, duration: string, country: string): string | null {
   if (!priceSigningConfigured()) return null;
@@ -57,7 +43,7 @@ export async function startMinisendOrderAction(input: {
   }
 
   try {
-    const res = await backend("subscriptions/minisend/order", {
+    const res = await backendFetch("subscriptions/minisend/order", {
       method: "POST",
       body: JSON.stringify({ price_token: token, phone: input.phone }),
     });
@@ -69,7 +55,18 @@ export async function startMinisendOrderAction(input: {
       order_id?: string;
       amount_kes?: number;
       phone?: string;
+      kyc_required?: boolean;
+      kyc_unavailable?: boolean;
     } | null;
+
+    if (json?.kyc_required) {
+      return {
+        ok: false,
+        message: json.msg ?? "Identity verification is required before paying with M-Pesa.",
+        kycRequired: true,
+        kycUnavailable: Boolean(json.kyc_unavailable),
+      };
+    }
 
     if (!res.ok || !json?.created || !json.order_id) {
       return { ok: false, message: json?.msg ?? "Could not start the payment. Please try again." };
@@ -105,7 +102,7 @@ export async function startMinisendCheckoutAction(input: {
   }
 
   try {
-    const res = await backend("subscriptions/minisend/checkout", {
+    const res = await backendFetch("subscriptions/minisend/checkout", {
       method: "POST",
       body: JSON.stringify({ price_token: token }),
     });
@@ -130,7 +127,7 @@ export async function startMinisendCheckoutAction(input: {
 
 export async function checkMinisendOrderAction(orderId: string): Promise<StatusResult> {
   try {
-    const res = await backend(`subscriptions/minisend/order/${encodeURIComponent(orderId)}`, {
+    const res = await backendFetch(`subscriptions/minisend/order/${encodeURIComponent(orderId)}`, {
       method: "GET",
     });
     if (!res) return { ok: false, message: "Your session has expired. Please sign in again." };
