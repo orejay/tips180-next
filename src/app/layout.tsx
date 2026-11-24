@@ -7,6 +7,7 @@ import { Analytics } from "@/components/analytics/analytics";
 import { CleverCoreAd } from "@/components/analytics/clever-core-ad";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { StickyCatfish } from "@/components/marketing/sticky-catfish";
 import { GoogleTranslate } from "@/components/i18n/google-translate";
 import { TranslateNavGuard } from "@/components/i18n/translate-nav-guard";
 import { getAllLeagues, leagueSlug } from "@/lib/leagues";
@@ -100,6 +101,7 @@ export default async function RootLayout({
         </LeagueCatalogProvider>
         <Analytics />
         <CleverCoreAd />
+        <StickyCatfish />
       </body>
     </html>
   );
